@@ -413,30 +413,6 @@
   .hint { text-align: center; font-size: 12px; font-style: italic; color: var(--muted); margin: 0 0 6px; }
   .hint-phone { display: none; }
 
-  /* ---------- MUSIC TOGGLE ---------- */
-  #musicBtn {
-    position: fixed;
-    bottom: 18px;
-    left: 18px;
-    z-index: 40;
-    width: 44px;
-    height: 44px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: var(--card);
-    box-shadow: var(--shadow);
-    font-size: 18px;
-    line-height: 1;
-    cursor: pointer;
-    opacity: 0.92;
-    transition: transform .12s ease, opacity .12s ease;
-  }
-  #musicBtn:hover { transform: scale(1.06); opacity: 1; }
-  #musicBtn.playing { background: #fff7e6; border-color: var(--gold); }
-  @media (max-width: 480px) {
-    #musicBtn { bottom: calc(14px + env(safe-area-inset-bottom)); left: 14px; }
-  }
-
   /* ---------- SIDE PANEL ---------- */
   #overlay {
     position: fixed; inset: 0;
@@ -1303,7 +1279,7 @@
     <div class="hint hint-desktop">Click any activity row to open details — restaurants, attractions, logistics &amp; tips</div>
     <div class="hint hint-phone">Tap any activity for full details</div>
     <div class="hint"><span class="mode-res" title="Book in advance">R</span> in Transport = book in advance (flights, private transfers, private boat). <span class="mode-res mode-res-done" title="Booked">R</span> green = transport booked. <b>Reservation</b> column = activity tickets, meals, and tours only — not transport. <b>Train</b> rows = high-speed rail (Frecciarossa / Italo); buy at the station or app same day — advance booking optional for cheaper fares or guaranteed seats together.</div>
-    <div class="hint">Reservation <b>Needed</b> = must book in advance (timed entry, sold-out risk, or fixed seat). <b>Optional</b> = walk-in OK; booking only if you want a guaranteed table or skip lines. Blank = no reservation required. Activity <b>Skip OK</b> = you can drop this stop — separate from whether a reservation is needed if you go.</div>
+    <div class="hint"><b>Res: Needed</b> = must book in advance (timed entry, sold-out risk, or fixed seat). <b>Res: Optional</b> = walk-in OK; booking only if you want a guaranteed table or skip lines. Blank = no reservation required. Activity <b>Skip OK</b> = you can drop this stop — separate from whether a reservation is needed if you go.</div>
     <div class="hint">👔 after a location = modest dress (shoulders &amp; knees covered). 🥂 = smart / fine dining dress.</div>
 
     <!-- ============ DAY 0 ============ -->
@@ -1344,11 +1320,11 @@
         <div class="day-body">
           <ul class="tl">
           <li class="tl-head" aria-hidden="true"><span>Time</span><span>Activity</span><span>Location</span><span>Transport <span class="mode-res" title="Book in advance">R</span></span><span>Reservation</span></li>
-            <li class="row" data-k="d1a"><span class="time">12:05pm</span><span class="act">Flight</span><span class="loc">Milan-Malpensa (MXP), T1</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Flight (9 hr)</span><span class="stat"><span class="stat-badge st-done">Complete</span></span></li>
-            <li class="row" data-k="d1b"><span class="time">12:00–3pm</span><span class="act">Hotel</span><span class="loc">Hotel Milu Milano</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Private transfer (50 min)</span><span class="stat stat-has-hint"><span class="stat-badge st-done">Complete</span><span class="stat-hint">*book transfer</span></span></li>
+            <li class="row" data-k="d1a"><span class="time">12:05pm</span><span class="act">Flight</span><span class="loc">Milan-Malpensa (MXP), T1</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Flight (9 hr)</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
+            <li class="row" data-k="d1b"><span class="time">12:00–3pm</span><span class="act">Hotel</span><span class="loc">Hotel Milu Milano</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Private transfer (50 min)</span><span class="stat stat-has-hint"><span class="stat-badge st-done">Res: Complete</span><span class="stat-hint">*book transfer</span></span></li>
             <li class="row" data-k="d1d"><span class="time">3:45–4:45</span><span class="act">Culture</span><span class="loc">Basilica di Sant'Ambrogio 👔</span><span class="mode">Taxi (15 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d1e"><span class="time">5:00–6:30pm</span><span class="act">Culture</span><span class="loc">Castello Sforzesco · Parco Sempione</span><span class="mode">Walk from Sant'Ambrogio (~20 min) / taxi (~8 min)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d1g"><span class="time">6:45–7:45pm</span><span class="act">Meal</span><span class="loc">Trattoria Masuelli San Marco</span><span class="mode">Walk from Castello (~12 min)</span><span class="stat"><span class="stat-badge st-flex">Optional</span></span></li>
+            <li class="row" data-k="d1g"><span class="time">6:45–7:45pm</span><span class="act">Meal</span><span class="loc">Trattoria Masuelli San Marco</span><span class="mode">Walk from Castello (~12 min)</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
           </ul>
         </div>
       </article>
@@ -1367,14 +1343,14 @@
           <ul class="tl">
           <li class="tl-head" aria-hidden="true"><span>Time</span><span>Activity</span><span>Location</span><span>Transport</span><span>Reservation</span></li>
             <li class="row" data-k="d2a"><span class="time">8:30am</span><span class="act">Meal</span><span class="loc">Hotel Milu Milano</span><span class="mode">—</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d2b"><span class="time">9:15–11:15</span><span class="act">Culture</span><span class="loc">Museo Scienza e Tecnologia (Leonardo da Vinci)</span><span class="mode">Metro (25 min) / Taxi (15 min)</span><span class="stat stat-has-hint"><span class="stat-badge st-todo">Needed</span><span class="stat-hint">*book after Sep 1</span></span></li>
+            <li class="row" data-k="d2b"><span class="time">9:15–11:15</span><span class="act">Culture</span><span class="loc">Museo Scienza e Tecnologia (Leonardo da Vinci)</span><span class="mode">Metro (25 min) / Taxi (15 min)</span><span class="stat stat-has-hint"><span class="stat-badge st-todo">Res: Needed</span><span class="stat-hint">*book after Sep 1</span></span></li>
             <li class="row" data-k="d2c"><span class="time">11:15–11:45</span><span class="act">Break</span><span class="loc">Local café near Cadorna</span><span class="mode">Walk (5 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d2d"><span class="time">12:00–1:30</span><span class="act">Culture</span><span class="loc">Castello Sforzesco</span><span class="mode">Walk (10 min)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d2e"><span class="time">1:45–2:45</span><span class="act">Meal</span><span class="loc">Cadorna / Magenta area</span><span class="mode">Walk (8 min)</span><span class="stat"><span class="stat-badge st-flex">Optional</span></span></li>
-            <li class="row" data-k="d2g"><span class="time">3:15–4:45</span><span class="act">Culture</span><span class="loc">The Last Supper · skip-the-line tour 👔</span><span class="mode">Meet at Fontanella · Via Fratelli Ruffini, 1 (~12 min walk)</span><span class="stat"><span class="stat-badge st-done">Complete</span></span></li>
+            <li class="row" data-k="d2e"><span class="time">1:45–2:45</span><span class="act">Meal</span><span class="loc">Cadorna / Magenta area</span><span class="mode">Walk (8 min)</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
+            <li class="row" data-k="d2g"><span class="time">3:15–4:45</span><span class="act">Culture</span><span class="loc">The Last Supper · skip-the-line tour 👔</span><span class="mode">Meet at Fontanella · Via Fratelli Ruffini, 1 (~12 min walk)</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
             <li class="row" data-k="d2h"><span class="time">5:00–6:15</span><span class="act">Culture</span><span class="loc">Brera district stroll</span><span class="mode">Taxi (10 min) / Walk (20 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d2i"><span class="time">6:30–7:30</span><span class="act">Break</span><span class="loc">Hotel Milu Milano</span><span class="mode">Taxi (10 min)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d2j"><span class="time">7:45pm</span><span class="act">Meal</span><span class="loc">Cantina Piemontese</span><span class="mode">Taxi (~12 min)</span><span class="stat"><span class="stat-badge st-done">Complete</span></span></li>
+            <li class="row" data-k="d2j"><span class="time">7:45pm</span><span class="act">Meal</span><span class="loc">Cantina Piemontese</span><span class="mode">Taxi (~12 min)</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
           </ul>
         </div>
       </article>
@@ -1395,12 +1371,12 @@
             <li class="row" data-k="d3a"><span class="time">6:40–7:00am</span><span class="act">Meal</span><span class="loc">Hotel Milu Milano</span><span class="mode">—</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d3c"><span class="time">8:30–9:15am</span><span class="act">Culture</span><span class="loc">Varenna · waterfront</span><span class="mode">Train from Milan (~1 hr 10 min) · walk from station (~8 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d3d"><span class="time">9:30–10:45am</span><span class="act">Culture</span><span class="loc">Villa Monastero, Varenna</span><span class="mode">Walk from waterfront (~8 min)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d3f"><span class="time">11:15am–12:45pm</span><span class="act">Meal</span><span class="loc">Bellagio</span><span class="mode">Walk to Varenna dock (~5 min) · ferry (~15 min) · walk from landing (~5 min)</span><span class="stat"><span class="stat-badge st-flex">Optional</span></span></li>
+            <li class="row" data-k="d3f"><span class="time">11:15am–12:45pm</span><span class="act">Meal</span><span class="loc">Bellagio</span><span class="mode">Walk to Varenna dock (~5 min) · ferry (~15 min) · walk from landing (~5 min)</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
             <li class="row" data-k="d3g"><span class="time">1:00–3:30pm</span><span class="act">Culture</span><span class="loc">Bellagio · centro storico</span><span class="mode">—</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d3h" data-skip="1"><span class="time">3:45–4:15pm</span><span class="act">Culture<span class="act-skip">Skip OK</span></span><span class="loc">Villa Melzi gardens</span><span class="mode">Walk from centro (~15 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d3i"><span class="time">4:30–6:40pm</span><span class="act">Hotel</span><span class="loc">Hotel Milu Milano</span><span class="mode">Walk to dock (~10 min) · ferry (~15 min) · walk to station (~10 min) · train (~1 hr 10 min) · taxi from Centrale (~12 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d3k"><span class="time">6:40–7:45pm</span><span class="act">Break</span><span class="loc">Hotel Milu Milano</span><span class="mode">—</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d3j"><span class="time">8:00pm</span><span class="act">Meal</span><span class="loc">Valtellina Osteria con Giardino</span><span class="mode">Taxi from hotel (~15 min)</span><span class="stat"><span class="stat-badge st-done">Complete</span></span></li>
+            <li class="row" data-k="d3j"><span class="time">8:00pm</span><span class="act">Meal</span><span class="loc">Valtellina Osteria con Giardino</span><span class="mode">Taxi from hotel (~15 min)</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
           </ul>
         </div>
       </article>
@@ -1419,13 +1395,13 @@
           <ul class="tl">
           <li class="tl-head" aria-hidden="true"><span>Time</span><span>Activity</span><span>Location</span><span>Transport</span><span>Reservation</span></li>
             <li class="row" data-k="d4a"><span class="time">9:15–9:40am</span><span class="act">Meal</span><span class="loc">Hotel Milu Milano</span><span class="mode">—</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d4b"><span class="time">10:00am–1:15pm</span><span class="act">Culture</span><span class="loc">Duomo &amp; Piazza · tour 10:30 👔</span><span class="mode">Taxi from hotel (~12 min) · arrive ~10:00</span><span class="stat"><span class="stat-badge st-done">Complete</span></span></li>
-            <li class="row" data-k="d4c"><span class="time">1:30–3:15pm</span><span class="act">Meal</span><span class="loc">Maio, La Rinascente (7th floor) 🥂</span><span class="mode">Walk from Duomo (~3 min)</span><span class="stat"><span class="stat-badge st-done">Complete</span></span></li>
+            <li class="row" data-k="d4b"><span class="time">10:00am–1:15pm</span><span class="act">Culture</span><span class="loc">Duomo &amp; Piazza · tour 10:30 👔</span><span class="mode">Taxi from hotel (~12 min) · arrive ~10:00</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
+            <li class="row" data-k="d4c"><span class="time">1:30–3:15pm</span><span class="act">Meal</span><span class="loc">Maio, La Rinascente (7th floor) 🥂</span><span class="mode">Walk from Duomo (~3 min)</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
             <li class="row" data-k="d4d"><span class="time">3:30–5:00pm</span><span class="act">Culture</span><span class="loc">La Scala Museum</span><span class="mode">Walk from Maio (~10 min)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d4e" data-skip="1"><span class="time">5:15–6:45pm</span><span class="act">Culture<span class="act-skip">Skip OK</span></span><span class="loc">Pinacoteca Ambrosiana</span><span class="mode">Walk from La Scala (~10 min)</span><span class="stat"><span class="stat-badge st-flex">Optional</span></span></li>
+            <li class="row" data-k="d4e" data-skip="1"><span class="time">5:15–6:45pm</span><span class="act">Culture<span class="act-skip">Skip OK</span></span><span class="loc">Pinacoteca Ambrosiana</span><span class="mode">Walk from La Scala (~10 min)</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
             <li class="row" data-k="d4h"><span class="time">5:15–6:00pm</span><span class="act">Culture</span><span class="loc">Galleria Vittorio Emanuele II</span><span class="mode">Walk from La Scala or Ambrosiana (~10 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d4f"><span class="time">6:15–7:20pm</span><span class="act">Break</span><span class="loc">Hotel Milu Milano</span><span class="mode">Taxi from Duomo area (~12 min)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d4g"><span class="time">7:30pm</span><span class="act">Meal</span><span class="loc">Sadler Ristorante 🥂</span><span class="mode">Taxi from hotel (~10 min)</span><span class="stat"><span class="stat-badge st-done">Complete</span></span></li>
+            <li class="row" data-k="d4g"><span class="time">7:30pm</span><span class="act">Meal</span><span class="loc">Sadler Ristorante 🥂</span><span class="mode">Taxi from hotel (~10 min)</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
           </ul>
         </div>
       </article>
@@ -1469,10 +1445,10 @@
             <li class="row" data-k="d5a"><span class="time">8:30–9:30am</span><span class="act">Hotel</span><span class="loc">Hotel Milu Milano</span><span class="mode">Checkout · taxi to Centrale (~15 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d5t"><span class="time">10:00am–12:30pm</span><span class="act">Train</span><span class="loc">Milano Centrale → Venezia Santa Lucia</span><span class="mode">High-speed (~2 hr 30 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d5e"><span class="time">12:45–1:30pm</span><span class="act">Hotel</span><span class="loc">Carnival Palace</span><span class="mode">Vaporetto Line 5.1 (~20 min) + walk (~5 min)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d5h"><span class="time">1:45–2:30pm</span><span class="act">Meal</span><span class="loc">Cannaregio</span><span class="mode">Walk (~5 min)</span><span class="stat"><span class="stat-badge st-flex">Optional</span></span></li>
+            <li class="row" data-k="d5h"><span class="time">1:45–2:30pm</span><span class="act">Meal</span><span class="loc">Cannaregio</span><span class="mode">Walk (~5 min)</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
             <li class="row" data-k="d5f"><span class="time">2:45–4:00pm</span><span class="act">Culture</span><span class="loc">Jewish Ghetto</span><span class="mode">Walk (~10 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d5i"><span class="time">4:10–4:40pm</span><span class="act">Culture</span><span class="loc">Madonna dell'Orto 👔</span><span class="mode">Walk (~8 min)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d5d"><span class="time">5:00–8:00pm</span><span class="act">Culture</span><span class="loc">Pastamania · pasta &amp; gelato</span><span class="mode">Vaporetto to San Marco (~20 min)</span><span class="stat"><span class="stat-badge st-done">Complete</span></span></li>
+            <li class="row" data-k="d5d"><span class="time">5:00–8:00pm</span><span class="act">Culture</span><span class="loc">Pastamania · pasta &amp; gelato</span><span class="mode">Vaporetto to San Marco (~20 min)</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
           </ul>
         </div>
       </article>
@@ -1492,13 +1468,13 @@
           <li class="tl-head" aria-hidden="true"><span>Time</span><span>Activity</span><span>Location</span><span>Transport</span><span>Reservation</span></li>
             <li class="row" data-k="d6h"><span class="time">8:30–9:00am</span><span class="act">Meal</span><span class="loc">Carnival Palace</span><span class="mode">Leave ~9:00 · vaporetto (~20 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d6e"><span class="time">9:20–9:55am</span><span class="act">Culture</span><span class="loc">Chiesa di San Zaccaria 👔</span><span class="mode">Walk from stop (~3 min)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d6b"><span class="time">10:00am–12:00pm</span><span class="act">Culture</span><span class="loc">Doge's Palace &amp; Bridge of Sighs</span><span class="mode">Walk (~2 min)</span><span class="stat"><span class="stat-badge st-done">Complete</span></span></li>
-            <li class="row" data-k="d6d"><span class="time">12:10–1:45pm</span><span class="act">Meal</span><span class="loc">Castello</span><span class="mode">Riva walk (~10 min) to lunch</span><span class="stat"><span class="stat-badge st-flex">Optional</span></span></li>
-            <li class="row" data-k="d6a"><span class="time">2:00–3:30pm</span><span class="act">Culture</span><span class="loc">St. Mark's · Pala d'Oro 👔</span><span class="mode">Walk (~5 min)</span><span class="stat"><span class="stat-badge st-done">Complete</span></span></li>
+            <li class="row" data-k="d6b"><span class="time">10:00am–12:00pm</span><span class="act">Culture</span><span class="loc">Doge's Palace &amp; Bridge of Sighs</span><span class="mode">Walk (~2 min)</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
+            <li class="row" data-k="d6d"><span class="time">12:10–1:45pm</span><span class="act">Meal</span><span class="loc">Castello</span><span class="mode">Riva walk (~10 min) to lunch</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
+            <li class="row" data-k="d6a"><span class="time">2:00–3:30pm</span><span class="act">Culture</span><span class="loc">St. Mark's · Pala d'Oro 👔</span><span class="mode">Walk (~5 min)</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
             <li class="row" data-k="d6c" data-skip="1"><span class="time">3:45–4:15pm</span><span class="act">Culture<span class="act-skip">Skip OK</span></span><span class="loc">Grand Canal (gondola or traghetto)</span><span class="mode">Boat (~30 min) · then Line 2 to San Giorgio</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d6g" data-skip="1"><span class="time">4:30–7:05pm</span><span class="act">Culture<span class="act-skip">Skip OK</span></span><span class="loc">San Giorgio Maggiore · sunset 👔</span><span class="mode">Line 2 (~5 min) · campanile ~6:30 PM · sunset ~6:57 PM</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d6j"><span class="time">7:15–8:15pm</span><span class="act">Break</span><span class="loc">Carnival Palace</span><span class="mode">Vaporetto (~20 min)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d6f"><span class="time">8:30pm</span><span class="act">Meal</span><span class="loc">Cannaregio</span><span class="mode">Walk (~5 min)</span><span class="stat"><span class="stat-badge st-flex">Optional</span></span></li>
+            <li class="row" data-k="d6f"><span class="time">8:30pm</span><span class="act">Meal</span><span class="loc">Cannaregio</span><span class="mode">Walk (~5 min)</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
           </ul>
         </div>
       </article>
@@ -1519,15 +1495,15 @@
             <li class="row" data-k="d7h"><span class="time">8:30am</span><span class="act">Meal</span><span class="loc">Carnival Palace</span><span class="mode">Vaporetto to Accademia (~20 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d7a"><span class="time">9:15–11:15am</span><span class="act">Culture</span><span class="loc">Gallerie dell'Accademia</span><span class="mode">Walk from stop (~3 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d7i"><span class="time">11:20–11:55am</span><span class="act">Culture</span><span class="loc">Santa Maria della Salute 👔</span><span class="mode">Walk / traghetto (~10 min)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d7b" data-skip="1"><span class="time">12:05–1:20pm</span><span class="act">Culture<span class="act-skip">Skip OK</span></span><span class="loc">Peggy Guggenheim Collection</span><span class="mode">Walk (~10 min)</span><span class="stat"><span class="stat-badge st-flex">Optional</span></span></li>
-            <li class="row" data-k="d7e"><span class="time">1:25–2:10pm</span><span class="act">Meal</span><span class="loc">Dorsoduro / Zattere</span><span class="mode">Walk (~5 min)</span><span class="stat"><span class="stat-badge st-flex">Optional</span></span></li>
+            <li class="row" data-k="d7b" data-skip="1"><span class="time">12:05–1:20pm</span><span class="act">Culture<span class="act-skip">Skip OK</span></span><span class="loc">Peggy Guggenheim Collection</span><span class="mode">Walk (~10 min)</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
+            <li class="row" data-k="d7e"><span class="time">1:25–2:10pm</span><span class="act">Meal</span><span class="loc">Dorsoduro / Zattere</span><span class="mode">Walk (~5 min)</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
             <li class="row" data-k="d7j"><span class="time">2:20–3:10pm</span><span class="act">Culture</span><span class="loc">Basilica dei Frari 👔</span><span class="mode">Vaporetto to San Tomà (~15 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d7k" data-skip="1"><span class="time">3:15–4:15pm</span><span class="act">Culture<span class="act-skip">Skip OK</span></span><span class="loc">Scuola Grande di San Rocco</span><span class="mode">Walk (~5 min from Frari)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d7l"><span class="time">3:15–4:45pm</span><span class="act">Culture</span><span class="loc">Rialto Bridge</span><span class="mode">Walk (~10 min from Frari; compress to ~4:25 if visiting San Rocco)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d7m"><span class="time">5:00–5:15pm</span><span class="act">Culture</span><span class="loc">T Fondaco Rooftop Terrace</span><span class="mode">Walk (~2 min)</span><span class="stat stat-has-hint"><span class="stat-badge st-todo">Needed</span><span class="stat-hint">*book after Sep 7</span></span></li>
+            <li class="row" data-k="d7m"><span class="time">5:00–5:15pm</span><span class="act">Culture</span><span class="loc">T Fondaco Rooftop Terrace</span><span class="mode">Walk (~2 min)</span><span class="stat stat-has-hint"><span class="stat-badge st-todo">Res: Needed</span><span class="stat-hint">*book after Sep 7</span></span></li>
             <li class="row" data-k="d7c"><span class="time">5:20–6:10pm</span><span class="act">Culture</span><span class="loc">Rialto Market area</span><span class="mode">Walk</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d7f"><span class="time">6:30–7:30</span><span class="act">Break</span><span class="loc">Carnival Palace</span><span class="mode">Vaporetto (~15 min)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d7g"><span class="time">7:45pm</span><span class="act">Meal</span><span class="loc">Cannaregio bacari</span><span class="mode">Walk (~5 min)</span><span class="stat"><span class="stat-badge st-flex">Optional</span></span></li>
+            <li class="row" data-k="d7g"><span class="time">7:45pm</span><span class="act">Meal</span><span class="loc">Cannaregio bacari</span><span class="mode">Walk (~5 min)</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
           </ul>
         </div>
       </article>
@@ -1546,8 +1522,8 @@
           <ul class="tl">
           <li class="tl-head" aria-hidden="true"><span>Time</span><span>Activity</span><span>Location</span><span>Transport</span><span>Reservation</span></li>
             <li class="row" data-k="d8h"><span class="time">8:30am</span><span class="act">Hotel</span><span class="loc">Carnival Palace</span><span class="mode">Vaporetto to Fondamenta Nove (~20 min)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d8a"><span class="time">10:00–11:00am</span><span class="act">Culture</span><span class="loc">Wave Murano Glass · factory tour</span><span class="mode">Line 4.1 from Fondamenta Nove (~25 min) · 100 m from Da Mula stop</span><span class="stat"><span class="stat-badge st-done">Complete</span></span></li>
-            <li class="row" data-k="d8d"><span class="time">12:30–~2:30pm</span><span class="act">Meal</span><span class="loc">Venissa · Mazzorbo</span><span class="mode">Walk to Faro (~10 min) + Line 12 (~30 min) + walk to Mazzorbo (~5 min)</span><span class="stat"><span class="stat-badge st-pending">Pending</span></span></li>
+            <li class="row" data-k="d8a"><span class="time">10:00–11:00am</span><span class="act">Culture</span><span class="loc">Wave Murano Glass · factory tour</span><span class="mode">Line 4.1 from Fondamenta Nove (~25 min) · 100 m from Da Mula stop</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
+            <li class="row" data-k="d8d"><span class="time">12:30–~2:30pm</span><span class="act">Meal</span><span class="loc">Venissa · Mazzorbo</span><span class="mode">Walk to Faro (~10 min) + Line 12 (~30 min) + walk to Mazzorbo (~5 min)</span><span class="stat"><span class="stat-badge st-pending">Res: Pending</span></span></li>
             <li class="row" data-k="d8e"><span class="time">2:45–4:30pm</span><span class="act">Culture</span><span class="loc">Burano · lace &amp; painted canals</span><span class="mode">Walk from Mazzorbo (~5 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d8b" data-skip="1"><span class="time">4:45–5:45pm</span><span class="act">Culture<span class="act-skip">Skip OK</span></span><span class="loc">Torcello · cathedral &amp; Devil's Bridge 👔</span><span class="mode">Vaporetto Line 9 from Burano (~10 min) + walk (~15 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d8f"><span class="time">6:00–7:00</span><span class="act">Break</span><span class="loc">Carnival Palace</span><span class="mode">Vaporetto Line 12 (~50 min)</span><span class="stat stat-empty"></span></li>
@@ -1597,11 +1573,11 @@
             <li class="row" data-k="d9v"><span class="time">9:15–10:15am</span><span class="act">Culture</span><span class="loc">Basilica SS Giovanni e Paolo 👔</span><span class="mode">Walk (~12 min) · last Venice stop</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d9t"><span class="time">11:00am–12:10pm</span><span class="act">Train</span><span class="loc">Venezia Santa Lucia → Verona Porta Nuova</span><span class="mode">Vaporetto ~10:20 · high-speed (~1 hr 10 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d9u"><span class="time">12:20–12:35pm</span><span class="act">Hotel</span><span class="loc">Verona House Aparthotel</span><span class="mode">Taxi (~10 min) · quick bag drop</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d9d"><span class="time">12:45–1:45pm</span><span class="act">Meal</span><span class="loc">Piazza Bra</span><span class="mode">Walk (~8 min)</span><span class="stat"><span class="stat-badge st-flex">Optional</span></span></li>
+            <li class="row" data-k="d9d"><span class="time">12:45–1:45pm</span><span class="act">Meal</span><span class="loc">Piazza Bra</span><span class="mode">Walk (~8 min)</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
             <li class="row" data-k="d9e"><span class="time">2:00–3:30pm</span><span class="act">Break</span><span class="loc">Verona House Aparthotel</span><span class="mode">Check-in · unpack · rest (90 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d9b"><span class="time">3:30–4:45pm</span><span class="act">Culture</span><span class="loc">Piazza Bra &amp; Arena exterior</span><span class="mode">Walk (~8 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d9f"><span class="time">5:00–6:15pm</span><span class="act">Culture</span><span class="loc">Piazza delle Erbe &amp; Lamberti</span><span class="mode">Walk (~10 min from Bra)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d9c"><span class="time">7:00–7:30pm</span><span class="act">Meal</span><span class="loc">Trattoria Pane e Vino</span><span class="mode">Walk (~10 min from Erbe)</span><span class="stat"><span class="stat-badge st-flex">Optional</span></span></li>
+            <li class="row" data-k="d9c"><span class="time">7:00–7:30pm</span><span class="act">Meal</span><span class="loc">Trattoria Pane e Vino</span><span class="mode">Walk (~10 min from Erbe)</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
           </ul>
         </div>
       </article>
@@ -1620,10 +1596,10 @@
           <ul class="tl">
           <li class="tl-head" aria-hidden="true"><span>Time</span><span>Activity</span><span>Location</span><span>Transport</span><span>Reservation</span></li>
             <li class="row" data-k="d10a"><span class="time">9:30–11:30</span><span class="act">Culture</span><span class="loc">Verona Roman Arena</span><span class="mode">Walk (10 min)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d10d"><span class="time">12:00–1:15</span><span class="act">Meal</span><span class="loc">Near Piazza Bra</span><span class="mode">Walk (~5 min)</span><span class="stat"><span class="stat-badge st-flex">Optional</span></span></li>
+            <li class="row" data-k="d10d"><span class="time">12:00–1:15</span><span class="act">Meal</span><span class="loc">Near Piazza Bra</span><span class="mode">Walk (~5 min)</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
             <li class="row" data-k="d10b"><span class="time">1:45–3:45</span><span class="act">Culture</span><span class="loc">Piazza dei Signori &amp; Arche Scaligere</span><span class="mode">Walk (8 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d10e"><span class="time">4:15–5:15</span><span class="act">Break</span><span class="loc">Verona House Aparthotel</span><span class="mode">Rest · shower</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d10f"><span class="time">7:00–8:30pm</span><span class="act">Meal</span><span class="loc">Trattoria al Pompiere</span><span class="mode">Walk (~12 min)</span><span class="stat"><span class="stat-badge st-flex">Optional</span></span></li>
+            <li class="row" data-k="d10f"><span class="time">7:00–8:30pm</span><span class="act">Meal</span><span class="loc">Trattoria al Pompiere</span><span class="mode">Walk (~12 min)</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
           </ul>
         </div>
       </article>
@@ -1641,10 +1617,10 @@
         <div class="day-body">
           <ul class="tl">
           <li class="tl-head" aria-hidden="true"><span>Time</span><span>Activity</span><span>Location</span><span>Transport</span><span>Reservation</span></li>
-            <li class="row" data-k="d11t"><span class="time">10:00am–1:30pm</span><span class="act">Culture</span><span class="loc">Truffle hunt &amp; Amarone · Valpolicella</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Pickup Verona ~10 AM · wl03 + wl04</span><span class="stat"><span class="stat-badge st-todo">Needed</span></span></li>
+            <li class="row" data-k="d11t"><span class="time">10:00am–1:30pm</span><span class="act">Culture</span><span class="loc">Truffle hunt &amp; Amarone · Valpolicella</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Pickup Verona ~10 AM · wl03 + wl04</span><span class="stat"><span class="stat-badge st-todo">Res: Needed</span></span></li>
             <li class="row" data-k="d11c"><span class="time">2:30–4:30pm</span><span class="act">Culture</span><span class="loc">Ponte Pietra &amp; Roman Theatre</span><span class="mode">Walk (15 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d11e"><span class="time">5:15–6:00pm</span><span class="act">Break</span><span class="loc">Verona House Aparthotel</span><span class="mode">Rest · shower · change</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d11g"><span class="time">6:30–9:30pm</span><span class="act">Culture</span><span class="loc">Veronese cooking class</span><span class="mode">Walk (~10 min) · wishlist wl02</span><span class="stat"><span class="stat-badge st-todo">Needed</span></span></li>
+            <li class="row" data-k="d11g"><span class="time">6:30–9:30pm</span><span class="act">Culture</span><span class="loc">Veronese cooking class</span><span class="mode">Walk (~10 min) · wishlist wl02</span><span class="stat"><span class="stat-badge st-todo">Res: Needed</span></span></li>
           </ul>
         </div>
       </article>
@@ -1663,10 +1639,10 @@
           <ul class="tl">
           <li class="tl-head" aria-hidden="true"><span>Time</span><span>Activity</span><span>Location</span><span>Transport</span><span>Reservation</span></li>
             <li class="row" data-k="d12a"><span class="time">8:30–12:30</span><span class="act">Culture</span><span class="loc">Sirmione &amp; Scaligero Castle (Lake Garda)</span><span class="mode">Train (30 min) + Taxi (10 min)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d12d"><span class="time">12:45–2:00</span><span class="act">Meal</span><span class="loc">Sirmione</span><span class="mode">Walk</span><span class="stat"><span class="stat-badge st-flex">Optional</span></span></li>
-            <li class="row" data-k="d12b" data-skip="1"><span class="time">2:15–4:00</span><span class="act">Culture<span class="act-skip">Skip OK</span></span><span class="loc">Grotte di Catullo, Sirmione</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Walk (10 min) + Boat (20 min)</span><span class="stat"><span class="stat-badge st-flex">Optional</span></span></li>
+            <li class="row" data-k="d12d"><span class="time">12:45–2:00</span><span class="act">Meal</span><span class="loc">Sirmione</span><span class="mode">Walk</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
+            <li class="row" data-k="d12b" data-skip="1"><span class="time">2:15–4:00</span><span class="act">Culture<span class="act-skip">Skip OK</span></span><span class="loc">Grotte di Catullo, Sirmione</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Walk (10 min) + Boat (20 min)</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
             <li class="row" data-k="d12e"><span class="time">5:15–6:15</span><span class="act">Break</span><span class="loc">Verona House Aparthotel</span><span class="mode">Train (30 min) + walk (~12 min)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d12c"><span class="time">7:00pm</span><span class="act">Meal</span><span class="loc">Osteria La Vecia Mescola</span><span class="mode">Walk (~10 min)</span><span class="stat"><span class="stat-badge st-flex">Optional</span></span></li>
+            <li class="row" data-k="d12c"><span class="time">7:00pm</span><span class="act">Meal</span><span class="loc">Osteria La Vecia Mescola</span><span class="mode">Walk (~10 min)</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
           </ul>
         </div>
       </article>
@@ -1685,12 +1661,12 @@
           <ul class="tl">
           <li class="tl-head" aria-hidden="true"><span>Time</span><span>Activity</span><span>Location</span><span>Transport</span><span>Reservation</span></li>
             <li class="row" data-k="d11a"><span class="time">9:30–11:30</span><span class="act">Culture</span><span class="loc">Castelvecchio Museum</span><span class="mode">Walk (12 min)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d11d"><span class="time">12:00–1:15</span><span class="act">Meal</span><span class="loc">Centro storico</span><span class="mode">Walk (~8 min)</span><span class="stat"><span class="stat-badge st-flex">Optional</span></span></li>
+            <li class="row" data-k="d11d"><span class="time">12:00–1:15</span><span class="act">Meal</span><span class="loc">Centro storico</span><span class="mode">Walk (~8 min)</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
             <li class="row" data-k="d11b"><span class="time">1:45–3:00</span><span class="act">Culture</span><span class="loc">Basilica di San Zeno Maggiore 👔</span><span class="mode">Walk (20 min) / Bus (15 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d13a" data-skip="1"><span class="time">3:30–4:30pm</span><span class="act">Culture<span class="act-skip">Skip OK</span></span><span class="loc">Giardino Giusti</span><span class="mode">Walk (15 min) / Bus (12 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d13b" data-skip="1"><span class="time">4:45–5:30pm</span><span class="act">Culture<span class="act-skip">Skip OK</span></span><span class="loc">Castel San Pietro (funicular)</span><span class="mode">Walk (20 min) + Funicular (3 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d13e"><span class="time">5:45–6:45pm</span><span class="act">Break</span><span class="loc">Verona House Aparthotel</span><span class="mode">Rest · pack · shower</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d13c"><span class="time">7:30pm</span><span class="act">Meal</span><span class="loc">Il Desco 🥂</span><span class="mode">Walk (~10 min) · à la carte OK</span><span class="stat"><span class="stat-badge st-flex">Optional</span></span></li>
+            <li class="row" data-k="d13c"><span class="time">7:30pm</span><span class="act">Meal</span><span class="loc">Il Desco 🥂</span><span class="mode">Walk (~10 min) · à la carte OK</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
           </ul>
         </div>
       </article>
@@ -1717,10 +1693,10 @@
           <ul class="tl">
           <li class="tl-head" aria-hidden="true"><span>Time</span><span>Activity</span><span>Location</span><span>Transport</span><span>Reservation</span></li>
             <li class="row" data-k="d14a"><span class="time">8:00–8:30am</span><span class="act">Hotel</span><span class="loc">Verona House Aparthotel</span><span class="mode">Checkout · meet driver at hotel</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d14p"><span class="time">8:30–10:30am</span><span class="act">Transport</span><span class="loc">Verona → Milan Malpensa (MXP T1)</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Private car (~1 hr 45 min · A4)</span><span class="stat"><span class="stat-badge st-todo">Needed</span></span></li>
+            <li class="row" data-k="d14p"><span class="time">8:30–10:30am</span><span class="act">Transport</span><span class="loc">Verona → Milan Malpensa (MXP T1)</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Private car (~1 hr 45 min · A4)</span><span class="stat"><span class="stat-badge st-todo">Res: Needed</span></span></li>
             <li class="row" data-k="d14c"><span class="time">10:30–1:30</span><span class="act">Break</span><span class="loc">MXP Terminal 1</span><span class="mode">Check-in · lunch · lounge</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d14b"><span class="time">2:15pm</span><span class="act">Flight</span><span class="loc">Milan (MXP) → New York (JFK)</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Flight (9 hr 15m)</span><span class="stat"><span class="stat-badge st-done">Complete</span></span></li>
-            <li class="row" data-k="d14d"><span class="time">11:43pm</span><span class="act">Flight</span><span class="loc">New York (JFK) → Los Angeles (LAX)</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Connecting flight (6 hr)</span><span class="stat"><span class="stat-badge st-done">Complete</span></span></li>
+            <li class="row" data-k="d14b"><span class="time">2:15pm</span><span class="act">Flight</span><span class="loc">Milan (MXP) → New York (JFK)</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Flight (9 hr 15m)</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
+            <li class="row" data-k="d14d"><span class="time">11:43pm</span><span class="act">Flight</span><span class="loc">New York (JFK) → Los Angeles (LAX)</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Connecting flight (6 hr)</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
           </ul>
         </div>
       </article>
@@ -1941,11 +1917,17 @@
       Restaurant: '#c0562f', Landmark: '#6b5bd2', Attraction: '#6b5bd2',
       Museum: '#6b5bd2', Nature: '#6b5bd2', Activity: '#6b5bd2'
     };
+
+    function resolveImg(src) {
+      if (!src || /^([a-z]+:)?\/\//i.test(src)) return src;
+      try { return new URL(src, document.baseURI).href; } catch (e) { return src; }
+    }
+
     var STATUS = {
-      'st-done':   ['Complete',   'ps-done'],
-      'st-todo':   ['Needed', 'ps-todo'],
-      'st-pending': ['Pending', 'ps-pending'],
-      'st-flex':   ['Optional',   'ps-flex']
+      'st-done':   ['Res: Complete',   'ps-done'],
+      'st-todo':   ['Res: Needed', 'ps-todo'],
+      'st-pending': ['Res: Pending', 'ps-pending'],
+      'st-flex':   ['Res: Optional',   'ps-flex']
     };
     var DAY_LABEL = {
       d1:'Day 1 · Tue, Sep 22 · Milan',      d2:'Day 2 · Wed, Sep 23 · Milan',
@@ -2698,9 +2680,9 @@
     /* Wishlist — same shape as Top 10: { k, title, sub, badge, badgeText } */
     var WISHLIST = [
       { k:'wl01', title:'Pastamania · Pasta & Gelato', sub:'Hands-on class near St Mark\u2019s · Day 5 · 5 PM · booked', badge:'t10-on', badgeText:'On your itinerary · Day 5 · 5 PM · Complete' },
-      { k:'wl02', title:'Veronese Cooking Class', sub:'Risotto or pastissada · Fri Oct 2 · ~6:30 PM · wl02', badge:'t10-on', badgeText:'On your itinerary · Day 11 · Needed' },
-      { k:'wl03', title:'Truffle Hunt · Valpolicella', sub:'Tartufaro + dog · estate lunch · Fri Oct 2 · 10 AM', badge:'t10-on', badgeText:'On your itinerary · Day 11 · Needed' },
-      { k:'wl04', title:'Amarone Tasting · Valpolicella', sub:'Combined with truffle hunt at Tenuta · Day 11', badge:'t10-on', badgeText:'On your itinerary · Day 11 · Needed' },
+      { k:'wl02', title:'Veronese Cooking Class', sub:'Risotto or pastissada · Fri Oct 2 · ~6:30 PM · wl02', badge:'t10-on', badgeText:'On your itinerary · Day 11 · Res: Needed' },
+      { k:'wl03', title:'Truffle Hunt · Valpolicella', sub:'Tartufaro + dog · estate lunch · Fri Oct 2 · 10 AM', badge:'t10-on', badgeText:'On your itinerary · Day 11 · Res: Needed' },
+      { k:'wl04', title:'Amarone Tasting · Valpolicella', sub:'Combined with truffle hunt at Tenuta · Day 11', badge:'t10-on', badgeText:'On your itinerary · Day 11 · Res: Needed' },
       { k:'wl05', title:'Wine Tasting · Venissa (Mazzorbo)', sub:'Lagoon Dorona wines & Prosecco pairings', badge:'t10-on', badgeText:'On your itinerary · Day 8 lunch' },
       { k:'wl06', title:'Gondola Ride · Venice', sub:'Grand Canal or quiet side canals — agree price first', badge:'t10-part', badgeText:'Optional · Day 6' },
       { k:'wl07', title:'Wave Murano Glass Factory Tour', sub:'10:00 AM Tue Sep 29 · confirmed via Viator', badge:'t10-on', badgeText:'On your itinerary · Day 8 · confirmed' },
@@ -3080,7 +3062,7 @@
 
       if (enrich.img) {
         el.photoWrap.hidden = false;
-        el.photo.src = enrich.img;
+        el.photo.src = resolveImg(enrich.img);
         el.photo.alt = enrich.alt || guide.title;
       } else {
         el.photoWrap.hidden = true;
@@ -3138,7 +3120,7 @@
       var photo = panelPhoto(enrich, null, el.title.textContent);
       if (photo) {
         el.photoWrap.hidden = false;
-        el.photo.src = photo.img;
+        el.photo.src = resolveImg(photo.img);
         el.photo.alt = photo.alt || el.title.textContent;
       } else {
         el.photoWrap.hidden = true;
@@ -3212,7 +3194,7 @@
       var photo = panelPhoto(enrich, loc, title);
       if (photo) {
         el.photoWrap.hidden = false;
-        el.photo.src = photo.img;
+        el.photo.src = resolveImg(photo.img);
         el.photo.alt = photo.alt || title;
       } else {
         el.photoWrap.hidden = true;
@@ -3307,185 +3289,6 @@
       });
     }
     syncModeResBooked();
-  })();
-  </script>
-
-  <button id="musicBtn" type="button" title="Toggle Italian tarantella music" aria-label="Toggle Italian tarantella music">🎵</button>
-
-  <script>
-  (function () {
-    /* Original “Tarantella di Piazza” — looping Italian tarantella; not a cover of any song. */
-    var BPM = 168;           /* dotted-quarter pulse */
-    var EIGHTH = 60 / BPM / 2; /* 6/8 eighth-note length */
-    var ctx = null;
-    var playing = false;
-    var loopGen = 0;
-    var loopTimer = null;
-    var btn = document.getElementById('musicBtn');
-
-    var F = {
-      A2:110,E2:82.41,A3:220,B3:246.94,C4:261.63,D4:293.66,E4:329.63,G4:392,
-      A4:440,B4:493.88,C5:523.25,D5:587.33,E5:659.25,G5:783.99
-    };
-
-    /* 4 bars of 6/8 in A minor — tarantella feel */
-    var LEAD = [
-      ['A4',1],['C5',1],['E5',2],['C5',1],['A4',1],
-      ['G4',1],['A4',1],['B4',2],['C5',1],['A4',1],
-      ['E4',1],['G4',1],['A4',2],['C5',1],['E5',1],
-      ['D5',1],['C5',2],['B4',1],['A4',2]
-    ];
-
-    var BASS = [
-      ['A2',2],['E2',1],['A2',3],
-      ['A2',2],['E2',1],['A2',3],
-      ['A2',2],['E2',1],['A2',3],
-      ['A2',2],['E2',1],['A2',3]
-    ];
-
-    var CHORDS = [
-      { t: 0,  notes: ['A3','C4','E4'] },
-      { t: 6,  notes: ['A3','C4','E4'] },
-      { t: 12, notes: ['A3','C4','E4'] },
-      { t: 15, notes: ['G4','B4','D5'] },
-      { t: 18, notes: ['A3','C4','E4'] }
-    ];
-
-    function midiTone(freq, at, dur, type, vol) {
-      if (!freq || !ctx) return;
-      var t = at, a = 0.012;
-      var o = ctx.createOscillator();
-      var g = ctx.createGain();
-      o.type = type;
-      o.frequency.value = freq;
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.linearRampToValueAtTime(vol, t + a);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-      o.connect(g);
-      g.connect(ctx.destination);
-      o.start(t);
-      o.stop(t + dur + 0.04);
-    }
-
-    function mandolin(freq, at, dur) {
-      if (!freq || !ctx) return;
-      var t = at;
-      var car = ctx.createOscillator();
-      var mod = ctx.createOscillator();
-      var mg = ctx.createGain();
-      var g = ctx.createGain();
-      car.type = 'triangle';
-      car.frequency.value = freq;
-      mod.type = 'sine';
-      mod.frequency.value = 14;
-      mg.gain.value = 0.45;
-      mod.connect(mg);
-      mg.connect(g.gain);
-      car.connect(g);
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.linearRampToValueAtTime(0.13, t + 0.02);
-      g.gain.setValueAtTime(0.11, t + dur * 0.7);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-      car.start(t); mod.start(t);
-      car.stop(t + dur + 0.04); mod.stop(t + dur + 0.04);
-    }
-
-    function accordionChord(notes, at, dur) {
-      notes.forEach(function (n, i) {
-        var f = F[n] * (i === 0 ? 1 : 1.003);
-        midiTone(f, at, dur, 'sawtooth', 0.028);
-        midiTone(f * 2, at, dur * 0.85, 'triangle', 0.018);
-      });
-    }
-
-    function tambourine(at) {
-      if (!ctx) return;
-      var t = at, len = 0.06;
-      var buf = ctx.createBuffer(1, ctx.sampleRate * len, ctx.sampleRate);
-      var d = buf.getChannelData(0);
-      for (var i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
-      var src = ctx.createBufferSource();
-      src.buffer = buf;
-      var bp = ctx.createBiquadFilter();
-      bp.type = 'highpass';
-      bp.frequency.value = 4800;
-      var g = ctx.createGain();
-      g.gain.setValueAtTime(0.14, t);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + len);
-      src.connect(bp); bp.connect(g); g.connect(ctx.destination);
-      src.start(t);
-    }
-
-    function loopDuration() {
-      var e = 0;
-      LEAD.forEach(function (n) { e += n[1]; });
-      return e * EIGHTH;
-    }
-
-    function scheduleLoop(gen) {
-      if (!playing || gen !== loopGen || !ctx) return;
-      var t0 = ctx.currentTime + 0.04;
-
-      var tick = 0;
-      LEAD.forEach(function (n) {
-        mandolin(F[n[0]], t0 + tick * EIGHTH, n[1] * EIGHTH * 0.94);
-        tick += n[1];
-      });
-
-      tick = 0;
-      BASS.forEach(function (n) {
-        midiTone(F[n[0]], t0 + tick * EIGHTH, n[1] * EIGHTH * 0.88, 'triangle', 0.14);
-        tick += n[1];
-      });
-
-      CHORDS.forEach(function (c) {
-        accordionChord(c.notes, t0 + c.t * EIGHTH, EIGHTH * 2.8);
-      });
-
-      for (var b = 0; b < 24; b += 3) tambourine(t0 + b * EIGHTH);
-      for (var j = 1; j < 24; j += 6) tambourine(t0 + j * EIGHTH + EIGHTH * 0.5);
-
-      loopTimer = setTimeout(function () {
-        scheduleLoop(gen);
-      }, Math.max(0, loopDuration() * 1000 - 60));
-    }
-
-    function stop() {
-      playing = false;
-      loopGen++;
-      if (loopTimer) { clearTimeout(loopTimer); loopTimer = null; }
-      btn.classList.remove('playing');
-      btn.textContent = '🎵';
-      btn.title = 'Play Italian tarantella';
-    }
-
-    function play() {
-      if (playing) return Promise.resolve();
-      if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
-      return ctx.resume().then(function () {
-        playing = true;
-        loopGen++;
-        btn.classList.add('playing');
-        btn.textContent = '🔇';
-        btn.title = 'Mute music';
-        scheduleLoop(loopGen);
-      });
-    }
-
-    function toggle() {
-      if (playing) stop();
-      else play();
-    }
-
-    function tryAutoplay() {
-      play().catch(function () {});
-    }
-
-    btn.addEventListener('click', toggle);
-    window.addEventListener('load', tryAutoplay);
-    document.addEventListener('pointerdown', function boot() {
-      if (!playing) play();
-    }, { once: true, capture: true });
   })();
   </script>
 
