@@ -508,6 +508,38 @@
     line-height: 1.35;
   }
   .p-stat .ps-ic { margin-right: 4px; }
+  .p-dress {
+    margin: -8px 0 20px;
+    padding: 14px 16px;
+    background: #f7f2ea;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+  .p-dress-title {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .p-dress-row { margin-bottom: 6px; }
+  .p-dress-row:last-of-type { margin-bottom: 0; }
+  .p-dress-lbl {
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .p-dress-no .p-dress-lbl { color: #a33; }
+  .p-dress-tip {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--muted);
+  }
   .p-tips {
     margin-top: 18px; font-size: 13.5px; color: var(--muted);
     background: #f7f1e7; border-left: 3px solid var(--gold);
@@ -1521,7 +1553,7 @@
         <div class="day-body">
           <ul class="tl">
           <li class="tl-head" aria-hidden="true"><span>Time</span><span>Activity</span><span>Location</span><span>Transport</span><span>Reservation</span></li>
-            <li class="row" data-k="d8h"><span class="time">8:30am</span><span class="act">Hotel</span><span class="loc">Carnival Palace</span><span class="mode">Vaporetto to Fondamenta Nove (~20 min)</span><span class="stat stat-empty"></span></li>
+            <li class="row" data-k="d8h"><span class="time">8:30am</span><span class="act">Meal</span><span class="loc">Carnival Palace</span><span class="mode">Vaporetto to Fondamenta Nove (~20 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d8a"><span class="time">10:00–11:00am</span><span class="act">Culture</span><span class="loc">Wave Murano Glass · factory tour</span><span class="mode">Line 4.1 from Fondamenta Nove (~25 min) · 100 m from Da Mula stop</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
             <li class="row" data-k="d8d"><span class="time">12:30–~2:30pm</span><span class="act">Meal</span><span class="loc">Venissa · Mazzorbo</span><span class="mode">Walk to Faro (~10 min) + Line 12 (~30 min) + walk to Mazzorbo (~5 min)</span><span class="stat"><span class="stat-badge st-pending">Res: Pending</span></span></li>
             <li class="row" data-k="d8e"><span class="time">2:45–4:30pm</span><span class="act">Culture</span><span class="loc">Burano · lace &amp; painted canals</span><span class="mode">Walk from Mazzorbo (~5 min)</span><span class="stat stat-empty"></span></li>
@@ -1725,6 +1757,7 @@
         <div class="p-status" id="pStatus"><span id="pStatusText"></span></div>
       </div>
       <div class="p-stats" id="pStats"></div>
+      <div class="p-dress" id="pDress" hidden></div>
       <button type="button" class="panel-back" id="pBack" hidden>← All 10</button>
       <div id="pListView" hidden></div>
       <div id="pDetailView">
@@ -2007,7 +2040,7 @@
       d7f:{type:'Break',desc:'One hour at Carnival Palace \u2014 shower and rest before bacari dinner.',tips:'Head out to Cannaregio by ~7:40 PM for a 7:45 PM start.'},
       d7g:{type:'Meal',desc:'Bacaro dinner in Cannaregio \u2014 cicchetti and a spritz to cap the art day.',tips:'Walk-in friendly near the hotel. Try Osteria alla Frasca or similar local spots.'},
 
-      d8h:{type:'Hotel',desc:'Early breakfast and vaporetto from Cannaregio to Fondamenta Nove (~20 min) for the lagoon islands.',tips:'Buy or renew ACTV vaporetto pass at the kiosk — day-of, no advance booking. Line 4.2 or 5.2 from Guglie/F.te Nove toward Fondamenta Nove.'},
+      d8h:{type:'Meal',desc:'Early breakfast and vaporetto from Cannaregio to Fondamenta Nove (~20 min) for the lagoon islands.',tips:'Buy or renew ACTV vaporetto pass at the kiosk — day-of, no advance booking. Line 4.2 or 5.2 from Guglie/F.te Nove toward Fondamenta Nove.'},
       d8a:{type:'Culture',desc:'Wave Murano Glass factory tour \u2014 45\u201360 min guided demo on the workshop floor. Watch a maestro blow glass; no hands-on workshop.',tips:'Confirmed \u2713 Tue Sep 29 at 10:00 AM via Viator. Line 4.1 from Fondamenta Nove to Da Mula (~25 min); check in at shop by 9:50 AM. Confirmation 1812505111.'},
       d8d:{type:'Meal',desc:'Wine tasting at 12:30, then lunch at Venissa on Mazzorbo \u2014 lagoon Dorona wines and Prosecco pairings.',tips:'Pending \u2014 you emailed Venissa requesting tasting at 12:30 followed by lunch. Leave Wave by ~11:05; walk to Murano Faro, Line 12 to Burano, walk to Mazzorbo. Aim ~12:15 for 12:30 tasting.'},
       d8e:{type:'Culture',desc:'Burano\u2019s painted fishermen\u2019s houses, lace shops, and leaning campanile \u2014 short walk from Mazzorbo. No advance booking.',tips:'Museo del Merletto (~\u20ac6) and lace demos are walk-up. Side canals for photos. If doing Torcello, leave Burano by ~4:35 PM for Line 9.'},
@@ -2544,7 +2577,7 @@
       d7e:{img:'italy-itinerary-images/d5f.jpg',alt:'Lunch in Dorsoduro',lead:'Quick Zattere lunch between museums.',stats:[{l:'Time',v:'1:25–2:10 PM'},{l:'Area',v:'Dorsoduro / Zattere'},{l:'Price',v:'€€'},{l:'Reservation',v:'Optional'},{l:'Tip',v:'Keep it under 45 min'}],desc:'Dorsoduro\'s lunch spots range from casual pizzerias to refined canal-side trattorias. A brisk meal keeps the Frari visit on schedule.'},
       d7f:{img:'italy-itinerary-images/d5e.jpg',alt:'Carnival Palace',lead:'Brief rest before bacari dinner.',stats:[{l:'Time',v:'6:15–7:30 PM'},{l:'Hotel',v:'Carnival Palace'},{l:'Transfer',v:'Vaporetto ~15 min'},{l:'Dinner',v:'8:00 PM bacari'},{l:'Purpose',v:'Shower & recharge'}],desc:'The longest culture day of the trip — Accademia through Rialto in one sweep. A short hotel break before Cannaregio bacari at 8:00 PM.'},
       d7g:{img:'italy-itinerary-images/d5f.jpg',alt:'Cannaregio dinner',lead:'Bacaro dinner after the art day.',stats:[{l:'Time',v:'8:00 PM'},{l:'Area',v:'Cannaregio'},{l:'Style',v:'Cicchetti / trattoria'},{l:'Reservation',v:'Optional'},{l:'Walk from hotel',v:'~5 min'}],desc:'Cannaregio\'s bacari are right outside the hotel — spritz, cicchetti, and an easy end to the art day.'},
-      d8h:{img:'italy-itinerary-images/d5e.jpg',alt:'Carnival Palace',lead:'Early start for the lagoon islands.',stats:[{l:'Time',v:'8:30 AM'},{l:'Hotel',v:'Carnival Palace'},{l:'Next',v:'Fondamenta Nove'},{l:'Tip',v:'Buy vaporetto day pass'},{l:'Duration',v:'~20 min'}],desc:'Island days start early to beat tour groups. Grab breakfast, pick up a vaporetto pass, and head for Fondamenta Nove — then Line 4.1 to Murano for the 10:00 AM factory tour.'},
+      d8h:{img:'italy-itinerary-images/d5e.jpg',alt:'Carnival Palace',lead:'Breakfast before the lagoon islands.',stats:[{l:'Time',v:'8:30 AM'},{l:'Where',v:'Carnival Palace'},{l:'Next',v:'Fondamenta Nove'},{l:'Tip',v:'Buy vaporetto day pass'},{l:'Duration',v:'~20 min'}],desc:'Island days start early to beat tour groups. Grab breakfast, pick up a vaporetto pass, and head for Fondamenta Nove — then Line 4.1 to Murano for the 10:00 AM factory tour.'},
       d8a:{img:'italy-itinerary-images/d8a.jpg',alt:'Wave Murano Glass factory tour',lead:'10:00 AM factory tour — confirmed via Viator.',stats:[{l:'Time',v:'10:00–11:00 AM'},{l:'Getting there',v:'Line 4.1 · ~25 min'},{l:'Confirmation',v:'1812505111'},{l:'Paid',v:'USD $84.25'},{l:'Party',v:'3 Adults'}],desc:'Take Line 4.1 from Fondamenta Nove to Da Mula — Wave Murano Glass is ~100 m from the stop. Booked for Tue Sep 29 at 10:00 AM; check in at the shop by 9:50 AM.'},
       d8d:{img:'italy-itinerary-images/vt10.jpg',alt:'Venissa wine lunch Mazzorbo',lead:'Wine tasting at 12:30, then lunch at Venissa.',stats:[{l:'Time',v:'12:30 tasting + lunch'},{l:'Getting there',v:'Line 12 · ~45 min from Murano'},{l:'Status',v:'Pending'},{l:'Wines',v:'Dorona + Prosecco'},{l:'Allow',v:'~2 hrs'}],desc:'Leave Wave by ~11:05, walk to Murano Faro, Line 12 to Burano, footbridge to Mazzorbo. You emailed Venissa requesting a 12:30 wine tasting followed by lunch — awaiting confirmation.'},
       d8e:{img:'italy-itinerary-images/vt10.jpg',alt:'Burano colorful houses',lead:'Lace demos and painted canals — wl09, Top 10 #10.',stats:[{l:'Time',v:'2:45–4:30 PM'},{l:'From Mazzorbo',v:'Walk ~5 min'},{l:'Lace',v:'Museo del Merletto'},{l:'Photo tip',v:'Side canals'},{l:'Next',v:'Torcello or home'}],desc:'Burano\'s candy-colored houses and lace-making tradition offer completely different charms from Murano. Wander side canals for photos — then choose optional Torcello (Line 9) or head straight back to Venice.'},
@@ -2796,6 +2829,7 @@
       photo:  document.getElementById('pPhoto'),
       meta:   document.querySelector('.p-meta'),
       stats:  document.getElementById('pStats'),
+      dress:  document.getElementById('pDress'),
       back:   document.getElementById('pBack'),
       listView: document.getElementById('pListView'),
       detailView: document.getElementById('pDetailView'),
@@ -2981,16 +3015,87 @@
       el.panelNote.innerHTML = html;
     }
 
-    function renderStats(stats) {
+    function renderStats(stats, loc, key) {
       if (!stats || !stats.length) {
         el.stats.innerHTML = '';
         el.stats.style.display = 'none';
+        renderDressCode(loc, stats, key);
         return;
       }
-      el.stats.style.display = '';
-      el.stats.innerHTML = stats.map(function (s) {
-        return '<div class="p-stat"><div class="ps-label">' + s.l + '</div><div class="ps-val">' + s.v + '</div></div>';
-      }).join('');
+      var showDress = dressTypeFromContext(loc, stats, key);
+      var filtered = showDress
+        ? stats.filter(function (s) { return s.l !== 'Dress'; })
+        : stats;
+      if (!filtered.length) {
+        el.stats.innerHTML = '';
+        el.stats.style.display = 'none';
+      } else {
+        el.stats.style.display = '';
+        el.stats.innerHTML = filtered.map(function (s) {
+          return '<div class="p-stat"><div class="ps-label">' + escHtml(s.l) + '</div><div class="ps-val">' + escHtml(s.v) + '</div></div>';
+        }).join('');
+      }
+      renderDressCode(loc, stats, key);
+    }
+
+    var DRESS_CODES = {
+      church: {
+        title: 'Church dress code',
+        wear: 'Shoulders and knees covered. Long pants or a knee-length skirt or dress. Closed-toe shoes are fine.',
+        avoid: 'No shorts, tank tops, sleeveless shirts, crop tops, or miniskirts. Remove hats inside.',
+        tip: 'Bring a light scarf or shawl — an easy fix on warm days.'
+      },
+      fine: {
+        title: 'Fine dining dress code',
+        wear: 'Smart casual or better: collared shirt or nice blouse, long pants or dress, closed-toe shoes.',
+        avoid: 'No shorts, flip-flops, sandals, athletic wear, tank tops, or beach clothes.',
+        tip: 'A jacket is optional but never out of place at Michelin-level tables.'
+      }
+    };
+
+    var DRESS_OVERRIDES = {
+      d4b: { avoidExtra: 'Large bags not allowed on Duomo terraces — travel light or use the cloakroom.' },
+      d6a: { avoidExtra: 'Large backpacks and bags not allowed — small bag only at San Marco.' },
+      d2g: { wearExtra: 'Same rules apply inside Santa Maria delle Grazie for The Last Supper visit.' }
+    };
+
+    function dressTypeFromContext(loc, stats, key) {
+      var enrichDesc = key && SITE_ENRICH[key] ? (SITE_ENRICH[key].desc || '') : '';
+      var text = (loc || '') + ' ' + enrichDesc + ' ' + (stats || []).map(function (s) {
+        return s.l === 'Dress' ? s.v : '';
+      }).join(' ');
+      if (/casual/i.test(text) && text.indexOf('👔') === -1 && text.indexOf('🥂') === -1) return null;
+      if (text.indexOf('👔') !== -1 || /modest|shoulders.*knees|knees.*shoulders/i.test(text)) return 'church';
+      if (text.indexOf('🥂') !== -1 || /smart|elegant|fine dining/i.test(text)) return 'fine';
+      return null;
+    }
+
+    function locForKey(k) {
+      var row = document.querySelector('.row[data-k="' + k + '"]');
+      if (!row) return '';
+      var locEl = row.querySelector('.loc');
+      return locEl ? locEl.textContent.trim() : '';
+    }
+
+    function renderDressCode(loc, stats, key) {
+      var type = dressTypeFromContext(loc, stats, key);
+      if (!type) {
+        el.dress.hidden = true;
+        el.dress.innerHTML = '';
+        return;
+      }
+      var dc = DRESS_CODES[type];
+      var ov = (key && DRESS_OVERRIDES[key]) || {};
+      var wear = dc.wear + (ov.wearExtra ? ' ' + ov.wearExtra : '');
+      var avoid = dc.avoid + (ov.avoidExtra ? ' ' + ov.avoidExtra : '');
+      var html = '<div class="p-dress-title">' + escHtml(dc.title) + '</div>';
+      html += '<div class="p-dress-row"><span class="p-dress-lbl">Wear:</span> ' + escHtml(wear) + '</div>';
+      html += '<div class="p-dress-row p-dress-no"><span class="p-dress-lbl">Avoid:</span> ' + escHtml(avoid) + '</div>';
+      if (dc.tip) {
+        html += '<div class="p-dress-tip">' + escHtml(dc.tip) + '</div>';
+      }
+      el.dress.hidden = false;
+      el.dress.innerHTML = html;
     }
 
     function top10OnItinerary(item) {
@@ -3033,6 +3138,7 @@
       if (on) {
         el.back.hidden = true;
         el.reservation.hidden = true;
+        el.dress.hidden = true;
       }
     }
 
@@ -3075,7 +3181,7 @@
         });
       }
 
-      renderStats(enrich.stats);
+      renderStats(enrich.stats, locForKey(guideKey), guideKey);
       renderGuideList(guideKey, enrich.lead, enrich.desc || d.desc || '');
       el.tips.style.display = 'none';
       renderReservation(guideKey, false);
@@ -3127,7 +3233,7 @@
         el.photo.removeAttribute('src');
       }
 
-      renderStats(enrich.stats);
+      renderStats(enrich.stats, locForKey(k), k);
 
       if (enrich.lead) {
         el.lead.hidden = false;
@@ -3201,7 +3307,7 @@
         el.photo.removeAttribute('src');
       }
 
-      renderStats(enrich.stats);
+      renderStats(enrich.stats, loc, k);
 
       if (enrich.lead) {
         el.lead.hidden = false;
