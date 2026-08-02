@@ -533,6 +533,10 @@
     color: var(--ink);
   }
   .p-dress-no .p-dress-lbl { color: #a33; }
+  .p-dress-meta { font-size: 13px; }
+  .p-dress-meta strong { font-weight: 800; }
+  .p-dress-meta.p-dress-req strong { color: #a33; }
+  .p-dress-meta.p-dress-pref strong { color: #8a6d00; }
   .p-dress-tip {
     margin-top: 8px;
     padding-top: 8px;
@@ -3043,21 +3047,47 @@
         title: 'Church dress code',
         wear: 'Shoulders and knees covered. Long pants or a knee-length skirt or dress. Closed-toe shoes are fine.',
         avoid: 'No shorts, tank tops, sleeveless shirts, crop tops, or miniskirts. Remove hats inside.',
-        tip: 'Bring a light scarf or shawl — an easy fix on warm days.'
+        tip: 'Bring a light scarf or shawl — an easy fix on warm days.',
+        defaultEnforcement: 'preferred',
+        defaultCoverings: 'No loaner garments at this church — bring your own scarf or shawl.'
       },
       fine: {
         title: 'Fine dining dress code',
         wear: 'Smart casual or better: collared shirt or nice blouse, long pants or dress, closed-toe shoes.',
         avoid: 'No shorts, flip-flops, sandals, athletic wear, tank tops, or beach clothes.',
-        tip: 'A jacket is optional but never out of place at Michelin-level tables.'
+        tip: 'A jacket is optional but never out of place at Michelin-level tables.',
+        defaultEnforcement: 'preferred',
+        defaultCoverings: 'No coverings provided — dress before you arrive.'
       }
     };
 
-    var DRESS_OVERRIDES = {
-      d4b: { avoidExtra: 'Large bags not allowed on Duomo terraces — travel light or use the cloakroom.' },
-      d6a: { avoidExtra: 'Large backpacks and bags not allowed — small bag only at San Marco.' },
-      d2g: { wearExtra: 'Same rules apply inside Santa Maria delle Grazie for The Last Supper visit.' }
+    /* Per-venue dress: required vs preferred, and whether loaner coverings exist. */
+    var DRESS_SITES = {
+      d1d:  { enforcement: 'preferred', coverings: 'No loaner garments — bring your own.' },
+      d2g:  { enforcement: 'required',  coverings: 'No coverings provided — strict check at the refectory door; entry denied if not compliant.', wearExtra: 'Same rules inside Santa Maria delle Grazie for The Last Supper visit.' },
+      d4b:  { enforcement: 'required',  coverings: 'Duomo provides free disposable shoulder/knee covers at the entrance if needed.', avoidExtra: 'Large bags not allowed on terraces — travel light or use the cloakroom.' },
+      d4c:  { enforcement: 'preferred', coverings: 'No coverings provided — smart casual fits the rooftop terrace.' },
+      d4g:  { enforcement: 'preferred', coverings: 'No coverings provided — smart dress confirmed in your reservation.' },
+      d5i:  { enforcement: 'preferred', coverings: 'No loaner garments — parish church, lightly enforced.' },
+      d6e:  { enforcement: 'preferred', coverings: 'No loaner garments — bring a scarf if needed.' },
+      d6a:  { enforcement: 'required',  coverings: 'Free disposable capes/shawls available at the basilica entrance.', avoidExtra: 'Large backpacks and bags not allowed — small bag only.' },
+      d6g:  { enforcement: 'preferred', coverings: 'No loaner garments at San Giorgio — bring your own for the church; campanile has no dress code.' },
+      d7i:  { enforcement: 'preferred', coverings: 'No loaner garments — bring your own.' },
+      d7j:  { enforcement: 'preferred', coverings: 'No loaner garments — bring your own.' },
+      d8b:  { enforcement: 'preferred', coverings: 'No loaner garments at Torcello cathedral — small island church.' },
+      d9v:  { enforcement: 'preferred', coverings: 'No loaner garments — bring your own.' },
+      d11b: { enforcement: 'preferred', coverings: 'No loaner garments — free entry, donation optional.' },
+      d13c: { enforcement: 'preferred', coverings: 'No coverings provided — smart dress fits the room; à la carte keeps it flexible.' }
     };
+
+    var DRESS_ALIASES = { vt01: 'd6a', vt07: 'd7j', mt08: 'd1d', vr03: 'd11b' };
+
+    function dressSiteForKey(key) {
+      if (!key) return null;
+      if (DRESS_SITES[key]) return DRESS_SITES[key];
+      var alias = DRESS_ALIASES[key];
+      return alias && DRESS_SITES[alias] ? DRESS_SITES[alias] : null;
+    }
 
     function dressTypeFromContext(loc, stats, key) {
       var enrichDesc = key && SITE_ENRICH[key] ? (SITE_ENRICH[key].desc || '') : '';
@@ -3085,10 +3115,18 @@
         return;
       }
       var dc = DRESS_CODES[type];
-      var ov = (key && DRESS_OVERRIDES[key]) || {};
-      var wear = dc.wear + (ov.wearExtra ? ' ' + ov.wearExtra : '');
-      var avoid = dc.avoid + (ov.avoidExtra ? ' ' + ov.avoidExtra : '');
+      var site = dressSiteForKey(key) || {};
+      var enforcement = site.enforcement || dc.defaultEnforcement;
+      var coverings = site.coverings || dc.defaultCoverings;
+      var wear = dc.wear + (site.wearExtra ? ' ' + site.wearExtra : '');
+      var avoid = dc.avoid + (site.avoidExtra ? ' ' + site.avoidExtra : '');
+      var reqCls = enforcement === 'required' ? ' p-dress-req' : ' p-dress-pref';
+      var statusNote = enforcement === 'required'
+        ? 'Must comply to enter.'
+        : 'Recommended here — rarely turned away, but respectful dress fits the setting.';
       var html = '<div class="p-dress-title">' + escHtml(dc.title) + '</div>';
+      html += '<div class="p-dress-row p-dress-meta' + reqCls + '"><span class="p-dress-lbl">Status:</span> <strong>' + (enforcement === 'required' ? 'Required' : 'Preferred') + '</strong> — ' + escHtml(statusNote) + '</div>';
+      html += '<div class="p-dress-row p-dress-meta"><span class="p-dress-lbl">Coverings:</span> ' + escHtml(coverings) + '</div>';
       html += '<div class="p-dress-row"><span class="p-dress-lbl">Wear:</span> ' + escHtml(wear) + '</div>';
       html += '<div class="p-dress-row p-dress-no"><span class="p-dress-lbl">Avoid:</span> ' + escHtml(avoid) + '</div>';
       if (dc.tip) {
