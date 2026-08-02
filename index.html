@@ -91,6 +91,8 @@
     margin-top: 22px;
     display: flex;
     justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
   }
   .hero-link {
     display: inline-flex; align-items: center; gap: 10px;
@@ -725,6 +727,166 @@
     border-radius: 12px;
     background: #faf7f2;
   }
+
+  /* ---------- PACKING LIST ---------- */
+  .pk-callout {
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--gold);
+    border-radius: 12px;
+    background: #fdfaf4;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+  }
+  .pk-callout h4 {
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: #8a6d00;
+  }
+  .pk-callout p {
+    margin: 0 0 8px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+  .pk-callout p:last-child { margin-bottom: 0; }
+  .pk-callout .pk-where {
+    display: block;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .pk-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .pk-tab {
+    flex: 1 1 auto;
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+    white-space: nowrap;
+  }
+  .pk-tab:hover { background: #faf7f2; color: var(--ink); }
+  .pk-tab.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #fff;
+  }
+  .pk-section-note {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--muted);
+    margin: 0 0 16px;
+    padding: 11px 13px;
+    background: #f7f5f1;
+    border-radius: 10px;
+  }
+  .pk-group { margin-bottom: 18px; }
+  .pk-group:last-child { margin-bottom: 4px; }
+  .pk-group-title {
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pk-group-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+  .pk-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: background .12s ease;
+  }
+  .pk-item:hover { background: #faf7f2; }
+  .pk-item input {
+    flex: 0 0 auto;
+    margin: 2px 0 0;
+    width: 16px; height: 16px;
+    accent-color: var(--gold);
+    cursor: pointer;
+  }
+  .pk-item-body { flex: 1; min-width: 0; }
+  .pk-item-name {
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .pk-item-name .pk-qty {
+    color: var(--gold);
+    font-weight: 800;
+    margin-right: 5px;
+  }
+  .pk-item-why {
+    display: block;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--muted);
+    margin-top: 2px;
+    font-weight: 400;
+  }
+  .pk-item.key .pk-item-name::after {
+    content: 'Key';
+    display: inline-block;
+    margin-left: 7px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: #fdf1d8;
+    color: #8a6d00;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    vertical-align: 1px;
+  }
+  .pk-item input:checked + .pk-item-body .pk-item-name {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+  .pk-reset {
+    margin-top: 14px;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--muted);
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .pk-reset:hover { background: #faf7f2; color: var(--ink); }
+  .pk-progress {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
   .top10-item .t10-rank {
     flex: 0 0 auto; width: 28px; height: 28px;
     border-radius: 8px; background: var(--milan); color: #fff;
@@ -1248,6 +1410,11 @@
       <button type="button" class="hero-link" data-k="wishlist" aria-label="Open wishlist">
         <span class="hl-icon" aria-hidden="true">♥</span>
         <span class="hl-text">Wishlist</span>
+        <span class="hl-arrow" aria-hidden="true">›</span>
+      </button>
+      <button type="button" class="hero-link" data-k="packing" aria-label="Open packing list">
+        <span class="hl-icon" aria-hidden="true">🧳</span>
+        <span class="hl-text">Packing List</span>
         <span class="hl-arrow" aria-hidden="true">›</span>
       </button>
     </div>
@@ -2791,6 +2958,335 @@
       return null;
     }
 
+    /* ---------- PACKING LIST ---------- */
+    var PACKING = {
+      lead: 'Built around 15 days, three cities, and the actual mix of days on this itinerary: 8 church visits (3 with enforced dress codes), 3 fine-dining meals, two cooking classes, a muddy truffle hunt, three boat days, and roughly 8–10 miles of cobblestone walking most days.',
+      desc: 'Late September in Milan and Venice runs 70–75°F by day and 55–60°F at night. By the Verona stretch in early October, mornings and evenings drop to the low 50s, and it is colder still on the water at Como, the Venetian lagoon, and Garda. Pack for warm afternoons and genuinely cool evenings — layers beat bulk.',
+      laundry: {
+        title: 'Yes — plan one laundry stop',
+        body: 'Fifteen days is too long to pack straight through without everyone hauling an oversized bag. Pack roughly <b>8 days of clothing</b> and wash once at the midpoint. That single load turns a 15-day pack into an 8-day pack for all three of you.',
+        where: '<b>Best spot: Venice, Tue Sep 29 (Day 8) evening.</b> It is the true halfway point of the trip, and the logistics line up perfectly — you are back at Carnival Palace at 6:00 PM and dinner is in Cannaregio at 7:45 PM. Drop a load at a self-service <i>lavanderia</i> near Ponte delle Guglie (a few minutes from the hotel, most are open until ~10 PM), walk to dinner, collect it on the way back. Wash and dry runs about €10–14 per load and takes roughly 75 minutes. Monday Sep 28 (Day 7) evening is an equally good backup.<br><br><b>Free backup: Verona House Aparthotel, Days 9–14.</b> Aparthotels almost always include an in-unit washing machine — confirm when you book. If it has one, run a second small load during the Day 10 rest block (4:15–5:15 PM, Thu Oct 1) or after Lake Garda on Day 12. That covers underwear and socks through the final stretch at no cost.'
+      },
+      sections: [
+        {
+          id: 'common',
+          title: 'Common',
+          note: 'Shared kit and the things that are easy to forget but hard to replace mid-trip. Split the bulky items across bags so nobody carries all of it.',
+          groups: [
+            {
+              title: 'Documents & money',
+              items: [
+                { n: 'Passports', why: 'Must be valid at least 6 months past Oct 5, 2026 — so through April 2027. Check now, renewals take weeks.', key: true },
+                { n: 'Senior IDs for Debi & Angelo', why: 'Doge\u2019s Palace and several museums are booked on Over-65 pricing. Staff do check photo ID at the door.', key: true },
+                { n: 'Printed + offline copies of every booking', why: 'Last Supper, Duomo terraces, Doge\u2019s Palace, T Fondaco rooftop, Venissa, Sadler, Il Desco, both cooking classes, the truffle hunt, and the airport car. Save PDFs to your phone and print one paper set as backup.', key: true },
+                { n: 'Credit cards + bank travel notice', why: 'Tap-to-pay works nearly everywhere. Bring at least two cards on different networks.' },
+                { n: '€200–300 in cash to start', qty: '', why: 'Bacari, church donation boxes, the €2 traghetto, small markets in Burano, and some restrooms are cash-only.' },
+                { n: 'Coin purse', why: 'Italy runs on €1 and €2 coins — church lighting boxes, restrooms, and the traghetto all want them.' },
+                { n: 'Travel insurance details + emergency contacts', why: 'Store a photo in your phone and leave a copy with someone at home.' }
+              ]
+            },
+            {
+              title: 'Tech & power',
+              items: [
+                { n: 'EU plug adapters', qty: '4×', why: 'Italy uses Type L alongside Type C/F. Buy a universal adapter that covers Type L specifically — the cheap two-prong ones do not fit every Italian outlet.', key: true },
+                { n: 'Multi-port USB charger + cables', why: 'One adapter feeding a 4-port charger beats four adapters.' },
+                { n: 'Power bank, 10,000 mAh or larger', qty: '2×', why: 'Days run 12+ hours on maps, tickets, and photos. A dead phone means a lost QR code at the Duomo or Fondaco.', key: true },
+                { n: 'Offline maps downloaded', why: 'Download Milan, Venice, and Verona in Google Maps before you leave. Venice GPS is unreliable in the narrow calli.' },
+                { n: 'Camera, spare battery, memory cards', why: 'Sunset from San Giorgio campanile and Castel San Pietro are the two shots worth a real camera.' },
+                { n: 'Headphones', why: 'Nine hours each way on the plane, plus the museum audio guides.' }
+              ]
+            },
+            {
+              title: 'Health & first aid',
+              items: [
+                { n: 'Prescriptions in original bottles + one extra week', why: 'Keep them in carry-on, never checked.', key: true },
+                { n: 'Blister kit — Compeed, moleskin, kinesio tape', why: 'The single most useful thing in the bag. Cobblestones for 15 straight days, plus ~270 steps down the Duomo and the climb to Castel San Pietro.', key: true },
+                { n: 'Ibuprofen, acetaminophen, antacids, anti-diarrheal', why: 'Italian pharmacies are excellent but close midday and Sundays.' },
+                { n: 'Motion sickness tablets', why: 'Four boat days: the Como ferry, Venice vaporetti, the lagoon run to Burano and Torcello, and the Sirmione boat.' },
+                { n: 'Sunscreen SPF 30–50', why: 'Open squares, lake boats, the Duomo terraces, and the Valpolicella hills — more sun exposure than people expect in fall.' },
+                { n: 'Insect repellent', why: 'The lagoon around Torcello and the vineyards in Valpolicella both have mosquitoes into early October.' },
+                { n: 'Hand sanitizer + tissue packs', why: 'Many public restrooms in Italy have no paper and no soap.' },
+                { n: 'Electrolyte tablets', why: 'Easy dehydration on the long walking days.' }
+              ]
+            },
+            {
+              title: 'Bags & gear',
+              items: [
+                { n: 'Small crossbody or sling bag each', why: 'St Mark\u2019s Basilica and the Duomo both ban backpacks and any bag larger than a small purse. A crossbody gets you through the door without the bag-check detour.', key: true },
+                { n: 'Compact umbrellas', qty: '2–3×', why: 'Late September through early October is the wettest stretch of the northern Italian autumn.' },
+                { n: 'Reusable water bottles', qty: '3×', why: 'All three cities have free public drinking fountains. Venice alone has over 100.' },
+                { n: 'Packing cubes', why: 'You are changing hotels twice on travel days that also include sightseeing. Cubes make repacking a 10-minute job.' },
+                { n: 'Bubble wrap or padded pouches', why: 'For the Murano glass on Day 8. Buy from a factory that ships, or wrap it yourself — checked bags are rough on glass.', key: true },
+                { n: 'Wine skin sleeves', qty: '2–4×', why: 'You will want to bring Amarone home from the Valpolicella tasting on Day 11 and something from the Garda day.' },
+                { n: 'Packable tote or collapsible daypack', why: 'For market finds, and for carrying layers on the truffle hunt and the Garda day.' },
+                { n: 'Laundry kit — detergent pods, mesh bag, travel clothesline', why: 'For the Venice laundromat run on Day 8 and quick sink washes in between.', key: true },
+                { n: 'Ziplocs or a small dry bag', why: 'Vaporetto spray is real, and acqua alta season starts in late September.' },
+                { n: 'Luggage scale', why: 'Between Murano glass, wine, and market finds, the bags will be heavier going home.' }
+              ]
+            },
+            {
+              title: 'Church & dining kit',
+              items: [
+                { n: 'Lightweight scarves or shawls', qty: '3×', why: 'The fastest shoulder cover for churches. One per person, kept permanently in the day bag — you will need them at Last Supper, the Duomo, and St Mark\u2019s where the code is enforced at the door.', key: true },
+                { n: 'One smart outfit each, in a garment folder', why: 'Three occasions need it: Maio lunch and Sadler on Day 4, and Il Desco on Day 13. Folding them properly saves an ironing scramble.', key: true },
+                { n: 'Small notebook or notes app', why: 'Two cooking classes — Pastamania in Venice on Day 5 and the Veronese class on Day 11. Write the recipes down while they are fresh.' }
+              ]
+            }
+          ]
+        },
+        {
+          id: 'debi',
+          title: 'Debi',
+          note: 'Athletic wear and shorts as the base, built so that church days still work without a wardrobe change. The one real compromise is footwear — flip-flops will not survive 15 days of cobblestones, and four specific days require closed toes.',
+          groups: [
+            {
+              title: 'Everyday clothing',
+              items: [
+                { n: 'Moisture-wicking athletic tops', qty: '6–7', why: 'Merino or tech blends dry overnight and resist odor, which is what makes the 8-day pack work.' },
+                { n: 'Athletic shorts or skorts', qty: '3', why: 'Fine for the non-church days — the Como ferry day, Lake Garda, and most afternoons.' },
+                { n: 'Full-length leggings or athletic joggers', qty: '2', why: 'Knees must be covered for Last Supper (Day 2), the Duomo (Day 4), and St Mark\u2019s (Day 6) where it is genuinely enforced. Also expected at San Zeno, Frari, Salute, and Madonna dell\u2019Orto.', key: true },
+                { n: 'Midi athletic dresses', qty: '1–2', why: 'The best single item on this list for you — comfortable as activewear, and already knee-covering so it passes every church door with just a shawl added.', key: true },
+                { n: 'Light cardigans or shrugs', qty: '2–3', why: 'Instant shoulder coverage that goes on and off in seconds, so you are not stuck sweating in long sleeves between churches.', key: true },
+                { n: 'Sleepwear', qty: '2', why: 'Light — most Italian hotels run warm.' },
+                { n: 'Underwear', qty: '8', why: 'Quick-dry, so you can rinse a pair in the sink between the Venice wash and the end of the trip.' },
+                { n: 'Socks', qty: '5', why: 'Fewer than the others since you are in sandals most days, but you need them for the four closed-shoe days.' }
+              ]
+            },
+            {
+              title: 'Layers & weather',
+              items: [
+                { n: 'Packable rain jacket', qty: '1', why: 'Rain is likely at some point across 15 days.' },
+                { n: 'Light puffer or fleece', qty: '1', why: 'You do not chill easily, but the Como ferry, the lagoon crossing to Burano, and the Garda boat are all windy and 10–15 degrees colder than shore.', key: true },
+                { n: 'Long-sleeve athletic top', qty: '1', why: 'Verona evenings in October drop to the low 50s.' }
+              ]
+            },
+            {
+              title: 'Dressy',
+              items: [
+                { n: 'Elegant dress, or nice top with trousers', qty: '1–2', why: 'Sadler on Day 4 and Il Desco on Day 13 are both Michelin-level — smart-casual minimum, and jeans or activewear will feel out of place. Maio lunch on Day 4 is the same standard.', key: true },
+                { n: 'Dressy sandals', qty: '1', why: 'Open-toe is completely fine at all three restaurants. Just not the flip-flops.' },
+                { n: 'A little jewelry and a clutch', why: 'Optional, but three special dinners is enough to justify it.' }
+              ]
+            },
+            {
+              title: 'Shoes',
+              items: [
+                { n: 'Supportive sport sandals', qty: '1', why: 'The key purchase — Teva, Chaco, or a Birkenstock-style contoured footbed. Open toes like you want, but with arch support and a grippy sole that handles wet cobblestones and Venice bridge steps. Flat flip-flops will wreck your feet by Day 4.', key: true },
+                { n: 'Walking sneakers', qty: '1', why: 'Required on four days: the Duomo terraces (Day 4, roughly 270 steps down), the Pastamania cooking class (Day 5), the Murano glass furnace floor (Day 8), and both the truffle hunt and the Veronese cooking class (Day 11). Kitchens and glass furnaces refuse open-toe shoes.', key: true },
+                { n: 'Flip-flops', qty: '1', why: 'Hotel room, shower, and the Sirmione lakefront on Day 12.' }
+              ]
+            },
+            {
+              title: 'Extras',
+              items: [
+                { n: 'Swimsuit', qty: '1', why: 'Sirmione on Day 12 has both the lake and thermal spa options.' },
+                { n: 'Sun hat and sunglasses', why: 'Lake Garda and the Duomo terraces are fully exposed.' }
+              ]
+            }
+          ]
+        },
+        {
+          id: 'angelo',
+          title: 'Angelo',
+          note: 'Warmth is the whole strategy here. Long trousers and closed shoes are what the churches and cooking classes want anyway, so your preferences work in your favor — the only real planning is layering for the cold mornings, boat days, and the October evenings in Verona.',
+          groups: [
+            {
+              title: 'Everyday clothing',
+              items: [
+                { n: 'Long-sleeve shirts or light base layers', qty: '7', why: 'Your default. Merino or a tech blend keeps you warm without bulk and stays fresh across multiple wears.', key: true },
+                { n: 'T-shirts', qty: '3–4', why: 'For the warmest afternoons, or worn under a shirt as a base layer.' },
+                { n: 'Long trousers — chinos or travel pants', qty: '4', why: 'Church-compliant everywhere by default. Pick a pair with zip pockets for the crowded spots around Rialto and Milano Centrale.' },
+                { n: 'Thin merino or thermal base layer top', qty: '1', why: 'Weighs almost nothing and completely changes the Como ferry, the lagoon crossing, and the Garda boat, where wind chill is the real problem.', key: true },
+                { n: 'Sleepwear', qty: '2', why: 'Go warmer than you think — hotel air conditioning can run cold and is not always adjustable.' },
+                { n: 'Underwear', qty: '8', why: 'Eight covers you to the Venice laundry stop on Day 8.' },
+                { n: 'Wool socks', qty: '8', why: 'Merino keeps feet warm and cuts blisters. You are in closed shoes every single day, so this matters more for you than anyone.', key: true }
+              ]
+            },
+            {
+              title: 'Layers & weather',
+              items: [
+                { n: 'Insulated jacket or packable down vest', qty: '1', why: 'The most important item you pack. Verona in early October drops to the low 50s at night, and the three boat days feel colder still. A down vest packs to the size of a water bottle.', key: true },
+                { n: 'Fleece or wool sweater', qty: '1', why: 'Your mid-layer between the base shirt and the jacket.' },
+                { n: 'Waterproof rain jacket', qty: '1', why: 'Buy or pack one roomy enough to go over the fleece — a tight shell defeats the layering.', key: true },
+                { n: 'Light wool scarf', qty: '1', why: 'The highest warmth-per-ounce item there is, and it doubles as church shoulder cover if you ever need it.' },
+                { n: 'Thin gloves and a warm cap', why: 'For the Como ferry deck, the early Torcello run, and the walk up to Castel San Pietro on Day 13.' }
+              ]
+            },
+            {
+              title: 'Dressy',
+              items: [
+                { n: 'Dress trousers', qty: '1', why: 'For Maio lunch and Sadler on Day 4, and Il Desco on Day 13.' },
+                { n: 'Button-down shirts', qty: '2', why: 'One casual, one properly nice for the three fine-dining meals.' },
+                { n: 'Lightweight sport coat or unstructured blazer', qty: '1', why: 'Not strictly required at any of them, but it is the standard at Sadler and Il Desco — and it doubles as a warm layer on cool evenings, which solves two problems with one item.', key: true }
+              ]
+            },
+            {
+              title: 'Shoes',
+              items: [
+                { n: 'Cushioned walking shoes, broken in', qty: '1', why: 'Your primary shoe for 13 of 15 days. Break them in at home — do not start this trip in new shoes.', key: true },
+                { n: 'Backup closed shoes or light hikers', qty: '1', why: 'For the truffle hunt on Day 11 — you are walking through Valpolicella woods and vineyard rows that may be wet or muddy. Also gives your primary pair a day to dry out.', key: true },
+                { n: 'Leather dress shoes', qty: '1', why: 'Sadler, Maio, and Il Desco.' },
+                { n: 'Closed slippers', qty: '1', why: 'For the hotel rooms, since cold floors are a guaranteed annoyance.' }
+              ]
+            }
+          ]
+        },
+        {
+          id: 'tom',
+          title: 'Tom',
+          note: 'Comfort and heat management first, with two constraints working against the t-shirt-and-shorts default: three churches enforce covered knees, and the hair transplant needs consistent sun protection at one month post-op. Both are solvable with the right two or three items.',
+          groups: [
+            {
+              title: 'Hair transplant care',
+              items: [
+                { n: 'Loose, soft, breathable hats', qty: '2–3', why: 'At one month post-op the grafts are secure but the scalp is still photosensitive, and sun exposure can cause lasting discoloration. Choose a wide-brim bucket hat or a soft-crown cap with an adjustable back — nothing with a tight elastic band or a stiff sweatband pressing on the recipient area.', key: true },
+                { n: 'SPF 50 mineral sunscreen for scalp', qty: '1', why: 'Non-negotiable, because men remove hats inside churches and you are visiting eight of them. Use a zinc-based stick or lotion made for the scalp, and reapply whenever the hat comes off. Chemical sunscreens sting healing skin.', key: true },
+                { n: 'Light-colored, UPF-rated hats', why: 'Since you run hot, dark hats will bake. Light colors with a vented or UPF fabric reflect heat and cut sweating under the brim.' },
+                { n: 'Soft microfiber towel', qty: '1', why: 'You will sweat on the long walking days. Blot the scalp gently — never rub or scrub the graft area.' },
+                { n: 'Post-transplant shampoo, travel size', why: 'Stay on your clinic\u2019s routine. Do not switch to hotel shampoo for two weeks of the trip.' },
+                { n: 'Habit: lift the hat off, do not drag it', why: 'Pull it straight up rather than sliding it back off your head. At one month this is mostly caution, but it costs nothing.' }
+              ]
+            },
+            {
+              title: 'Everyday clothing',
+              items: [
+                { n: 'Moisture-wicking t-shirts', qty: '7–8', why: 'Merino or a tech blend rather than cotton. Cotton holds sweat, stays damp all day, and smells by hour six — the opposite of what you want when you run hot.', key: true },
+                { n: 'Quick-dry shorts', qty: '3', why: 'Your default for the non-church days: Lake Como on Day 3, Lake Garda on Day 12, and most afternoons in between.' },
+                { n: 'Lightweight breathable long pants', qty: '2', why: 'The workaround for the church problem. Linen-blend or a tech chino in a light color breathes almost like shorts but gets you into Last Supper (Day 2), the Duomo (Day 4), and St Mark\u2019s (Day 6), where bare knees are turned away at the door.', key: true },
+                { n: 'Linen or lightweight button-down', qty: '1', why: 'Dresses up a warm evening without adding heat, and covers shoulders when a church wants it.' },
+                { n: 'Sleepwear', qty: '2', why: 'Light.' },
+                { n: 'Underwear', qty: '8', why: 'Quick-dry — eight gets you to the Venice laundry stop on Day 8.' },
+                { n: 'Merino socks', qty: '8', why: 'Better than cotton at wicking, and far better at preventing blisters over 15 days of walking.' }
+              ]
+            },
+            {
+              title: 'Layers & weather',
+              items: [
+                { n: 'Packable rain shell or windbreaker', qty: '1', why: 'Handles rain and, more often, the wind on the Como ferry and the lagoon crossings.' },
+                { n: 'Light sweater or quarter-zip', qty: '1', why: 'Verona evenings in October run in the low 50s, which will feel cold even to you after a warm afternoon.' }
+              ]
+            },
+            {
+              title: 'Dressy',
+              items: [
+                { n: 'Dark chinos or dress trousers', qty: '1', why: 'For Maio lunch and Sadler on Day 4, and Il Desco on Day 13.' },
+                { n: 'Nicer button-down shirt', qty: '1', why: 'Separate from the linen one, which will be creased by then.' },
+                { n: 'Unstructured blazer or sport coat', qty: '1', why: 'Optional, but it is the norm at Sadler and Il Desco. Pick an unlined summer-weight one so it does not cook you.' },
+                { n: 'Dress shoes or clean leather sneakers', qty: '1', why: 'Leather sneakers are acceptable at all three and save you a pair of shoes.' }
+              ]
+            },
+            {
+              title: 'Shoes',
+              items: [
+                { n: 'Broken-in walking sneakers', qty: '1', why: 'Your primary shoe. Break them in at home — Venice alone is roughly 400 bridges.', key: true },
+                { n: 'Second sneakers or trail shoes', qty: '1', why: 'For the truffle hunt on Day 11 through the Valpolicella woods, which can be genuinely muddy. Also required for both cooking classes and the Murano furnace floor, where open-toe shoes are refused.', key: true },
+                { n: 'Sandals or slides', qty: '1', why: 'Hotel and evening downtime only.' }
+              ]
+            },
+            {
+              title: 'Extras',
+              items: [
+                { n: 'Swim trunks', qty: '1', why: 'Sirmione on Day 12.' },
+                { n: 'Sunglasses', why: 'Exposed on the Duomo terraces, both lakes, and the Valpolicella hills.' },
+                { n: 'Cooling towel or bandana', why: 'Cheap insurance for the hot stretch of afternoons in Milan and on the lakes.' }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    var PACK_STORE = 'italy-packing-checked';
+    var packChecked = (function () {
+      try { return JSON.parse(localStorage.getItem(PACK_STORE) || '{}') || {}; }
+      catch (e) { return {}; }
+    })();
+    function savePackChecked() {
+      try { localStorage.setItem(PACK_STORE, JSON.stringify(packChecked)); } catch (e) {}
+    }
+    var packActiveSection = 'common';
+
+    function packTotals() {
+      var total = 0, done = 0;
+      PACKING.sections.forEach(function (s) {
+        s.groups.forEach(function (g) {
+          g.items.forEach(function (item, i) {
+            total++;
+            if (packChecked[s.id + '|' + g.title + '|' + i]) done++;
+          });
+        });
+      });
+      return { total: total, done: done };
+    }
+
+    function renderPackingBody() {
+      var section = PACKING.sections.filter(function (s) { return s.id === packActiveSection; })[0];
+      var t = packTotals();
+      var html = '';
+
+      html += '<p class="p-desc-lead">' + PACKING.lead + '</p>';
+      html += '<p class="p-desc" style="margin-bottom:18px">' + PACKING.desc + '</p>';
+
+      html += '<div class="pk-callout">' +
+        '<h4>Laundry</h4>' +
+        '<p>' + PACKING.laundry.body + '</p>' +
+        '<span class="pk-where">' + PACKING.laundry.where + '</span>' +
+      '</div>';
+
+      html += '<div class="pk-tabs">' + PACKING.sections.map(function (s) {
+        return '<button type="button" class="pk-tab' + (s.id === packActiveSection ? ' active' : '') +
+          '" data-pk-tab="' + s.id + '">' + s.title + '</button>';
+      }).join('') + '</div>';
+
+      html += '<div class="pk-progress">' + t.done + ' of ' + t.total + ' items packed</div>';
+
+      if (section.note) html += '<p class="pk-section-note">' + section.note + '</p>';
+
+      html += section.groups.map(function (g) {
+        return '<div class="pk-group"><div class="pk-group-title">' + g.title + '</div>' +
+          g.items.map(function (item, i) {
+            var id = section.id + '|' + g.title + '|' + i;
+            var on = !!packChecked[id];
+            return '<label class="pk-item' + (item.key ? ' key' : '') + '">' +
+              '<input type="checkbox" data-pk-item="' + id + '"' + (on ? ' checked' : '') + '>' +
+              '<span class="pk-item-body">' +
+                '<span class="pk-item-name">' +
+                  (item.qty ? '<span class="pk-qty">' + item.qty + '</span>' : '') + item.n +
+                '</span>' +
+                (item.why ? '<span class="pk-item-why">' + item.why + '</span>' : '') +
+              '</span></label>';
+          }).join('') + '</div>';
+      }).join('');
+
+      html += '<button type="button" class="pk-reset" data-pk-reset>Clear all checkmarks</button>';
+
+      el.listView.innerHTML = html;
+    }
+
+    function openPackingList() {
+      currentTop10Guide = null;
+      showListMode(true);
+      el.listView.dataset.theme = 'wishlist';
+      el.accent.style.background = 'var(--gold)';
+      el.type.textContent = 'Packing';
+      el.type.style.background = 'var(--gold)';
+      el.title.textContent = 'Packing List';
+      el.day.textContent = 'Italy 2026 · Sep 21 – Oct 5 · 15 days';
+      el.back.style.color = 'var(--gold)';
+      el.photoWrap.hidden = true;
+      el.photo.removeAttribute('src');
+      el.tips.style.display = 'none';
+      renderStats([
+        { l: 'Duration', v: '15 days · 3 cities' },
+        { l: 'Weather', v: '70–75°F day · 50s night' },
+        { l: 'Pack for', v: '~8 days + 1 wash' },
+        { l: 'Watch for', v: 'Church dress · cobblestones' }
+      ], null, null);
+      renderReservation('packing', false);
+      renderPackingBody();
+      openPanelShell();
+    }
+
 
     var overlay = document.getElementById('overlay');
     var panel   = document.getElementById('panel');
@@ -3234,6 +3730,11 @@
       var guideKey = top10GuideForItem(k);
       var isTop10Item = !!guideKey;
 
+      if (k === 'packing') {
+        openPackingList();
+        return;
+      }
+
       if (TOP10_GUIDES[k]) {
         openGuideIndex(k);
         return;
@@ -3375,6 +3876,33 @@
       document.body.style.top = '';
       window.scrollTo(0, scrollLockY);
     }
+
+    el.listView.addEventListener('change', function (e) {
+      var box = e.target.closest('input[data-pk-item]');
+      if (!box) return;
+      var id = box.getAttribute('data-pk-item');
+      if (box.checked) packChecked[id] = 1; else delete packChecked[id];
+      savePackChecked();
+      var t = packTotals();
+      var prog = el.listView.querySelector('.pk-progress');
+      if (prog) prog.textContent = t.done + ' of ' + t.total + ' items packed';
+    });
+
+    el.listView.addEventListener('click', function (e) {
+      var tab = e.target.closest('.pk-tab[data-pk-tab]');
+      if (tab) {
+        e.preventDefault();
+        packActiveSection = tab.getAttribute('data-pk-tab');
+        renderPackingBody();
+        return;
+      }
+      if (e.target.closest('[data-pk-reset]')) {
+        e.preventDefault();
+        packChecked = {};
+        savePackChecked();
+        renderPackingBody();
+      }
+    });
 
     document.addEventListener('click', function (e) {
       var heroLink = e.target.closest('.hero-link[data-k]');
