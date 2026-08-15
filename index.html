@@ -463,10 +463,8 @@
     justify-content: center;
     font-size: 14px;
     line-height: 1;
+    background: #f4eee3;
   }
-  .guide-note.legend .gn-icon { background: #f4eee3; }
-  .guide-note.diet .gn-icon { background: rgba(200,130,60,.14); }
-  .guide-note.card .gn-icon { background: rgba(60,130,200,.12); }
   .guide-note .gn-body {
     padding: 0 14px 12px;
     font-size: 12px;
@@ -477,13 +475,27 @@
   .guide-note .gn-body p { margin: 0 0 8px; }
   .guide-note .gn-body p:last-child { margin-bottom: 0; }
   .guide-note .gn-body b { color: var(--ink); font-weight: 700; }
-  .guide-note.diet {
-    border-color: rgba(190,120,60,.34);
-    border-left: 3px solid #c07a34;
+  .guide-note .gn-body .hint {
+    text-align: left;
+    margin: 0 0 10px;
+    font-size: 12px;
   }
-  .guide-note.card {
-    border-color: rgba(70,120,170,.34);
+  .guide-note .gn-diet,
+  .guide-note .gn-card {
+    font-style: normal;
+    padding: 9px 12px;
+    border-radius: 8px;
+    margin-top: 10px;
+  }
+  .guide-note .gn-diet {
+    border: 1px solid rgba(190,120,60,.34);
+    border-left: 3px solid #c07a34;
+    background: rgba(200,130,60,.07);
+  }
+  .guide-note .gn-card {
+    border: 1px solid rgba(70,120,170,.34);
     border-left: 3px solid #3f7fb5;
+    background: rgba(60,130,200,.07);
   }
 
   /* ---------- SIDE PANEL ---------- */
@@ -1618,30 +1630,17 @@
 
   <div class="wrap">
 
-    <div class="hint hint-desktop">Click any activity row to open details — restaurants, attractions, logistics &amp; tips</div>
-    <div class="hint hint-phone">Tap any activity for full details</div>
-
-    <div class="guide-notes" aria-label="Trip notes">
+    <div class="guide-notes">
       <details class="guide-note legend">
-        <summary><span class="gn-icon" aria-hidden="true">ⓘ</span> How to read the planner</summary>
+        <summary><span class="gn-icon" aria-hidden="true">ⓘ</span> Trip notes · legend, diet &amp; VeronaCard</summary>
         <div class="gn-body">
+          <p class="hint hint-desktop">Click any activity row to open details — restaurants, attractions, logistics &amp; tips</p>
+          <p class="hint hint-phone">Tap any activity for full details</p>
           <p><span class="mode-res" title="Book in advance">R</span> in Transport = book in advance (flights, private transfers, private boat). <span class="mode-res mode-res-done" title="Booked">R</span> green = transport booked. <b>Reservation</b> column = activity tickets, meals, and tours only — not transport. <b>Train</b> rows = high-speed rail (Frecciarossa / Italo); buy at the station or app same day — advance booking optional for cheaper fares or guaranteed seats together.</p>
           <p><b>Res: Needed</b> = must book in advance (timed entry, sold-out risk, or fixed seat). <b>Res: Optional</b> = walk-in OK; booking only if you want a guaranteed table or skip lines. Blank = no reservation required. Activity <b>Skip OK</b> = you can drop this stop — separate from whether a reservation is needed if you go.</p>
           <p>👔 after a location = modest dress (shoulders &amp; knees covered). 🥂 = smart / fine dining dress.</p>
-        </div>
-      </details>
-
-      <details class="guide-note diet">
-        <summary><span class="gn-icon" aria-hidden="true">🍽</span> At the table · dietary notes</summary>
-        <div class="gn-body">
-          <p><b>Debi</b> — no raw fish, no red meat (beef, veal, liver, horse, donkey, game). Poultry and cooked fish are fine. <b>Tom</b> — no strongly fishy flavours: anchovy, salt cod, sardines, cuttlefish ink. Mild white fish and shellfish in sauce are fine. <b>Debi &amp; Tom, pork:</b> not as a dish — no roast pork, chops, sausage or pork ragù — but <i>cured</i> pork is the standing exception, so prosciutto, speck, soppressa, salami and bacon are all welcome. That matters more than it sounds in the Veneto, where salumi boards and cured-meat cicchetti are often the easiest thing on the menu for them. <b>Debi &amp; Tom, sweets:</b> both love gelato and ice cream, and anything from a bakery or pastry counter — treat a gelateria stop or a morning pastry as part of the plan, not a detour. <b>Angelo</b> — no restrictions, so the regional specialities that rule the other two out are noted as his.</p>
-        </div>
-      </details>
-
-      <details class="guide-note card">
-        <summary><span class="gn-icon" aria-hidden="true">🎟</span> VeronaCard tip</summary>
-        <div class="gn-body">
-          <p><b>Verona: buy a 48-hour VeronaCard (€32 each).</b> Activate it Thursday morning at the Arena and it runs to Saturday morning, covering the Arena, Sant'Anastasia, the Duomo complex, Piazza dei Signori's Arche Scaligere, the Teatro Romano museum and Torre dei Lamberti — roughly €40 of entries — plus free ATV city buses. <b>Not covered:</b> the Castel San Pietro funicular (~€2 each way), the Lamberti lift (€1), and Giardino Giusti, which is only discounted (€11 → €8). <b>Book separately and in advance:</b> Casa di Giulietta sells timed tickets <i>online only</i> at museiverona.com — no door sales even with the card. Sunday's Castelvecchio (€6) and San Zeno (€4) fall outside the 48 hours; just pay at the door.</p>
+          <p class="gn-diet"><b>At the table:</b> <b>Debi</b> — no raw fish, no red meat (beef, veal, liver, horse, donkey, game). Poultry and cooked fish are fine. <b>Tom</b> — no strongly fishy flavours: anchovy, salt cod, sardines, cuttlefish ink. Mild white fish and shellfish in sauce are fine. <b>Debi &amp; Tom, pork:</b> not as a dish — no roast pork, chops, sausage or pork ragù — but <i>cured</i> pork is the standing exception, so prosciutto, speck, soppressa, salami and bacon are all welcome. That matters more than it sounds in the Veneto, where salumi boards and cured-meat cicchetti are often the easiest thing on the menu for them. <b>Debi &amp; Tom, sweets:</b> both love gelato and ice cream, and anything from a bakery or pastry counter — treat a gelateria stop or a morning pastry as part of the plan, not a detour. <b>Angelo</b> — no restrictions, so the regional specialities that rule the other two out are noted as his.</p>
+          <p class="gn-card"><b>Verona: buy a 48-hour VeronaCard (€32 each).</b> Activate it Thursday morning at the Arena and it runs to Saturday morning, covering the Arena, Sant'Anastasia, the Duomo complex, Piazza dei Signori's Arche Scaligere, the Teatro Romano museum and Torre dei Lamberti — roughly €40 of entries — plus free ATV city buses. <b>Not covered:</b> the Castel San Pietro funicular (~€2 each way), the Lamberti lift (€1), and Giardino Giusti, which is only discounted (€11 → €8). <b>Book separately and in advance:</b> Casa di Giulietta sells timed tickets <i>online only</i> at museiverona.com — no door sales even with the card. Sunday's Castelvecchio (€6) and San Zeno (€4) fall outside the 48 hours; just pay at the door.</p>
         </div>
       </details>
     </div>
