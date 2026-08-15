@@ -4,8 +4,8 @@
   "description": "Family itinerary · Milan, Venice, Verona · Sep–Oct 2026",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0a0a0a",
-  "theme_color": "#0a0a0a",
+  "background_color": "#faf6ef",
+  "theme_color": "#faf6ef",
   "icons": [
     {
       "src": "icon-192.png",

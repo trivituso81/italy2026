@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-title" content="Italy 2026" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="theme-color" content="#0a0a0a" />
+<meta name="theme-color" content="#faf6ef" />
 <link rel="apple-touch-icon" href="apple-touch-icon.png" />
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
@@ -28,6 +28,8 @@
     --verona-soft: #fbeae2;
     --gold: #b8873b;
     --shadow: 0 10px 30px rgba(43, 33, 24, 0.10);
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   * { box-sizing: border-box; }
@@ -48,7 +50,7 @@
   /* ---------- HERO ---------- */
   .hero {
     position: relative;
-    padding: 74px 22px 66px;
+    padding: calc(74px + var(--safe-top)) 22px 66px;
     text-align: center;
     color: #fff;
     background:
@@ -144,7 +146,7 @@
   /* ---------- STICKY CALENDAR ---------- */
   .calbar {
     position: sticky;
-    top: 0;
+    top: var(--safe-top);
     z-index: 30;
     background: rgba(250,246,239,0.94);
     backdrop-filter: blur(10px);
@@ -262,7 +264,10 @@
     right: 0;
     width: 100%;
     margin-top: 0;
+    /* Fill under the iOS status bar; tiles sit below it */
+    padding-top: var(--safe-top);
     box-shadow: 0 4px 14px rgba(43,33,24,0.1);
+    background: rgba(250,246,239,0.97);
   }
   .calbar.stuck .wrap { padding: 6px 22px 8px; }
   .calbar.stuck .cal-head { display: none; }
@@ -1081,7 +1086,7 @@
     .wrap { padding: 0 14px; }
 
     /* --- Hero --- */
-    .hero { padding: 48px 16px 52px; }
+    .hero { padding: calc(48px + var(--safe-top)) 16px 52px; }
     .hero .kicker { letter-spacing: 0.28em; font-size: 10px; }
     .hero .chips { gap: 6px; margin-top: 18px; }
     .hero .chip { font-size: 11px; padding: 6px 12px; }
@@ -1320,7 +1325,7 @@
     .wrap { padding: 0 20px; }
 
     /* --- Hero: use the extra width without going full desktop tall --- */
-    .hero { padding: 56px 24px 58px; }
+    .hero { padding: calc(56px + var(--safe-top)) 24px 58px; }
     .hero .chips { gap: 8px; margin-top: 20px; justify-content: center; }
     .hero-links { gap: 10px; margin-top: 20px; }
     .hero-link { padding: 11px 18px; font-size: 14px; }
@@ -1525,7 +1530,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: calc(24px + var(--safe-top)) 24px calc(24px + var(--safe-bottom));
     background:
       linear-gradient(135deg, rgba(30,20,12,0.72), rgba(30,20,12,0.52)),
       linear-gradient(135deg, #6b5bd2 0%, #0e8f9b 52%, #c0562f 100%);
@@ -2354,23 +2359,33 @@
     var stuckLock = false;
 
     function syncCalbarOffset() {
-      document.documentElement.style.setProperty('--calbar-offset', ((isStuck ? calbarHeights.compact : calbarHeights.full) + 16) + 'px');
+      var safe = safeAreaTopPx();
+      document.documentElement.style.setProperty(
+        '--calbar-offset',
+        ((isStuck ? calbarHeights.compact : calbarHeights.full) + safe + 16) + 'px'
+      );
     }
 
     function pageScrollY() {
       return window.scrollY || document.documentElement.scrollTop || 0;
     }
 
-    /* Don't collapse into the compact bar until the user has actually scrolled
-       down the page. Requires both: past the calendar's natural top, and at
-       least ~10% of the document (with a small floor so short pages still work). */
+    function safeAreaTopPx() {
+      var probe = document.getElementById('safeTopProbe');
+      if (!probe) {
+        probe = document.createElement('div');
+        probe.id = 'safeTopProbe';
+        probe.setAttribute('aria-hidden', 'true');
+        probe.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none;height:var(--safe-top);width:0;left:0;top:0;';
+        document.body.appendChild(probe);
+      }
+      return probe.offsetHeight || 0;
+    }
+
+    /* Collapse when the day tiles would scroll out of view — i.e. the
+       calendar reaches the top of the screen (under the status-bar safe area). */
     function stickThreshold() {
-      var docH = Math.max(
-        document.documentElement.scrollHeight,
-        document.body ? document.body.scrollHeight : 0
-      );
-      var tenPercent = Math.max(120, Math.round(docH * 0.1));
-      return Math.max(calbarTop, tenPercent);
+      return Math.max(0, calbarTop - safeAreaTopPx());
     }
 
     function cacheCalbarHeights() {
