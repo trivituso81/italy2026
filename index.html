@@ -80,23 +80,6 @@
     opacity: 0.96;
     margin-top: 6px;
   }
-  .hero .chips {
-    margin-top: 26px;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .hero .chip {
-    background: rgba(255,255,255,0.16);
-    border: 1px solid rgba(255,255,255,0.35);
-    backdrop-filter: blur(4px);
-    padding: 8px 16px;
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-  }
   .hero-links {
     margin-top: 22px;
     display: flex;
@@ -1147,8 +1130,6 @@
     /* --- Hero --- */
     .hero { padding: calc(48px + var(--safe-top)) 16px 52px; }
     .hero .kicker { letter-spacing: 0.28em; font-size: 10px; }
-    .hero .chips { gap: 6px; margin-top: 18px; }
-    .hero .chip { font-size: 11px; padding: 6px 12px; }
 
     /* --- Stats --- */
     .stats {
@@ -1385,7 +1366,6 @@
 
     /* --- Hero: use the extra width without going full desktop tall --- */
     .hero { padding: calc(56px + var(--safe-top)) 24px 58px; }
-    .hero .chips { gap: 8px; margin-top: 20px; justify-content: center; }
     .hero-links { gap: 10px; margin-top: 20px; }
     .hero-link { padding: 11px 18px; font-size: 14px; }
 
@@ -1730,12 +1710,6 @@
     <div class="kicker">A Journey Through Northern Italy</div>
     <h1>Italy <span class="flag">🇮🇹</span> 2026</h1>
     <div class="dates">September 21 – October 5 · Milan · Venice · Verona</div>
-    <div class="chips">
-      <span class="chip">🏛️ Art &amp; History</span>
-      <span class="chip">🚆 High-Speed Rail</span>
-      <span class="chip">🍝 Regional Cuisine</span>
-      <span class="chip">🌊 Lakes &amp; Islands</span>
-    </div>
     <div class="hero-links">
       <button type="button" class="hero-link" data-k="wishlist" aria-label="Open wishlist">
         <span class="hl-icon" aria-hidden="true">♥</span>
