@@ -622,6 +622,64 @@
   }
   .p-panel-note ul { margin: 0; padding-left: 1.2em; }
   .p-panel-note li { margin-bottom: 4px; }
+
+  .p-lunch-picks {
+    margin: 0 0 18px;
+    padding: 14px 15px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #faf7f2;
+  }
+  .p-lunch-picks-hd {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .p-lunch-picks-sub {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin: 0 0 12px;
+    line-height: 1.45;
+  }
+  .p-lunch-pick {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 10px;
+    padding: 10px 0;
+    border-top: 1px solid var(--line);
+  }
+  .p-lunch-pick:first-of-type { border-top: none; padding-top: 2px; }
+  .p-lunch-mi {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1.2;
+    padding-top: 2px;
+  }
+  .p-lunch-mi small {
+    display: block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .p-lunch-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .p-lunch-blurb {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.45;
+    margin-top: 3px;
+  }
   .p-reservation {
     margin-top: 22px;
     padding-top: 18px;
@@ -2277,6 +2335,7 @@
         <p class="p-desc-lead" id="pLead" hidden></p>
         <p class="p-desc" id="pDesc"></p>
         <div class="p-panel-note" id="pPanelNote" hidden></div>
+        <div class="p-lunch-picks" id="pLunchPicks" hidden></div>
         <div class="p-tips" id="pTips"></div>
         <div class="p-reservation" id="pReservation" hidden></div>
       </div>
@@ -3131,14 +3190,26 @@
       d2b:{img:'italy-itinerary-images/d2b.jpg',alt:'Museo Nazionale Scienza e Tecnologia',lead:'Italy\'s largest science museum — Leonardo\'s inventions star here.',stats:[{l:'Visit time',v:'2 hrs'},{l:'Entry',v:'€10 (timed)'},{l:'Hours',v:'9:30am–5pm'},{l:'Size',v:'50,000 m²'},{l:'Crowds',v:'Moderate–high'}],desc:'Housed in a 16th-century monastery, this museum spans everything from Leonardo\'s flying machines and war engines to locomotives, submarines, and space capsules. The Leonardo galleries alone justify the trip — allow the full two-hour block.'},
       d2c:{img:'italy-itinerary-images/d2c.jpg',alt:'Milan café',lead:'A quick espresso between major sights.',stats:[{l:'Duration',v:'30 min'},{l:'Cost',v:'€1.50–3'},{l:'Area',v:'Cadorna / Magenta'},{l:'Next',v:'Castello Sforzesco'},{l:'Tip',v:'Order at bar, pay first'}],desc:'Milan runs on coffee. Grab a quick caffè macchiato at a bar near Cadorna — the Italian way is to drink standing at the counter — before continuing to the castle.'},
       d2d:{img:'italy-itinerary-images/d2d.jpg',alt:'Castello Sforzesco interior',lead:'Courtyards, ramparts, and museum highlights.',stats:[{l:'Visit time',v:'1 hr 15 min'},{l:'Entry',v:'€5 (museums)'},{l:'Must-see',v:'Pietà Rondanini'},{l:'Crowds',v:'Moderate'},{l:'Pace',v:'Keep brisk'}],desc:'Return to the Sforza castle for the interior experience: Renaissance frescoes, armor collections, and Michelangelo\'s unfinished Pietà Rondanini. Focus on one or two highlights rather than trying to see everything before your timed Last Supper entry.'},
-      d2e:{img:'italy-itinerary-images/d2e.jpg',alt:'Milan lunch',lead:'Lunch near Santa Maria delle Grazie.',stats:[{l:'Duration',v:'1 hr 15 min'},{l:'Area',v:'Magenta / Cadorna'},{l:'Price',v:'€€'},{l:'Reservation',v:'Optional'},{l:'Before',v:'Last Supper 3:15 PM'}],desc:'The Magenta district has dozens of trattorias perfect for a pre-tour lunch. Look for cotoletta alla milanese or a simple pasta — but keep an eye on the clock for your strictly timed Last Supper appointment.'},
+      d2e:{img:'italy-itinerary-images/d2e.jpg',alt:'Milan lunch',lead:'Lunch near Santa Maria delle Grazie.',stats:[{l:'Duration',v:'1 hr 15 min'},{l:'Area',v:'Magenta / Cadorna'},{l:'Price',v:'€€'},{l:'Reservation',v:'Optional'},{l:'Before',v:'Last Supper 3:15 PM'}],desc:'The Magenta district has dozens of trattorias perfect for a pre-tour lunch. Look for cotoletta alla milanese or a simple pasta — but keep an eye on the clock for your strictly timed Last Supper appointment.',lunchFrom:'Castello Sforzesco',lunchPicks:[
+        {name:'Chiosco al Politico',miles:0.05,blurb:'Castle-side panini & piadine kiosk — porchetta, cured meats, quick outdoor tables.'},
+        {name:'Majestic Cafè Bistrot',miles:0.18,blurb:'Italian-Mediterranean bistrot on Foro Buonaparte — lasagne, panini, fast sit-down.'},
+        {name:'Magentino',miles:0.32,blurb:'Corso Magenta bistrot — risotto alla milanese, cotoletta, workday lunch plates.'},
+        {name:'Bar Magenta',miles:0.38,blurb:'Classic Milanese bar-trattoria — primi, panini, espresso; locals in and out fast.'},
+        {name:'Gourmand',miles:0.52,blurb:'Casual Corso Magenta stop — cured-pork panini, salads, takeaway if you are short on time.'}
+      ]},
       d2g:{img:'italy-itinerary-images/d2g.jpg',alt:'The Last Supper',lead:'3:15 PM skip-the-line tour — confirmed via Viator.',stats:[{l:'Time',v:'3:15 PM · 1.5 hr tour'},{l:'Meet at',v:'Fontanella, Via Fratelli Ruffini, 1'},{l:'Confirmation',v:'1808177411'},{l:'Paid',v:'USD $345.45'},{l:'Party',v:'3 Adults'}],desc:'Painted between 1495 and 1498 on the refectory wall of Santa Maria delle Grazie, The Last Supper revolutionized perspective and emotional storytelling. Booked for Wed Sep 23 at 3:15 PM via Viator — World Travel Guide handles skip-the-line access and the church context.'},
       d2i:{img:'italy-itinerary-images/d1b.jpg',alt:'Hotel Milu Milano',lead:'Down time before a special dinner.',stats:[{l:'Duration',v:'6:30–7:30 PM'},{l:'Dinner at',v:'7:45 PM'},{l:'Restaurant',v:'Cantina Piemontese'},{l:'Transfer',v:'Taxi ~12 min'},{l:'Purpose',v:'Rest & change'}],desc:'After Brera and a full culture day, one hour at the hotel before Piedmontese dinner at Cantina Piemontese. Leave by ~7:35 PM for your reservation.'},
       d2j:{img:'italy-itinerary-images/d2j.jpg',alt:'Cantina Piemontese Milan',lead:'Piedmontese tradition — confirmed for Day 2.',stats:[{l:'Time',v:'7:45 PM Wed Sep 23'},{l:'Party',v:'3 guests'},{l:'Table',v:'Laghetto & Gio Ponti'},{l:'Cuisine',v:'Piemontese'},{l:'Signature',v:'Agnolotti del plin, vitello tonnato'}],desc:'Confirmed at Cantina Piemontese — a historic cellar steps from the Duomo. Langhe wines, agnolotti del plin, brasato, and vitello tonnato. Taxi ~12 min from Hotel Milu; leave by ~7:35 PM after your hotel rest block.'},
       d3a:{img:'italy-itinerary-images/d2a.jpg',alt:'Breakfast at Hotel Milu Milano',lead:'Breakfast at the hotel.',stats:[{l:'Time',v:'6:40–7:00 AM'},{l:'Where',v:'Hotel Milu Milano'},{l:'Leave by',v:'~7:00 AM'},{l:'To Centrale',v:'Taxi ~12 min'},{l:'Train',v:'~7:20 AM'}],desc:'Lake Como day starts early. Have breakfast at the hotel, then grab your day bag and head to Milano Centrale — taxi ~12 min or metro ~20 min.'},
       d3c:{img:'italy-itinerary-images/d3c.jpg',alt:'Varenna, Lake Como',lead:'Train from Milan, then lakeside coffee.',stats:[{l:'Arrive',v:'~8:30 AM'},{l:'Train',v:'~1 hr 10 min'},{l:'Walk',v:'~8 min from station'},{l:'Block',v:'8:30–9:15 AM'},{l:'Next',v:'Villa Monastero 9:30 AM'}],desc:'Regional Trenord from Centrale, then walk down to the waterfront for an espresso before Villa Monastero\'s gardens.'},
       d3d:{img:'italy-itinerary-images/d3d.jpg',alt:'Villa Monastero gardens',lead:'Two kilometers of botanical gardens on the lake.',stats:[{l:'Visit time',v:'1 hr 15 min'},{l:'Garden ticket',v:'€10'},{l:'Getting there',v:'Walk ~8 min'},{l:'Paths',v:'2 km lakeside'},{l:'Next',v:'Ferry to Bellagio'}],desc:'Villa Monastero\'s terraced paths hug the shoreline with continuous lake and mountain views. Afterward, walk to the Varenna ferry dock for the crossing to Bellagio.'},
-      d3f:{img:'italy-itinerary-images/d3f.jpg',alt:'Bellagio, Lake Como',lead:'Lakeside lunch in Bellagio.',stats:[{l:'Time',v:'11:15 AM–12:45 PM'},{l:'Getting there',v:'Ferry ~15 min from Varenna'},{l:'Price',v:'€€–€€€'},{l:'Reservation',v:'Optional'},{l:'Known for',v:'Lake fork views'}],desc:'Bellagio sits where Lake Como\'s three branches meet. Take the ferry from Varenna (~10:50 AM departure), then walk into town for lunch — reservation optional at most trattorias.'},
+      d3f:{img:'italy-itinerary-images/d3f.jpg',alt:'Bellagio, Lake Como',lead:'Lakeside lunch in Bellagio.',stats:[{l:'Time',v:'11:15 AM–12:45 PM'},{l:'Getting there',v:'Ferry ~15 min from Varenna'},{l:'Price',v:'€€–€€€'},{l:'Reservation',v:'Optional'},{l:'Known for',v:'Lake fork views'}],desc:'Bellagio sits where Lake Como\'s three branches meet. Take the ferry from Varenna (~10:50 AM departure), then walk into town for lunch — reservation optional at most trattorias.',lunchFrom:'Bellagio ferry landing (Piazza Mazzini)',lunchPicks:[
+        {name:'Mr. Panino',miles:0.08,blurb:'Toasted panini, focaccia & quick pizza — ideal grab-and-go by the landing.'},
+        {name:'Nando Restaurant & Pizza',miles:0.12,blurb:'Family pizza & Italian plates a few steps up Salita Mella — walk-in friendly at lunch.'},
+        {name:'Barchetta',miles:0.15,blurb:'Alleyway pizza & pasta — casual, tourist-central, usually seats without booking.'},
+        {name:'Dai Viga Pasta Fresca',miles:0.18,blurb:'Fresh pasta counter/casual room — quick handmade primi, perfect mid-visit.'},
+        {name:'La Grotta',miles:0.22,blurb:'Long-running Bellagio pizzeria — thin-crust pizza and simple Italian plates.'}
+      ]},
       d3g:{img:'italy-itinerary-images/d3g.jpg',alt:'Bellagio village walk',lead:'Centro storico and lake promenade.',stats:[{l:'Duration',v:'1:00–3:30 PM'},{l:'Walk',v:'Easy / scenic'},{l:'From',v:'Already in Bellagio'},{l:'Entry',v:'Free'},{l:'Next',v:'Villa Melzi optional'}],desc:'Wander Bellagio\'s stepped alleys, boutique shops, and the promenade where the lake splits into three arms — no new transport needed.'},
       d3h:{img:'italy-itinerary-images/d3g.jpg',alt:'Villa Melzi gardens',lead:'Optional neoclassical gardens on the lake.',stats:[{l:'Duration',v:'3:45–4:15 PM'},{l:'Getting there',v:'Walk ~15 min'},{l:'Garden ticket',v:'€8'},{l:'Activity',v:'Skip OK'},{l:'Reservation',v:'Walk-up OK'}],desc:'Villa Melzi\'s lakeside park offers neoclassical sculptures and exotic plantings. ~15 min walk from centro — skip if you\'d rather linger in town.'},
       d3i:{img:'italy-itinerary-images/d1b.jpg',alt:'Hotel Milu Milano',lead:'Full journey back to Hotel Milu Milano.',stats:[{l:'Block',v:'4:30–6:40 PM'},{l:'Ferry',v:'~15 min'},{l:'Train',v:'~1 hr 10 min'},{l:'Taxi',v:'~12 min'},{l:'Tip',v:'Check last ferry'}],desc:'Walk to the Bellagio dock, ferry to Varenna, walk to the station, regional train to Centrale, taxi to the hotel. All legs are on this row because the destination is Hotel Milu Milano.'},
@@ -3156,13 +3227,25 @@
       d5t:{img:'italy-itinerary-images/d5a.jpg',alt:'High-speed train to Venice',lead:'Frecciarossa or Italo — Milan to Venice.',stats:[{l:'Route',v:'Centrale → Santa Lucia'},{l:'Duration',v:'~2 hr 30 min'},{l:'Depart',v:'10:00 AM Sat Sep 26'},{l:'Operator',v:'Trenitalia / Italo'},{l:'Tickets',v:'Day-of OK'}],desc:'Italy\'s high-speed rail glides from Milan\'s grand Centrale station to Venezia Santa Lucia — one of Europe\'s most dramatic arrivals, rolling out onto the Grand Canal. Buy tickets at the station or on the app same morning; book ahead only if you want cheaper fares or guaranteed seats together.'},
       d5e:{img:'italy-itinerary-images/d5e.jpg',alt:'Carnival Palace',lead:'Vaporetto to Cannaregio, then check in.',stats:[{l:'Arrive',v:'~12:30 PM Santa Lucia'},{l:'Vaporetto',v:'Line 5.1 · ~20 min'},{l:'Walk',v:'~5 min to hotel'},{l:'Nights',v:'4 (Sep 26–30)'},{l:'Check-in',v:'~12:45 PM'}],desc:'After the train, buy an ACTV ticket at Santa Lucia and roll bags aboard Line 5.1 to Cannaregio. A short walk brings you to Carnival Palace — unpack and freshen up before exploring the Jewish Ghetto.'},
       d5f:{img:'italy-itinerary-images/ghetto-venezia.jpg',alt:'Venice Jewish Ghetto',lead:'World\'s first ghetto — quiet Cannaregio canals.',stats:[{l:'Time',v:'2:45–4:00 PM'},{l:'Entry',v:'Free (exterior)'},{l:'From hotel',v:'~10 min walk'},{l:'Highlight',v:'Campo del Ghetto Nuovo'},{l:'Since',v:'1516'}],desc:'Venice created the Ghetto in 1516 — the word itself comes from this neighborhood. The campo, memorial, and surrounding fondamenta offer a contemplative first taste of the city without San Marco crowds.'},
-      d5h:{img:'italy-itinerary-images/d5f.jpg',alt:'Cannaregio lunch',lead:'First lunch in Venice — neighborhood trattoria.',stats:[{l:'Time',v:'1:45–2:30 PM'},{l:'Area',v:'Cannaregio'},{l:'Walk',v:'~5 min from hotel'},{l:'Style',v:'Trattoria / cicchetti'},{l:'Reservation',v:'Optional'}],desc:'You\u2019re steps from some of Venice\'s best everyday cooking. A relaxed Cannaregio lunch beats trekking to San Marco on arrival day.'},
+      d5h:{img:'italy-itinerary-images/d5f.jpg',alt:'Cannaregio lunch',lead:'First lunch in Venice — neighborhood trattoria.',stats:[{l:'Time',v:'1:45–2:30 PM'},{l:'Area',v:'Cannaregio'},{l:'Walk',v:'~5 min from hotel'},{l:'Style',v:'Trattoria / cicchetti'},{l:'Reservation',v:'Optional'}],desc:'You\u2019re steps from some of Venice\'s best everyday cooking. A relaxed Cannaregio lunch beats trekking to San Marco on arrival day.',lunchFrom:'Carnival Palace',lunchPicks:[
+        {name:'Osteria alla Vedova',miles:0.22,blurb:'Legendary bacaro — polpette, cicchetti & house wine; bar is walk-in (Angelo\'s polpette).'},
+        {name:'Ai Promessi Sposi',miles:0.28,blurb:'Neighborhood Venetian trattoria — pasta, grilled fish, unfussy lunch service.'},
+        {name:'Cantina Vecia Carbonera',miles:0.35,blurb:'Old-school osteria — cicchetti, wine by the glass, quick plates for locals.'},
+        {name:'Osteria da Alberto',miles:0.48,blurb:'Since 1924 — sit-down home cooking; busara pasta suits Debi & Tom, seppie for Angelo.'},
+        {name:'Trattoria dalla Marisa',miles:0.55,blurb:'Fondamenta San Giobbe classic — fixed-menu Venetian home cooking, no-frills.'}
+      ]},
       d5i:{img:'italy-itinerary-images/vt07.jpg',alt:'Madonna dell Orto Venice',lead:'Tintoretto\'s home church — nine works inside.',stats:[{l:'Time',v:'4:10–4:40 PM'},{l:'Entry',v:'Free (donation)'},{l:'Artist',v:'Tintoretto ×9'},{l:'From Ghetto',v:'~8 min walk'},{l:'Next',v:'Class 5 PM · San Marco'}],desc:'Tintoretto lived around the corner and painted this brick Gothic church throughout his career. Keep it to ~30 min — leave by ~4:30 for vaporetto to Campo San Maurizio and your 5:00 PM Pastamania class.'},
       d5d:{img:'italy-itinerary-images/d5f.jpg',alt:'Pastamania cooking class Venice',lead:'Pasta & gelato — confirmed.',stats:[{l:'Time',v:'5:00 PM Sat Sep 26'},{l:'Party',v:'3 Adults'},{l:'Duration',v:'~3 hr'},{l:'Reservation',v:'Complete · Viator BR-1430459123'},{l:'Includes',v:'Dinner + wine + gelato'}],desc:'Pastamania in a historic palazzo near St Mark\u2019s — hands-on ravioli, fettuccine, sauces, and gelato, then eat what you made with Tuscan wine. Viator BR-1430459123 · $313.23 for 3. Replaces a separate dinner on arrival day.'},
       d6h:{img:'italy-itinerary-images/d2a.jpg',alt:'Breakfast at Carnival Palace',lead:'Quick breakfast — out by 9.',stats:[{l:'Time',v:'8:30–9:00 AM'},{l:'Leave',v:'~9:00 AM'},{l:'Vaporetto',v:'~20 min'},{l:'Arrive',v:'~9:20 AM'},{l:'Next',v:'San Zaccaria'}],desc:'Eat, then roll bags-free to San Zaccaria. Aim to land around 9:20 — San Zaccaria church fills the few minutes before your 10 AM Doge\u2019s slot.'},
       d6e:{img:'italy-itinerary-images/san-zaccaria.jpg',alt:'Chiesa di San Zaccaria Venice',lead:'Bellini altarpiece — while you wait for 10 AM.',stats:[{l:'Time',v:'9:20–9:55 AM'},{l:'Entry',v:'Free (donation)'},{l:'Highlight',v:'Bellini altarpiece'},{l:'Next',v:'Doge\u2019s 10 AM'},{l:'Walk',v:'~2 min to palace'}],desc:'The church opens Sunday mornings — step inside for Bellini\u2019s San Zaccaria Altarpiece and gilded chapels, then walk next door for your timed Doge\u2019s Palace entry.'},
       d6b:{img:'italy-itinerary-images/d6b.jpg',alt:'Doge\'s Palace Venice',lead:'Sunday morning — confirmed 10 AM.',stats:[{l:'Entry',v:'10:00 AM Sun Sep 27'},{l:'Party',v:'3 adults'},{l:'Order',v:'VIVATK165929802382'},{l:'Paid',v:'\u20ac60'},{l:'Next',v:'Riva \u2192 lunch'}],desc:'The Doge\u2019s Palace is Gothic opulence at scale: gilt ceilings, Tintoretto\u2019s Paradise, and the Bridge of Sighs. Confirmed 10:00 AM entry — exit onto the Riva for Castello lunch before the basilica at 2 PM.'},
-      d6d:{img:'italy-itinerary-images/d5f.jpg',alt:'Lunch near San Marco',lead:'Castello lunch via the Riva.',stats:[{l:'Time',v:'12:10–1:45 PM'},{l:'Area',v:'Castello'},{l:'Walk',v:'Riva ~10 min'},{l:'Reservation',v:'Optional'},{l:'Out by',v:'~1:50 PM'}],desc:'Follow the waterfront east from the palace into Castello back streets — better-value trattorias than Piazza cafés. Finish in time for your 2:00 PM basilica entry.'},
+      d6d:{img:'italy-itinerary-images/d5f.jpg',alt:'Lunch near San Marco',lead:'Castello lunch via the Riva.',stats:[{l:'Time',v:'12:10–1:45 PM'},{l:'Area',v:'Castello'},{l:'Walk',v:'Riva ~10 min'},{l:'Reservation',v:'Optional'},{l:'Out by',v:'~1:50 PM'}],desc:'Follow the waterfront east from the palace into Castello back streets — better-value trattorias than Piazza cafés. Finish in time for your 2:00 PM basilica entry.',lunchFrom:"Doge's Palace exit (Riva degli Schiavoni)",lunchPicks:[
+        {name:'Aciugheta',miles:0.18,blurb:'Castello bacaro near San Zaccaria — cicchetti, panini, spritz; fast and local.'},
+        {name:'Trattoria alla Rivetta',miles:0.25,blurb:'Classic Venetian trattoria by the Greci bridge — pasta, seafood, walk-in lunch.'},
+        {name:'Osteria Oliva Nera',miles:0.32,blurb:'Quiet Castello osteria — seasonal Venetian plates, calmer than the Riva terraces.'},
+        {name:'Trattoria da Remigio',miles:0.40,blurb:'Adriatic classics on Salizada dei Greci — try early; fills with locals at peak.'},
+        {name:'Al Portego',miles:0.55,blurb:'Friendly bacaro/trattoria — cicchetti counter plus simple primi; good value.'}
+      ]},
       d6a:{img:'italy-itinerary-images/d6a.jpg',alt:'St. Mark\'s Basilica',lead:'Basilica + Pala d\u2019Oro — confirmed.',stats:[{l:'Entry',v:'2:00\u20132:30 PM Sun Sep 27'},{l:'Party',v:'3 adults'},{l:'Ticket',v:'Basilica + Pala d\u2019Oro'},{l:'Order',v:'171-HE0SGFW'},{l:'Paid',v:'\u20ac60'}],desc:'Sunday afternoon at San Marco \u2014 golden mosaics in the nave, then the jewel-encrusted Pala d\u2019Oro altarpiece. Order 171-HE0SGFW; arrive within your 2:00\u20132:30 PM window. Finish by ~3:30 for San Giorgio sunset.'},
       d6c:{img:'italy-itinerary-images/d6c.jpg',alt:'Venice gondola',lead:'Optional quick canal ride — wishlist wl06.',stats:[{l:'Time',v:'3:45–4:15 PM'},{l:'Gondola',v:'€80–100 (day)'},{l:'Traghetto',v:'€2 (ferry)'},{l:'Activity',v:'Skip OK'},{l:'Next',v:'San Giorgio ~4:30'}],desc:'A short optional ride after the basilica — or skip and vaporetto straight to San Giorgio. No hotel detour; save energy for the evening break before dinner.'},
       d6g:{img:'italy-itinerary-images/vt09.jpg',alt:'San Giorgio Maggiore campanile view',lead:'The best view in Venice — Top 10 #9.',stats:[{l:'Time',v:'4:30–5:45 PM'},{l:'Campanile',v:'€6 lift · ~5:00 PM'},{l:'Getting there',v:'Line 2 · ~5 min'},{l:'Leave by',v:'~5:50 PM'},{l:'Dinner',v:'7:00 PM · confirmed'}],desc:'Palladio\u2019s church interior is free and takes about 25 minutes; the €6 campanile lift is the reason you come. From the top you see San Marco, the Doge\u2019s Palace and the Salute laid out across the water — the only vantage that shows Venice as a whole, and better than the Campanile in the piazza because this one has the piazza in the picture. Trimmed to 75 minutes now that Gigio holds a 7:00 PM shift; 25 minutes in the church plus 30 in the tower still covers everything worth seeing. The sunset ascent is gone, but you cross the northern lagoon at sunset on Day 8 anyway.'},
@@ -3177,7 +3260,13 @@
       d7l:{img:'italy-itinerary-images/d7c.jpg',alt:'Rialto Bridge Venice',lead:'Iconic Grand Canal crossing — wishlist wl12.',stats:[{l:'Time',v:'3:15–4:45 PM'},{l:'Entry',v:'Free'},{l:'From Frari',v:'~10 min walk'},{l:'If San Rocco',v:'Compress to ~4:25'},{l:'Light',v:'Late afternoon best'}],desc:'The Rialto has spanned the Grand Canal since the 12th century. With San Rocco skipped, you have 90 unhurried minutes on the bridge and surrounding calle before your Fondaco rooftop slot two minutes away.'},
       d7m:{img:'italy-itinerary-images/fondaco-tedeschi.jpg',alt:'T Fondaco dei Tedeschi from the Grand Canal',lead:'Free Grand Canal views — wishlist wl10.',stats:[{l:'Time',v:'5:00–5:15 PM'},{l:'Entry',v:'Free (timed)'},{l:'Book at',v:'dfs.com/venice'},{l:'Duration',v:'15-min slot'},{l:'Views',v:'Grand Canal + Rialto'}],desc:'The restored Fondaco dei Tedeschi rooftop delivers Venice\'s best free panorama — but only with a mandatory online reservation. Arrive five minutes early; latecomers lose their slot.'},
       d7c:{img:'italy-itinerary-images/d7c.jpg',alt:'Rialto Market Venice',lead:'Historic market square and canal-side stalls.',stats:[{l:'Time',v:'5:20–5:50 PM'},{l:'Entry',v:'Free'},{l:'Stalls',v:'Close ~2 PM'},{l:'Near',v:'Rialto Bridge'},{l:'Atmosphere',v:'Still evocative'}],desc:'The Rialto market has supplied Venice since 1097. Even after fish vendors pack up, the stone stalls and canal-side setting evoke centuries of commerce — a fitting close to the Rialto cluster. Thirty minutes rather than the fifty first planned: the Trattoria del Local booking came back at 7:15 with the table held only to 8:45, so the evening shifted earlier and you want to be back at the hotel by 6:05.'},
-      d7e:{img:'italy-itinerary-images/d5f.jpg',alt:'Lunch in Dorsoduro',lead:'Quick Zattere lunch between museums.',stats:[{l:'Time',v:'1:25–2:10 PM'},{l:'Area',v:'Dorsoduro / Zattere'},{l:'Price',v:'€€'},{l:'Reservation',v:'Optional'},{l:'Tip',v:'Keep it under 45 min'}],desc:'Dorsoduro\'s lunch spots range from casual pizzerias to refined canal-side trattorias. A brisk meal keeps the Frari visit on schedule.'},
+      d7e:{img:'italy-itinerary-images/d5f.jpg',alt:'Lunch in Dorsoduro',lead:'Quick Zattere lunch between museums.',stats:[{l:'Time',v:'1:25–2:10 PM'},{l:'Area',v:'Dorsoduro / Zattere'},{l:'Price',v:'€€'},{l:'Reservation',v:'Optional'},{l:'Tip',v:'Keep it under 45 min'}],desc:'Dorsoduro\'s lunch spots range from casual pizzerias to refined canal-side trattorias. A brisk meal keeps the Frari visit on schedule.',lunchFrom:'Peggy Guggenheim / Salute area',lunchPicks:[
+        {name:'Cantine del Vino già Schiavi',miles:0.20,blurb:'Rio di San Trovaso cicchetti bar — crostini & ombra; standing lunch classic.'},
+        {name:'Osteria ai Pugni',miles:0.35,blurb:'Campo San Barnaba bacaro — panini, cicchetti, local wine; quick and lively.'},
+        {name:'Ristoteca Oniga',miles:0.38,blurb:'Campo San Barnaba Venetian Slow Food kitchen — pasta, lagoon fish, walk-in lunch.'},
+        {name:'Trattoria San Trovaso',miles:0.42,blurb:'Neighborhood trattoria — pizza + Venetian primi; reliable and unfussy.'},
+        {name:'Ai Cugnai',miles:0.48,blurb:'Family Venetian cooking near Accademia — pasta, grilled fish, simple secondi.'}
+      ]},
       d7f:{img:'italy-itinerary-images/d5e.jpg',alt:'Carnival Palace',lead:'Quick rinse — dinner is across town at 7:15.',stats:[{l:'Time',v:'6:05–6:40 PM'},{l:'Hotel',v:'Carnival Palace'},{l:'Leave by',v:'6:40 PM'},{l:'Getting there',v:'Vaporetto or 30-min walk'},{l:'Dinner',v:'7:15 PM · Castello'}],desc:'The longest culture day of the trip — Accademia through Rialto in one sweep — so the shower is worth having even though this break is now tighter. Trattoria del Local confirmed at 7:15 rather than 8:00 and holds the table only until 8:45, so the whole evening moved back thirty-five minutes: the Rialto stroll ends at 5:50 and you are at the hotel by 6:05. Dinner is the one Venice meal that is not around the corner — Salizzada dei Greci sits east of San Marco — so allow the full half hour and leave by 6:40. If that feels rushed, skip the hotel and walk east from Rialto instead, roughly twenty minutes.'},
       d7g:{img:'italy-itinerary-images/acqua-pazza.jpg',alt:'Sea bass all\'acqua pazza — Trattoria del Local Venice',lead:'Confirmed — 7:15 PM, table held to 8:45.',stats:[{l:'Time',v:'7:15–8:45 PM Mon Sep 28'},{l:'Ref',v:'BXPZ4RRX · 3 people'},{l:'Where',v:'Salizzada dei Greci 3417'},{l:'Cost',v:'~€75 pp + €5 coperto'},{l:'Leave hotel',v:'6:40 PM'}],desc:'This is the restaurant your mum actually meant, and it is a real place — the informal trattoria that Ristorante Local opened in February 2025, seventy-five paces down the same street. Same owners, same sourcing, but à la carte instead of a €160 tasting menu, and wines by the quartino rather than the bottle. Vogue calls it a top reservation in Venice; Gambero Rosso headlined it a super trattoria; diners report rooms full of Venetians in the restaurant trade. Chef Salvatore Sodano was blunt about the register: innovation stays at Local, here it is only traditional cooking. The catch for this table is that its two most famous dishes — anchovy bigoli and whipped salt cod — are exactly what Tom avoids, and liver, tripe and veal cover Debi. You would be ordering around the classics while Angelo has the run of the menu, but the sea bass all’acqua pazza, the Nerano paccheri and the cured-pork tagliere are all genuinely good. It only opens Thursday to Monday, so this Monday is the single slot it fits — and it is now booked for 7:15 under reference BXPZ4RRX. Two things follow from the confirmation. The table is yours only until 8:45, a firm 90 minutes, so treat 7:15 as a real arrival time rather than a suggestion; the evening ahead of it has been pulled back to suit, with the Rialto stroll ending at 5:50 and the hotel break running 6:05 to 6:40. And a card is held against the booking: no-shows or cancellations after midday on the day cost €50 a head.'},
       d8g:{img:'italy-itinerary-images/d5f.jpg',alt:'Cannaregio cicchetti and osteria dinner Venice',lead:'Cicchetti crawl or a sit-down — decide on the night.',stats:[{l:'Time',v:'7:40 PM Tue Sep 29'},{l:'Option A',v:'Bacaro crawl · standing'},{l:'Option B',v:'Osteria da Alberto · seated'},{l:'Booking',v:'Neither required'},{l:'Walk',v:'~5 min or ~12 min'}],desc:'Cicchetti as a category — not any single dish — is the most distinctively Venetian food experience there is, and it was the one thing your Venice days still lacked. Start at Osteria alla Vedova on Calle del Pistor, where Angelo should take the fried polpette that every other bacaro in the city imitates along with the sarde in saor and hand-whipped baccàla mantecato — all three are either beef or strongly fishy, so Debi and Tom want the mozzarella in carrozza, fried artichokes, cured-pork crostini and cheese instead. Walk the Misericordia to Vino Vero, the bar that started Venice\'s natural-wine scene in 2014. Finish at Al Timon on the Ormesini, where two wooden boats moored out front serve as the terrace and the neighborhood turns up after work. Cheapest and lightest dinner of the trip, which is exactly what this day needs — Venissa’s wine lunch ran until 3:15 and nobody wants a second full sit-down meal. It also lands on the night your laundry is running a few doors along the same fondamenta. THE ALTERNATIVE, if standing up is not what you want after a day on boats: Osteria da Alberto, twelve minutes east, a room that has been feeding Venetians since 1924. Spaghetti alla busara there is scampi in a mild tomato sauce and suits Debi and Tom, while Angelo gets the inky seppie in nero with soft polenta that Gigio does not serve. Neither option needs booking, so genuinely leave this one until the night — the deciding factors are how filling Venissa was, whether it is raining, and how much walking everyone has left in them.'},
@@ -3196,19 +3285,37 @@
       d9b:{img:'italy-itinerary-images/d9b.jpg',alt:'Verona Piazza Bra',lead:'Arena exterior & Liston — first pass.',stats:[{l:'Block',v:'3:45–4:45 PM'},{l:'Arena age',v:'1st century AD'},{l:'Liston',v:'Marble promenade'},{l:'Interior',v:'Day 10 AM'},{l:'Walk',v:'~8 min from hotel'}],desc:'Circle the Roman Arena from outside — the interior visit is Day 10 morning, so do not buy a ticket now. Wide marble Liston, the Gran Guardia, caf\u00e9s. This is your orientation point: Via Mazzini runs north from here to Piazza delle Erbe, and nearly everything in the next five days sits within 15 minutes of this square.'},
       d9g:{img:'italy-itinerary-images/vr05.jpg',alt:'Casa di Giulietta Verona balcony',lead:'Juliet\u2019s balcony — book online, no door sales.',stats:[{l:'Time',v:'5:00–5:40 PM'},{l:'Rank',v:'Top 10 vr05'},{l:'Tickets',v:'ONLINE ONLY'},{l:'Entrance',v:'Piazzetta Navona'},{l:'Book',v:'museiverona.com'}],desc:'The 13th-century Casa Cappello with its famous (and entirely 1930s) balcony, the bronze Juliet, and a courtyard papered in love notes. Kitsch and unmissable at once. Entry is now by timed slot and tickets are sold online only — you cannot buy at the door, even with a VeronaCard, so book before you leave home. The courtyard itself is free.'},
       d9f:{img:'italy-itinerary-images/d9c.jpg',alt:'Piazza delle Erbe Verona',lead:'Erbe & Lamberti — market square loop.',stats:[{l:'Block',v:'5:50–6:45 PM'},{l:'Tower',v:'Lamberti €6 + €1 lift'},{l:'Rank',v:'Top 10 vr04'},{l:'After',v:'Dinner ~10 min walk'},{l:'Tip',v:'Spritz on the square OK'}],desc:'Frescoed Mazzanti houses, the Madonna Verona fountain, market stalls winding down. Two minutes from Casa di Giulietta. The Lamberti climb gives the best rooftop view in the centro and takes about 30 minutes — skip it if the travel day has caught up with you, since Friday\u2019s Castel San Pietro delivers a far bigger panorama.'},
-      d9d:{img:'italy-itinerary-images/d12c.jpg',alt:'Lunch on Piazza Bra Verona',lead:'First Verona meal — killing time until check-in.',stats:[{l:'Time',v:'12:45–1:45 PM'},{l:'Where',v:'Piazza Bra / Liston'},{l:'Reserve',v:'Optional'},{l:'Why here',v:'Check-in is 2 PM'},{l:'Tip',v:'One street back is cheaper'}],desc:'Bags are dropped and the keys are not ready until 2:00 PM, so this lunch exists to fill the gap pleasantly. The Liston terraces charge for the Arena view; the side streets off Piazza Bra do the same food for less.'},
+      d9d:{img:'italy-itinerary-images/d12c.jpg',alt:'Lunch on Piazza Bra Verona',lead:'First Verona meal — killing time until check-in.',stats:[{l:'Time',v:'12:45–1:45 PM'},{l:'Where',v:'Piazza Bra / Liston'},{l:'Reserve',v:'Optional'},{l:'Why here',v:'Check-in is 2 PM'},{l:'Tip',v:'One street back is cheaper'}],desc:'Bags are dropped and the keys are not ready until 2:00 PM, so this lunch exists to fill the gap pleasantly. The Liston terraces charge for the Arena view; the side streets off Piazza Bra do the same food for less.',lunchFrom:'Verona House Aparthotel (bag drop)',lunchPicks:[
+        {name:'Pizzeria Liston',miles:0.12,blurb:'Side street off the Liston — pizza & pasta without the square markup.'},
+        {name:'Trattoria Tre Marchetti',miles:0.18,blurb:'Via Tre Marchetti classic — quick Veronese lunch and local wine by the glass.'},
+        {name:'Trattoria I Masenini',miles:0.28,blurb:'Via Roma contemporary trattoria — risotto, bigoli; walk-in for lunch if early.'},
+        {name:'Liston 12',miles:0.15,blurb:'Piazza Bra café-restaurant — Italian plates with Arena view; touristy but convenient.'},
+        {name:'Caffè Vittorio Emanuele',miles:0.20,blurb:'Liston café — panini, primi, spritz; fine for a light timed meal before 2 PM.'}
+      ]},
       d9c:{img:'italy-itinerary-images/risotto-verona.jpg',alt:'Veronese risotto at Trattoria Pane e Vino',lead:'Casual first night — walk-in trattoria.',stats:[{l:'Time',v:'7:00–7:30 PM'},{l:'Venue',v:'Pane e Vino'},{l:'Style',v:'Neighborhood trattoria'},{l:'Must-try',v:'Risotto · polenta'},{l:'Reserve',v:'Optional'}],desc:'Unfussy Veronese cooking near the centro after a travel day — not the Amarone cellar night (save Bottega or Il Desco for later). Risotto, polenta and simple primi for Debi and Tom; the house pastissada is horse stew, so that one is Angelo\'s. Walk back to Verona House.'},
       d10h:{img:'italy-itinerary-images/d2a.jpg',alt:'Breakfast in Verona',lead:'Aparthotel breakfast — stock the kitchen once.',stats:[{l:'Time',v:'8:15–9:00 AM'},{l:'Where',v:'In-apartment'},{l:'Alternative',v:'Caffè Borsari ~4 min'},{l:'Cost',v:'~€4 standing at a bar'},{l:'Applies to',v:'All 5 Verona mornings'}],desc:'Verona House is an aparthotel, so no breakfast is served — this is the pattern for every Verona morning. A single supermarket run on arrival evening is cheaper and faster than a café each day, and it lets Debi and Tom eat exactly what suits them. If you do go out, Caffè Borsari on Corso Porta Borsari is a tiny, much-loved local bar; Italians take breakfast standing at the counter for about half the seated price.'},
       d10a:{img:'italy-itinerary-images/d10a.jpg',alt:'Verona Roman Arena',lead:'Third-largest Roman amphitheatre still standing.',stats:[{l:'Time',v:'9:15–11:00 AM'},{l:'Entry',v:'€10 · free w/ card'},{l:'Rank',v:'Top 10 vr01'},{l:'Opens',v:'9:00 AM'},{l:'Access',v:'Steep stone tiers'}],desc:'Built around 30 AD, Verona\u2019s Arena predates the Colosseum and still stages opera every summer. Going in at opening means the tiers are cool and nearly empty. Climb for the view over Piazza Bra — but the steps are steep, uneven and without handrails, so anyone unsure of knees should stay on the lower tiers, where the view is nearly as good. VeronaCard holders get priority entry at Gate 5.'},
       d10b:{img:'italy-itinerary-images/d10b.jpg',alt:'Piazza dei Signori Verona',lead:'Scaligeri monuments and civic grandeur.',stats:[{l:'Time',v:'11:15 AM–12:15 PM'},{l:'Entry',v:'Free (exterior)'},{l:'Rank',v:'Top 10 vr06'},{l:'See',v:'Arche Scaligere'},{l:'Note',v:'Cangrande here is a copy'}],desc:'Piazza dei Signori was Verona\u2019s political heart under the della Scala lords — Palazzo del Comune, the Loggia del Consiglio, and a brooding Dante, who found refuge here in exile. Through the arch stand the Arche Scaligere, Gothic funerary monuments suspended behind soaring iron gates. The gates show you everything worth seeing without paying. Cangrande\u2019s equestrian figure here is a copy; you meet the original at Castelvecchio on Sunday.'},
-      d10d:{img:'italy-itinerary-images/d12c.jpg',alt:'Lunch in Verona centro storico',lead:'Light lunch — big class dinner tonight.',stats:[{l:'Time',v:'12:30–1:45 PM'},{l:'Where',v:'Off Piazza delle Erbe'},{l:'Reserve',v:'Optional'},{l:'Keep it',v:'Light'},{l:'Why',v:'Cooking class includes dinner'}],desc:'Two minutes from Piazza delle Erbe. Via Pellicciai and Corso Porta Borsari are better value than the piazza terraces. Go light — tonight\u2019s cooking class is a full dinner with wine.'},
+      d10d:{img:'italy-itinerary-images/d12c.jpg',alt:'Lunch in Verona centro storico',lead:'Light lunch — big class dinner tonight.',stats:[{l:'Time',v:'12:30–1:45 PM'},{l:'Where',v:'Off Piazza delle Erbe'},{l:'Reserve',v:'Optional'},{l:'Keep it',v:'Light'},{l:'Why',v:'Cooking class includes dinner'}],desc:'Two minutes from Piazza delle Erbe. Via Pellicciai and Corso Porta Borsari are better value than the piazza terraces. Go light — tonight\u2019s cooking class is a full dinner with wine.',lunchFrom:'Piazza dei Signori / Arche Scaligere',lunchPicks:[
+        {name:'Berberè Pizzeria',miles:0.08,blurb:'Modern pizza on Via Pellicciai by Erbe — light dough, quick lunch, walk-in.'},
+        {name:'Gastronomia Scapin',miles:0.18,blurb:'Historic rosticceria — fried snacks, roasted chicken, takeaway plates under €15.'},
+        {name:'Osteria Caffè Monte Baldo',miles:0.12,blurb:'Local counter bar — cicchetti-style bites and ombra; standing lunch with Veronese.'},
+        {name:'Trattoria al Cristo',miles:0.15,blurb:'Piazzetta Pescheria osteria behind Erbe — Veronese cooking, midweek walk-in.'},
+        {name:'Pizzeria Impero',miles:0.20,blurb:'Piazza dei Signori pizza & trattoria — easy plates with a square view.'}
+      ]},
       d10c:{img:'italy-itinerary-images/vr10.jpg',alt:'Basilica di Sant\u2019Anastasia Verona',lead:'Verona\u2019s largest church — the big gap now filled.',stats:[{l:'Time',v:'2:00–3:00 PM'},{l:'Rank',v:'Top 10 vr10'},{l:'Entry',v:'€4 · free w/ card'},{l:'Thu hours',v:'9:30 AM–6:30 PM'},{l:'Dress',v:'Modest 👔'}],desc:'A vast Gothic brick nave on red marble columns, a ship\u2019s-keel ceiling, and Pisanello\u2019s delicate fresco of St George and the Princess above the Pellegrini chapel. At the door, two crouching hunchbacks — the gobbi — carry the holy water stoups. Five minutes from Piazza delle Erbe and routinely walked past: this was the single biggest omission in the old Verona plan. Bring a €1 coin for the light box over the Pisanello.'},
       d10i:{img:'italy-itinerary-images/verona-duomo.jpg',alt:'Duomo di Verona cathedral facade',lead:'Cathedral complex — Titian and a baptistery.',stats:[{l:'Time',v:'3:15–4:15 PM'},{l:'Entry',v:'€4 · free w/ card'},{l:'Thu hours',v:'11:00 AM–5:30 PM'},{l:'Highlight',v:'Titian Assumption'},{l:'Dress',v:'Modest 👔'}],desc:'Not one church but four: the Duomo, with Titian\u2019s Assumption in the first chapel on the left; the Romanesque cloister; early-Christian Sant\u2019Elena below; and the octagonal baptistery of San Giovanni in Fonte with its carved marble font. Marked Skip OK — if the Arena and Sant\u2019Anastasia have filled the day, drop it for a longer rest before the class. But the walk here follows the prettiest stretch of the Adige.'},
       d10e:{img:'italy-itinerary-images/d9u.jpg',alt:'Verona House rest before cooking class',lead:'Shower and change before the kitchen.',stats:[{l:'Time',v:'4:30–5:45 PM'},{l:'Leave by',v:'6:15 PM'},{l:'Class starts',v:'6:30 PM'},{l:'Wear',v:'Closed shoes'},{l:'Dinner',v:'Included in class'}],desc:'An hour and a quarter off your feet. Wear something you do not mind getting flour on, and closed shoes — a working kitchen is no place for Debi\u2019s sandals. No dinner reservation needed; the class feeds you.'},
       d13h:{img:'italy-itinerary-images/d2a.jpg',alt:'Slow Sunday breakfast in Verona',lead:'Latest start of the trip — by design.',stats:[{l:'Time',v:'8:45–9:25 AM'},{l:'Why late',v:'Nothing opens before 10'},{l:'Churches',v:'Shut until 1:00 PM Sun'},{l:'Use it',v:'Finish the packing'},{l:'Treat',v:'Café morning if you like'}],desc:'Genuinely no reason to rush: Castelvecchio opens at 10:00 and the churches do not admit visitors until 1:00 PM on a Sunday. If you want one last sit-down café morning rather than the apartment kitchen, today is the day for it.'},
       d13i:{img:'italy-itinerary-images/vr02.jpg',alt:'Ponte Scaligero Castelvecchio Verona',lead:'The best free thing in Verona.',stats:[{l:'Time',v:'9:40–10:10 AM'},{l:'Cost',v:'Free · always open'},{l:'Built',v:'1350s'},{l:'Rebuilt',v:'After 1945, stone by stone'},{l:'Why now',v:'Museum opens at 10:00'}],desc:'Three great red-brick arches vaulting the Adige, built as the Scaligeri escape route and reconstructed from the riverbed after the Germans blew it up in 1945. Walking across with the current below and the swallowtail battlements above costs nothing and beats most of what you pay for. Placed here deliberately to fill the half hour before Castelvecchio opens — you are standing at the entrance when it does. Cross to the far bank and look back for the classic shot.'},
       d11a:{img:'italy-itinerary-images/d11a.jpg',alt:'Castelvecchio Verona',lead:'Medieval fortress and Carlo Scarpa masterpiece.',stats:[{l:'Time',v:'10:15 AM–12:00 PM'},{l:'Rank',v:'Top 10 vr02'},{l:'Entry',v:'€6 · free w/ card'},{l:'Sun hours',v:'10:00 AM–6:00 PM'},{l:'Closed',v:'Mondays'}],desc:'A Scaligeri fortress of 1354 remade as a museum by Carlo Scarpa between 1958 and 1964 — and the building is as much the exhibit as the art. Scarpa cut new sightlines through the medieval walls, floated staircases and walkways, and set Cangrande\u2019s original equestrian statue on a concrete plinth in mid-air. Inside: Veronese and Venetian painting, medieval sculpture, arms and armour. The old 9:30 start would have had you at a locked door; Sunday opening is 10:00.'},
-      d11d:{img:'italy-itinerary-images/d12c.jpg',alt:'Sunday lunch on the way to San Zeno',lead:'Placed on the walking line, not back in town.',stats:[{l:'Time',v:'12:15–1:30 PM'},{l:'Where',v:'Corso Cavour / Borgo San Zeno'},{l:'Reserve',v:'Worth it on a Sunday'},{l:'Why here',v:'No doubling back'},{l:'Also',v:'Parks you until San Zeno opens'}],desc:'Deliberately on the line between Castelvecchio and San Zeno rather than back in the centro, so you are not retracing your steps. It also holds you until 1:00 PM, which is exactly when San Zeno starts admitting visitors — the timing is not an accident. Sunday lunch is the big meal of the week in Italy, so book or arrive early if you want a proper table.'},
+      d11d:{img:'italy-itinerary-images/d12c.jpg',alt:'Sunday lunch on the way to San Zeno',lead:'Placed on the walking line, not back in town.',stats:[{l:'Time',v:'12:15–1:30 PM'},{l:'Where',v:'Corso Cavour / Borgo San Zeno'},{l:'Reserve',v:'Worth it on a Sunday'},{l:'Why here',v:'No doubling back'},{l:'Also',v:'Parks you until San Zeno opens'}],desc:'Deliberately on the line between Castelvecchio and San Zeno rather than back in the centro, so you are not retracing your steps. It also holds you until 1:00 PM, which is exactly when San Zeno starts admitting visitors — the timing is not an accident. Sunday lunch is the big meal of the week in Italy, so book or arrive early if you want a proper table.',lunchFrom:'Castelvecchio',lunchPicks:[
+        {name:'La Cantina del 15',miles:0.08,blurb:'Opposite Castelvecchio bridge — bigoli, tagliata, tiramisu; casual Veronese kitchen.'},
+        {name:'Dal Zovo Cantina & Bistrot',miles:0.15,blurb:'Corso Cavour wine bistrot — boards, primi, outdoor tables; informal walk-in.'},
+        {name:'Trattoria Arco dei Gavi',miles:0.22,blurb:'Family Veronese trattoria on Corso Cavour — risotto, bollito; small room, arrive early.'},
+        {name:'Osteria a la Carega',miles:0.35,blurb:'Daily lunch set (~€18) — pasta e fagioli, pastissada specials; local and filling.'},
+        {name:'Bar Trattoria San Zeno',miles:0.45,blurb:'Borgo San Zeno neighborhood stop — simple Veronese plates before the basilica.'}
+      ]},
       d11b:{img:'italy-itinerary-images/d11b.jpg',alt:'Basilica di San Zeno Maggiore',lead:'Romanesque masterpiece — opens 1 PM Sunday.',stats:[{l:'Time',v:'1:45–3:00 PM'},{l:'Rank',v:'Top 10 vr03'},{l:'Entry',v:'€4 · free w/ card'},{l:'SUN HOURS',v:'1:00–6:30 PM only'},{l:'Dress',v:'Modest 👔'}],desc:'One of the great Romanesque churches of Europe: a serene striped facade with a rose window called the Wheel of Fortune, 48 bronze door panels telling biblical stories in flat forceful metal, a vast bare nave, and Mantegna\u2019s triptych over the altar — a painting that helped invent Renaissance perspective. San Zeno himself lies in the crypt. It sits after lunch because Sunday mornings are given to Mass. Do not walk past the bronze doors to get inside; they are half the reason to come.'},
       d11h:{img:'italy-itinerary-images/d2a.jpg',alt:'Light breakfast before the truffle hunt',lead:'Eat light — the estate lunch is a full meal.',stats:[{l:'Time',v:'8:00–8:45 AM'},{l:'Keep it',v:'Small'},{l:'Pickup',v:'Ilaria — time TBC'},{l:'Footwear',v:'Grip, closed toe'},{l:'NO',v:'White or pale clothes'}],desc:'Coffee and something small: lunch at the estate is lasagne al tartufo, a tagliere, cakes and grappa. Ilaria drives in to collect you, so confirm the pickup time when you send the deposit. Her two dress requests are firm — outdoor shoes with good grip, because the woodland trails may be dusty or muddy, and nothing white or pale on anyone. Bring a layer: October mornings in the Valpolicella hills are cool even when Verona is warm. This is the one day Debi should leave the sandals behind.'},
       d11e:{img:'italy-itinerary-images/d9u.jpg',alt:'Quick stop at Verona House after the hills',lead:'Drop the truffles, change shoes, straight out.',stats:[{l:'Time',v:'2:15–2:50 PM'},{l:'Length',v:'35 min — deliberate'},{l:'Why short',v:'Giusti shuts entry at 5:00'},{l:'Drop off',v:'Truffles · oil · wine'},{l:'Opt out',v:'Fine to stop here'}],desc:'A deliberately brief stop to leave whatever you bought at the estate, wash off the woodland, and change shoes. The afternoon is boxed in by hard closing times and by sunset, so you cannot linger. If anyone is genuinely finished after the hunt, this is the clean place to peel off — everything after it is optional and the others can carry on.'},
@@ -3219,7 +3326,13 @@
       d12t:{img:'italy-itinerary-images/d5a.jpg',alt:'Regional train to Lake Garda',lead:'Train west, then bus onto the peninsula.',stats:[{l:'Time',v:'8:25–9:45 AM'},{l:'Train',v:'~25 min regional'},{l:'To',v:'Desenzano–Sirmione'},{l:'Then',v:'Bus LN026 or taxi ~15 min'},{l:'Ticket',v:'Validate before boarding'}],desc:'Twelve minutes on foot to Porta Nuova, a cheap unreserved regional train west, then bus or taxi out along the causeway. Peschiera del Garda is a slightly closer alternative station; either works. Validate paper regional tickets in the platform machine or you can be fined. Cars cannot enter the old town, so bus and taxi both set you down at the castle gate.'},
       d12a:{img:'italy-itinerary-images/d12a.jpg',alt:'Rocca Scaligera Sirmione',lead:'Moated fortress guarding the only way in.',stats:[{l:'Time',v:'10:00–11:05 AM'},{l:'Entry',v:'~€6'},{l:'Built',v:'13th century'},{l:'Tower',v:'146 spiral steps, no lift'},{l:'Ground level',v:'Courtyard & harbour'}],desc:'The Rocca Scaligera is ringed entirely by water, with a rare fortified harbour where the Scaligeri galleys once moored. Cross the drawbridge and you are in the old town. The tower is a genuine climb — 146 steps of narrow spiral staircase with no lift — but the courtyard, drawbridge and harbour are the real character of the place and all sit at ground level, so nobody who skips the tower is missing the point.'},
       d12f:{img:'italy-itinerary-images/sirmione-centro.jpg',alt:'Sirmione old town and harbour Lake Garda',lead:'Lanes, harbour and the lakeside path.',stats:[{l:'Time',v:'11:15 AM–12:35 PM'},{l:'Cost',v:'Free'},{l:'Terrain',v:'Flat and walkable'},{l:'Best bit',v:'Passeggiata delle Muse'},{l:'Crowds',v:'Busy even in October'}],desc:'A few narrow lanes of pastel houses, gelaterie and lemon-scented shops packed onto a spit of land, opening onto the harbour. The Passeggiata delle Muse is a shaded lakeside path with clear green water on both sides, and the Romanesque Santa Maria Maggiore sits above the main lane. This is the unstructured hour of the day — browse, take the path, put a hand in the water. If the main lane feels crowded, the quieter north side is the answer.'},
-      d12d:{img:'italy-itinerary-images/d12c.jpg',alt:'Lakeside lunch in Sirmione',lead:'Lake fish — and it suits Tom for once.',stats:[{l:'Time',v:'12:45–2:00 PM'},{l:'Order',v:'Lavarello or trout'},{l:'Tom',v:'Mild, not fishy ✓'},{l:'Debi',v:'Cooked, not raw ✓'},{l:'Reserve',v:'Optional'}],desc:'Garda cooking means freshwater fish — lavarello, trout, pike with polenta — rather than sea fish, and these are mild and delicate rather than the strong flavours Tom avoids. This is one of the few places on the trip where the local speciality suits him better than it suits Angelo, and it works for Debi too since it is cooked. Harbour terraces charge for the view; one street back is better value.'},
+      d12d:{img:'italy-itinerary-images/d12c.jpg',alt:'Lakeside lunch in Sirmione',lead:'Lake fish — and it suits Tom for once.',stats:[{l:'Time',v:'12:45–2:00 PM'},{l:'Order',v:'Lavarello or trout'},{l:'Tom',v:'Mild, not fishy ✓'},{l:'Debi',v:'Cooked, not raw ✓'},{l:'Reserve',v:'Optional'}],desc:'Garda cooking means freshwater fish — lavarello, trout, pike with polenta — rather than sea fish, and these are mild and delicate rather than the strong flavours Tom avoids. This is one of the few places on the trip where the local speciality suits him better than it suits Angelo, and it works for Debi too since it is cooked. Harbour terraces charge for the view; one street back is better value.',lunchFrom:'Sirmione centro / harbour walk',lunchPicks:[
+        {name:'Osteria della Vecchia Posta',miles:0.10,blurb:'Historic-centre trattoria — pasta & secondi; outdoor tables, easy walk-in lunch.'},
+        {name:'Trattoria La Fiasca',miles:0.15,blurb:'Via Santa Maria Maggiore — lake & Mediterranean plates in a small family room.'},
+        {name:'Ristorante Al Pescatore',miles:0.22,blurb:'Lake-fish specialist — lavarello, tench, pike; order the mild Garda fish for Tom.'},
+        {name:'La Lugana Trattoria',miles:0.28,blurb:'Grilled lake fish in view — mid-range, usually no booking needed at lunch.'},
+        {name:'Trattoria Al Torcol',miles:0.30,blurb:'Quiet lane trattoria — lake fish & pasta one street back from the tourist harbour markup.'}
+      ]},
       d12b:{img:'italy-itinerary-images/d12b.jpg',alt:'Grotte di Catullo Sirmione',lead:'Roman villa ruins in the olive groves.',stats:[{l:'Time',v:'2:15–3:55 PM'},{l:'Entry',v:'~€8'},{l:'Getting there',v:'~20 min walk or shuttle'},{l:'Terrain',v:'Open, unshaded, uneven'},{l:'Last entry',v:'5:00 PM'}],desc:'The largest domestic Roman building in northern Italy — arches and vaults spread across the tip of the peninsula among ancient olive groves, lake on three sides. Named for Catullus, who wrote about Sirmione, though the villa postdates him. Be honest about this one: the site is big and exposed, the ground is uneven stone and gravel, and the return walk adds forty minutes. If the morning has used everyone up, a longer lunch and an earlier train is the better call.'},
       d12g:{img:'italy-itinerary-images/d5a.jpg',alt:'Train back to Verona',lead:'Bus, train, walk — about 85 minutes.',stats:[{l:'Time',v:'4:15–5:40 PM'},{l:'To station',v:'~15 min'},{l:'Train',v:'~25 min'},{l:'Walk home',v:'~12 min'},{l:'Frequency',v:'At least hourly'}],desc:'Listed as its own transport row rather than buried inside a break, so the timing is honest — this really is an hour and a half of travelling. Check the return departure before you leave the peninsula so you are not standing on a platform.'},
       d12e:{img:'italy-itinerary-images/d9u.jpg',alt:'Verona House before the Michelin dinner',lead:'Dressiest night of the Verona leg.',stats:[{l:'Time',v:'5:50–6:55 PM'},{l:'Leave by',v:'7:15 PM'},{l:'Table',v:'7:30 PM Il Desco'},{l:'Men',v:'Jacket, no tie needed'},{l:'Shoes',v:'Not sandals or trainers'}],desc:'Rest and change. Smart dress for Il Desco: a jacket for Angelo and Tom, a dress or smart separates for Debi, proper shoes. This is exactly why a shirt each went on the packing list.'},
@@ -3740,6 +3853,7 @@
         { l: 'Watch for', v: 'Church dress · cobblestones' }
       ], null, null);
       renderReservation('packing', false);
+      renderLunchPicks({});
       renderPackingBody();
       openPanelShell();
     }
@@ -3764,6 +3878,7 @@
         { l: 'Verona', v: '48-hour VeronaCard' }
       ], null, null);
       renderReservation('trip-notes', false);
+      renderLunchPicks({});
       el.listView.innerHTML =
         '<div class="tn-block">' +
           '<h4>Using the planner</h4>' +
@@ -3833,6 +3948,7 @@
       lead:   document.getElementById('pLead'),
       desc:   document.getElementById('pDesc'),
       panelNote: document.getElementById('pPanelNote'),
+      lunchPicks: document.getElementById('pLunchPicks'),
       tips:   document.getElementById('pTips'),
       reservation: document.getElementById('pReservation')
     };
@@ -4010,6 +4126,37 @@
       }
       el.panelNote.hidden = false;
       el.panelNote.innerHTML = html;
+    }
+
+    function formatMiles(mi) {
+      var n = Number(mi);
+      if (!isFinite(n) || n < 0) return '—';
+      if (n < 1) return n.toFixed(2);
+      return (Math.round(n * 100) / 100).toFixed(n < 10 ? 2 : 1);
+    }
+
+    function renderLunchPicks(enrich) {
+      var picks = enrich && enrich.lunchPicks;
+      if (!picks || !picks.length) {
+        el.lunchPicks.hidden = true;
+        el.lunchPicks.innerHTML = '';
+        return;
+      }
+      var sorted = picks.slice().sort(function (a, b) {
+        return (a.miles || 0) - (b.miles || 0);
+      });
+      var from = enrich.lunchFrom || 'previous stop';
+      var html = '<div class="p-lunch-picks-hd">Walk-in lunch picks</div>' +
+        '<p class="p-lunch-picks-sub">Sorted by walking distance from ' + escHtml(from) +
+        '. No reservation needed for a quick bite.</p>';
+      sorted.forEach(function (p) {
+        html += '<div class="p-lunch-pick">' +
+          '<div class="p-lunch-mi">' + formatMiles(p.miles) + '<small>mi</small></div>' +
+          '<div><div class="p-lunch-name">' + escHtml(p.name) + '</div>' +
+          '<div class="p-lunch-blurb">' + escHtml(p.blurb) + '</div></div></div>';
+      });
+      el.lunchPicks.hidden = false;
+      el.lunchPicks.innerHTML = html;
     }
 
     function renderStats(stats, loc, key) {
@@ -4214,6 +4361,7 @@
       renderStats(enrich.stats, locForKey(guideKey), guideKey);
       renderGuideList(guideKey, enrich.lead, enrich.desc || d.desc || '');
       el.tips.style.display = 'none';
+      renderLunchPicks({});
       renderReservation(guideKey, false);
       openPanelShell();
     }
@@ -4283,6 +4431,7 @@
 
       el.desc.textContent = enrich.desc || d.desc || '';
       renderPanelNote(enrich);
+      renderLunchPicks(enrich);
       if (d.tips) {
         el.tips.style.display = '';
         el.tips.innerHTML = '<b>Tip:</b> ' + d.tips;
@@ -4357,6 +4506,7 @@
 
       el.desc.textContent = enrich.desc || d.desc || '';
       renderPanelNote(enrich);
+      renderLunchPicks(enrich);
       if (d.tips) {
         el.tips.style.display = '';
         el.tips.innerHTML = '<b>Tip:</b> ' + d.tips;
