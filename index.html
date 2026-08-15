@@ -1067,7 +1067,7 @@
 
   /* ================================================================
      iPHONE / TOUCH  (≤480px — iPhone SE through Pro Max portrait)
-     Desktop layout above this breakpoint is unchanged.
+     iPad / tablet portrait uses a separate band just below.
      ================================================================ */
   @media (max-width: 480px) {
     html { scroll-behavior: auto; } /* smoother jump-scroll on touch */
@@ -1296,10 +1296,213 @@
     footer { padding: 32px 14px calc(40px + env(safe-area-inset-bottom)); }
   }
 
-  /* Desktop-only: hide mobile grab handle */
+  /* Desktop-only: hide mobile grab handle (shown again in phone + iPad sheet modes) */
   .panel-grab { display: none; }
   @media (max-width: 480px) {
     .panel-grab { display: block; }
+  }
+
+  /* ================================================================
+     iPAD / TABLET
+     Portrait iPads (incl. 12.9" at 1024) and any narrow width ≤900
+     (split view / Stage Manager). Phones stay on the ≤480 rules above.
+     ================================================================ */
+  @media (min-width: 481px) and (max-width: 900px),
+         (min-width: 481px) and (max-width: 1024px) and (orientation: portrait) {
+    html { scroll-behavior: auto; }
+
+    body {
+      padding-bottom: env(safe-area-inset-bottom);
+      -webkit-text-size-adjust: 100%;
+    }
+    body.panel-open { overflow: hidden; position: fixed; width: 100%; }
+
+    .wrap { padding: 0 20px; }
+
+    /* --- Hero: use the extra width without going full desktop tall --- */
+    .hero { padding: 56px 24px 58px; }
+    .hero .chips { gap: 8px; margin-top: 20px; justify-content: center; }
+    .hero-links { gap: 10px; margin-top: 20px; }
+    .hero-link { padding: 11px 18px; font-size: 14px; }
+
+    /* --- Stats: 2×2 so labels stay readable --- */
+    .stats {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: -32px;
+      max-width: 640px;
+    }
+    .stats .stat { padding: 16px 14px; }
+    .stats .stat .num { font-size: 28px; }
+    .stats .stat .lbl { font-size: 11px; letter-spacing: 0.08em; margin-top: 7px; }
+
+    /* --- Calendar: keep week grid, tighten for portrait --- */
+    .calbar { margin-top: 26px; }
+    .calbar .wrap { padding: 12px 18px 14px; }
+    .cal-cities { gap: 10px; font-size: 11px; }
+    .cal-grid { gap: 7px; }
+    .cal-cell { min-height: 52px; padding: 7px 4px 6px; touch-action: manipulation; }
+    .cal-cell .cc-dt { font-size: 18px; }
+    .cal-cell:hover { transform: none; }
+    .cal-cell:active { transform: scale(0.96); }
+    article.day, #day-0 { scroll-margin-top: var(--calbar-offset, 210px); }
+
+    /* --- Day cards --- */
+    section.city { padding: 34px 0 6px; }
+    .city-head h2 { font-size: 32px; }
+    .city-guide { max-width: none; }
+    .day { border-radius: 16px; margin-bottom: 18px; }
+    .day-top { padding: 16px 18px; gap: 14px; flex-wrap: wrap; }
+    .day-hotel { text-align: left; width: 100%; }
+    .day-body { padding: 6px 14px 14px; }
+
+    /* --- Activity rows → touch cards (5-col table is too tight here) --- */
+    ul.tl { display: block; }
+    li.tl-head { display: none; }
+
+    li.row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-template-rows: auto auto auto auto;
+      column-gap: 12px;
+      row-gap: 4px;
+      padding: 14px 40px 14px 14px;
+      margin: 0;
+      min-height: 52px;
+      border-radius: 12px;
+      border-bottom: 1px solid var(--line);
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+    }
+    li.row > span {
+      display: block;
+      width: auto !important;
+      border-bottom: none;
+      padding: 0;
+    }
+    li.row:hover > span { background: transparent; }
+    li.row:active { background: #ebe3d6; }
+    li.row::after {
+      content: "›";
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--muted);
+      opacity: 0.45;
+    }
+    li.row .time {
+      grid-column: 1;
+      grid-row: 1;
+      text-align: left;
+      font-size: 13px;
+    }
+    li.row .stat {
+      grid-column: 2;
+      grid-row: 1;
+      align-self: start;
+      text-align: right;
+      padding: 0;
+    }
+    li.row .stat-badge { font-size: 10px; padding: 4px 8px; }
+    li.row .act {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      font-size: 16px;
+      font-weight: 700;
+      white-space: normal;
+    }
+    li.row .loc {
+      grid-column: 1 / -1;
+      grid-row: 3;
+      font-size: 14px;
+      color: var(--muted);
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+    }
+    li.row .mode {
+      grid-column: 1 / -1;
+      grid-row: 4;
+      font-size: 13px;
+      color: var(--muted);
+      white-space: normal;
+    }
+    li.row .mode::before { content: "→ "; font-weight: 700; }
+
+    .travel { padding: 14px 16px; font-size: 14px; margin-bottom: 18px; }
+
+    /* --- Detail panel → taller bottom sheet --- */
+    #overlay {
+      background: rgba(30,20,12,0.5);
+      backdrop-filter: blur(2px);
+    }
+    #panel {
+      top: auto;
+      bottom: 0;
+      left: 50%;
+      right: auto;
+      width: min(720px, 100%);
+      max-width: none;
+      height: auto;
+      max-height: min(86vh, 820px);
+      border-radius: 20px 20px 0 0;
+      transform: translate(-50%, 105%);
+      transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+      box-shadow: 0 -14px 52px rgba(43,33,24,0.22);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    #panel.open { transform: translate(-50%, 0); }
+
+    .panel-grab {
+      display: block;
+      width: 40px;
+      height: 5px;
+      background: var(--line);
+      border-radius: 3px;
+      margin: 12px auto 0;
+      flex-shrink: 0;
+    }
+    .panel-hd { padding: 16px 24px 18px; }
+    .panel-hd h3 { font-size: 22px; padding-right: 52px; }
+    .panel-close {
+      top: 14px;
+      right: 16px;
+      width: 44px;
+      height: 44px;
+      font-size: 22px;
+    }
+    .panel-body {
+      padding: 18px 24px calc(28px + env(safe-area-inset-bottom));
+      overscroll-behavior: contain;
+    }
+    .p-photo-wrap { margin: -4px -24px 16px; }
+
+    .pk-tabs { gap: 8px; }
+    .pk-tab { padding: 10px 14px; font-size: 14px; }
+    .tn-block { padding: 15px 16px; }
+
+    footer { padding: 36px 20px calc(44px + env(safe-area-inset-bottom)); }
+  }
+
+  /* iPad landscape / small laptops: keep the table, ease the squeeze */
+  @media (min-width: 901px) and (max-width: 1180px) and (orientation: landscape) {
+    .wrap { padding: 0 20px; }
+    .stats { gap: 12px; }
+    .stats .stat .lbl { letter-spacing: 0.09em; font-size: 11px; }
+    li.tl-head,
+    li.row {
+      grid-template-columns: 100px 118px minmax(0, 1fr) minmax(150px, 210px) 84px;
+      column-gap: 8px;
+    }
+    #panel {
+      width: min(460px, 44vw);
+    }
+    .cal-cities { gap: 10px; font-size: 11px; }
+    article.day, #day-0 { scroll-margin-top: var(--calbar-offset, 220px); }
   }
 
   /* ---------- PASSWORD GATE ---------- */
@@ -4274,13 +4477,14 @@
     }
     renderTripMetrics();
 
-    /* Swipe down to dismiss bottom sheet on iPhone */
+    /* Swipe down to dismiss bottom sheet on iPhone + iPad */
     var touchStartY = 0;
+    var sheetMedia = '(max-width: 480px), ((min-width: 481px) and (max-width: 900px)), ((min-width: 481px) and (max-width: 1024px) and (orientation: portrait))';
     panel.addEventListener('touchstart', function (e) {
       touchStartY = e.changedTouches[0].clientY;
     }, { passive: true });
     panel.addEventListener('touchend', function (e) {
-      if (!window.matchMedia('(max-width: 480px)').matches) return;
+      if (!window.matchMedia(sheetMedia).matches) return;
       var dy = e.changedTouches[0].clientY - touchStartY;
       if (dy > 70) closePanel();
     }, { passive: true });
