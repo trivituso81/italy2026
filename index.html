@@ -1037,6 +1037,7 @@
     font-size: 13px; font-weight: 700; color: var(--milan);
     cursor: pointer;
   }
+  .panel-back[hidden] { display: none !important; }
   .panel-back:hover { text-decoration: underline; }
 
   /* ---------- DAY CARD ---------- */
@@ -4366,13 +4367,14 @@
       openPanelShell();
     }
 
-    function openPanelByKey(k) {
+    function openPanelByKey(k, opts) {
       var d = DETAILS[k] || {};
       var enrich = SITE_ENRICH[k] || {};
       var type = d.type || 'Culture';
       var color = TYPE_COLOR[type] || 'var(--muted)';
       var guideKey = top10GuideForItem(k);
       var isTop10Item = !!guideKey;
+      var fromTop10List = !!(opts && opts.fromTop10 && isTop10Item);
 
       if (k === 'packing') {
         openPackingList();
@@ -4389,8 +4391,9 @@
       }
 
       showListMode(false);
-      el.back.hidden = !isTop10Item;
-      if (isTop10Item) currentTop10Guide = guideKey;
+      // Only show ← All 10 when drilling in from a Top 10 / Wishlist list.
+      el.back.hidden = !fromTop10List;
+      currentTop10Guide = fromTop10List ? guideKey : null;
 
       var guide = isTop10Item ? TOP10_GUIDES[guideKey] : null;
       var rank = isTop10Item ? TOP10_RANK[guideKey][k] : 0;
@@ -4560,7 +4563,7 @@
       var guide = e.target.closest('.city-guide[data-k]');
       if (guide) { e.preventDefault(); openPanelByKey(guide.getAttribute('data-k')); return; }
       var topItem = e.target.closest('.top10-item[data-k]');
-      if (topItem) { e.preventDefault(); openPanelByKey(topItem.getAttribute('data-k')); return; }
+      if (topItem) { e.preventDefault(); openPanelByKey(topItem.getAttribute('data-k'), { fromTop10: true }); return; }
       var row = e.target.closest('li.row');
       if (row) { e.preventDefault(); openPanel(row); }
     });
