@@ -3886,7 +3886,7 @@
           '<p class="hint hint-desktop" style="text-align:left;margin:0 0 8px">Click any activity row to open details — restaurants, attractions, logistics &amp; tips</p>' +
           '<p class="hint hint-phone" style="text-align:left;margin:0 0 8px">Tap any activity for full details</p>' +
           '<p><span class="mode-res" title="Book in advance">R</span> in Transport = book in advance (flights, private transfers, private boat). <span class="mode-res mode-res-done" title="Booked">R</span> green = transport booked. <b>Reservation</b> column = activity tickets, meals, and tours only — not transport. <b>Train</b> rows = high-speed rail (Frecciarossa / Italo); buy at the station or app same day — advance booking optional for cheaper fares or guaranteed seats together.</p>' +
-          '<p><b>Res: Needed</b> = must book in advance (timed entry, sold-out risk, or fixed seat). <b>Res: Optional</b> = walk-in OK; booking only if you want a guaranteed table or skip lines. Blank = no reservation required. Activity <b>Skip OK</b> = you can drop this stop — separate from whether a reservation is needed if you go.</p>' +
+          '<p><b>Res: Needed</b> = must book in advance (timed entry, sold-out risk, or fixed seat). <b>Res: Optional</b> = walk-in OK; booking only if you want a guaranteed table or skip lines. Blank = no reservation required. Activity <b>Skip OK</b> = you can drop this stop — separate from whether a reservation is needed if you go. Skip OK + Res: Optional (or any incomplete booking on a Skip OK stop) does not hold the day ✓ at yellow once every required reservation is settled.</p>' +
           '<p>👔 after a location = modest dress (shoulders &amp; knees covered). 🥂 = smart / fine dining dress.</p>' +
         '</div>' +
         '<div class="tn-block tn-diet">' +
@@ -4582,8 +4582,11 @@
        flight — either a booking window that has not opened yet, or a request
        already sent and awaiting the venue's reply.
        "Res: Optional" rows never block either way.
-       Once a booking window opens, that row becomes outstanding and both
-       checks disappear until it is confirmed. */
+       Skip OK rows: incomplete reservations (Needed / Optional / Pending)
+       also never block — you can drop the whole stop, so they must not keep
+       the day check yellow when every required booking is settled.
+       Once a booking window opens on a required (non-skip) row, that row
+       becomes outstanding and both checks disappear until it is confirmed. */
     var TRIP_YEAR = 2026;
     var MONTH_ABBR = { jan:0, feb:1, mar:2, apr:3, may:4, jun:5, jul:6, aug:7, sep:8, oct:9, nov:10, dec:11 };
 
@@ -4616,13 +4619,17 @@
 
         var now = new Date();
         var done = 0, outstanding = 0, notYet = 0, awaiting = 0;
-        Array.prototype.forEach.call(day.querySelectorAll('.day-body .stat'), function (cell) {
-          var badge = cell.querySelector('.stat-badge');
+        Array.prototype.forEach.call(day.querySelectorAll('.day-body li.row'), function (row) {
+          var badge = row.querySelector('.stat .stat-badge');
           if (!badge) return;
           if (badge.classList.contains('st-done')) { done++; return; }
+          // Walk-in optional, or Skip OK with any incomplete reservation —
+          // neither should keep the day check from going green.
+          if (badge.classList.contains('st-flex')) return;
+          if (row.hasAttribute('data-skip')) return;
           if (badge.classList.contains('st-pending')) { awaiting++; return; }
           if (!badge.classList.contains('st-todo')) return;
-          var hint = cell.querySelector('.stat-hint');
+          var hint = row.querySelector('.stat-hint');
           var opens = bookingOpensAt(hint ? hint.textContent : '');
           if (opens && now < opens) notYet++; else outstanding++;
         });
