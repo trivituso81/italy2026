@@ -256,12 +256,6 @@
   .calbar.stuck .cal-head { display: none; }
   .calbar.stuck .cal-dow { display: none; }
   .calbar.stuck .cal-cell.empty { display: none !important; }
-  @media (min-width: 481px) {
-    .calbar.stuck .cal-grid {
-      grid-template-columns: repeat(15, minmax(38px, 1fr));
-      gap: 4px;
-    }
-  }
   .calbar.stuck .cal-cell { padding: 4px 2px 3px; }
   .calbar.stuck .cal-cell .cc-mo,
   .calbar.stuck .cal-cell .cc-dn { display: none; }
@@ -276,6 +270,24 @@
   .calbar.stuck .cs-badge { font-size: 11px; padding: 4px 7px; min-width: 36px; }
   .calbar.stuck .cs-text b { font-size: 13px; }
   .calbar.stuck .cs-text span { display: none; }
+
+  /* Tablet / iPad (any orientation, incl. Pro landscape): stuck day strip
+     needs a real finger target — desktop-compact padding is too short. */
+  @media (min-width: 481px) {
+    .calbar.stuck .wrap { padding: 12px 22px 14px; }
+    .calbar.stuck .cal-grid {
+      grid-template-columns: repeat(15, minmax(40px, 1fr));
+      gap: 6px;
+    }
+    .calbar.stuck .cal-cell {
+      min-height: 52px;
+      padding: 14px 4px;
+    }
+    .calbar.stuck .cal-cell .cc-dt { font-size: 18px; line-height: 1; }
+    .calbar.stuck .cal-summary { margin-top: 10px; gap: 10px; }
+    .calbar.stuck .cs-badge { font-size: 12px; padding: 6px 9px; min-width: 40px; }
+    .calbar.stuck .cs-text b { font-size: 14px; }
+  }
 
   /* offset so day cards clear the sticky calendar when jumped to */
   article.day, #day-0 { scroll-margin-top: var(--calbar-offset, 250px); }
@@ -1389,18 +1401,6 @@
     .cal-cell .cc-dt { font-size: 18px; }
     .cal-cell:hover { transform: none; }
     .cal-cell:active { transform: scale(0.96); }
-
-    /* Stuck day strip: taller tap targets (Apple HIG ~44pt) */
-    .calbar.stuck .wrap { padding: 10px 18px 12px; }
-    .calbar.stuck .cal-grid { gap: 6px; }
-    .calbar.stuck .cal-cell {
-      min-height: 44px;
-      padding: 10px 2px;
-    }
-    .calbar.stuck .cal-cell .cc-dt { font-size: 17px; }
-    .calbar.stuck .cal-summary { margin-top: 8px; gap: 10px; }
-    .calbar.stuck .cs-badge { font-size: 12px; padding: 5px 8px; min-width: 40px; }
-    .calbar.stuck .cs-text b { font-size: 14px; }
     article.day, #day-0 { scroll-margin-top: var(--calbar-offset, 210px); }
 
     /* --- Day cards --- */
@@ -1568,15 +1568,6 @@
       width: min(460px, 44vw);
     }
     .cal-cities { gap: 10px; font-size: 11px; }
-    /* Stuck day strip: same taller targets as portrait iPad */
-    .calbar.stuck .wrap { padding: 10px 20px 12px; }
-    .calbar.stuck .cal-grid { gap: 6px; }
-    .calbar.stuck .cal-cell {
-      min-height: 44px;
-      padding: 10px 2px;
-    }
-    .calbar.stuck .cal-cell .cc-dt { font-size: 17px; }
-    .calbar.stuck .cal-summary { margin-top: 8px; }
     article.day, #day-0 { scroll-margin-top: var(--calbar-offset, 220px); }
   }
 
