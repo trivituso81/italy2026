@@ -2357,11 +2357,34 @@
       document.documentElement.style.setProperty('--calbar-offset', ((isStuck ? calbarHeights.compact : calbarHeights.full) + 16) + 'px');
     }
 
+    function pageScrollY() {
+      return window.scrollY || document.documentElement.scrollTop || 0;
+    }
+
+    /* Don't collapse into the compact bar until the user has actually scrolled
+       down the page. Requires both: past the calendar's natural top, and at
+       least ~10% of the document (with a small floor so short pages still work). */
+    function stickThreshold() {
+      var docH = Math.max(
+        document.documentElement.scrollHeight,
+        document.body ? document.body.scrollHeight : 0
+      );
+      var tenPercent = Math.max(120, Math.round(docH * 0.1));
+      return Math.max(calbarTop, tenPercent);
+    }
+
     function cacheCalbarHeights() {
       var wasStuck = isStuck;
       stuckLock = true;
       calbar.classList.remove('stuck');
       calbarWrap.style.height = '';
+      // If the itinerary is still behind the auth gate, sizes are 0 — skip.
+      if (!document.documentElement.classList.contains('unlocked') ||
+          calbar.offsetParent === null ||
+          calbar.offsetHeight < 8) {
+        stuckLock = false;
+        return;
+      }
       calbarHeights.full = calbar.offsetHeight;
       calbar.classList.add('stuck');
       calbarHeights.compact = calbar.offsetHeight;
@@ -2404,10 +2427,13 @@
 
     function checkStuck() {
       if (stuckLock) return;
-      var y = window.scrollY;
-      if (!isStuck && y >= calbarTop) {
+      if (!calbarHeights.full) return;
+      var y = pageScrollY();
+      var enterAt = stickThreshold();
+      var leaveAt = Math.max(0, enterAt - stuckDelta - 24);
+      if (!isStuck && y >= enterAt) {
         setStuck(true);
-      } else if (isStuck && y < calbarTop - stuckDelta) {
+      } else if (isStuck && y < leaveAt) {
         setStuck(false);
       }
     }
@@ -2418,9 +2444,24 @@
       if (!isStuck) calbarWrap.style.height = '';
     });
 
-    cacheCalbarHeights();
-    if (window.scrollY >= calbarTop) setStuck(true, true);
-    window.addEventListener('resize', cacheCalbarHeights, { passive: true });
+    function refreshCalbar(instantUnstick) {
+      cacheCalbarHeights();
+      var y = pageScrollY();
+      var enterAt = stickThreshold();
+      if (y >= enterAt) setStuck(true, true);
+      else if (isStuck || instantUnstick) setStuck(false, true);
+    }
+
+    refreshCalbar(true);
+    window.addEventListener('resize', function () { refreshCalbar(false); }, { passive: true });
+    window.addEventListener('pageshow', function () { refreshCalbar(true); });
+    window.addEventListener('load', function () { refreshCalbar(true); });
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () { refreshCalbar(true); }).catch(function () {});
+    }
+    document.addEventListener('italy:unlocked', function () {
+      requestAnimationFrame(function () { refreshCalbar(true); });
+    });
 
     // Scroll-spy: highlight the day currently nearest the top (below the calendar).
     function onScroll() {
@@ -4545,6 +4586,7 @@
       if (persist) localStorage.setItem(STORAGE_KEY, '1');
       document.documentElement.classList.add('unlocked');
       error.classList.remove('visible');
+      document.dispatchEvent(new CustomEvent('italy:unlocked'));
     }
 
     if (document.documentElement.classList.contains('unlocked')) return;
