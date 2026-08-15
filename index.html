@@ -416,87 +416,42 @@
   .hint { text-align: center; font-size: 12px; font-style: italic; color: var(--muted); margin: 0 0 6px; }
   .hint-phone { display: none; }
 
-  /* Collapsed trip notes — keep legend/diet/card off the default scroll path */
-  .guide-notes {
-    max-width: 780px;
-    margin: 4px auto 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .guide-note {
+  /* ---------- TRIP NOTES (panel) ---------- */
+  .tn-block {
+    margin: 0 0 16px;
+    padding: 14px 15px;
     border: 1px solid var(--line);
-    border-radius: 10px;
-    background: var(--card);
-    overflow: hidden;
+    border-radius: 12px;
+    background: #faf7f2;
   }
-  .guide-note summary {
-    list-style: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 11px 14px;
+  .tn-block h4 {
+    margin: 0 0 8px;
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
     color: var(--ink);
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
   }
-  .guide-note summary::-webkit-details-marker { display: none; }
-  .guide-note summary::after {
-    content: "›";
-    margin-left: auto;
-    font-size: 18px;
-    font-weight: 300;
+  .tn-block p {
+    margin: 0 0 8px;
+    font-size: 13.5px;
+    line-height: 1.6;
     color: var(--muted);
-    transform: rotate(90deg);
-    transition: transform .15s ease;
   }
-  .guide-note[open] summary::after { transform: rotate(-90deg); }
-  .guide-note .gn-icon {
-    flex: 0 0 auto;
-    width: 28px; height: 28px;
-    border-radius: 8px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    line-height: 1;
-    background: #f4eee3;
-  }
-  .guide-note .gn-body {
-    padding: 0 14px 12px;
-    font-size: 12px;
-    line-height: 1.55;
-    color: var(--muted);
-    text-align: left;
-  }
-  .guide-note .gn-body p { margin: 0 0 8px; }
-  .guide-note .gn-body p:last-child { margin-bottom: 0; }
-  .guide-note .gn-body b { color: var(--ink); font-weight: 700; }
-  .guide-note .gn-body .hint {
-    text-align: left;
-    margin: 0 0 10px;
-    font-size: 12px;
-  }
-  .guide-note .gn-diet,
-  .guide-note .gn-card {
-    font-style: normal;
-    padding: 9px 12px;
-    border-radius: 8px;
-    margin-top: 10px;
-  }
-  .guide-note .gn-diet {
-    border: 1px solid rgba(190,120,60,.34);
+  .tn-block p:last-child { margin-bottom: 0; }
+  .tn-block b { color: var(--ink); }
+  .tn-block.tn-diet {
+    border-color: rgba(190,120,60,.34);
     border-left: 3px solid #c07a34;
     background: rgba(200,130,60,.07);
   }
-  .guide-note .gn-card {
-    border: 1px solid rgba(70,120,170,.34);
+  .tn-block.tn-card {
+    border-color: rgba(70,120,170,.34);
     border-left: 3px solid #3f7fb5;
     background: rgba(60,130,200,.07);
   }
+  .tn-block.tn-diet h4 { color: #8a5a22; }
+  .tn-block.tn-card h4 { color: #2f5f8a; }
 
   /* ---------- SIDE PANEL ---------- */
   #overlay {
@@ -1182,9 +1137,6 @@
     /* --- Hint --- */
     .hint-desktop { display: none; }
     .hint-phone { display: block; font-size: 11px; margin: 0 0 8px; padding: 0 4px; }
-    .guide-notes { margin: 0 auto 12px; gap: 6px; }
-    .guide-note summary { padding: 12px 14px; font-size: 13px; }
-    .guide-note .gn-body { font-size: 12px; padding: 0 14px 12px; }
 
     /* --- Day cards --- */
     section.city { padding: 28px 0 4px; }
@@ -1510,6 +1462,11 @@
         <span class="hl-text">Packing List</span>
         <span class="hl-arrow" aria-hidden="true">›</span>
       </button>
+      <button type="button" class="hero-link" data-k="trip-notes" aria-label="Open trip notes">
+        <span class="hl-icon" aria-hidden="true">ⓘ</span>
+        <span class="hl-text">Trip Notes</span>
+        <span class="hl-arrow" aria-hidden="true">›</span>
+      </button>
     </div>
   </header>
 
@@ -1629,21 +1586,6 @@
   </div>
 
   <div class="wrap">
-
-    <div class="guide-notes">
-      <details class="guide-note legend">
-        <summary><span class="gn-icon" aria-hidden="true">ⓘ</span> Trip notes · legend, diet &amp; VeronaCard</summary>
-        <div class="gn-body">
-          <p class="hint hint-desktop">Click any activity row to open details — restaurants, attractions, logistics &amp; tips</p>
-          <p class="hint hint-phone">Tap any activity for full details</p>
-          <p><span class="mode-res" title="Book in advance">R</span> in Transport = book in advance (flights, private transfers, private boat). <span class="mode-res mode-res-done" title="Booked">R</span> green = transport booked. <b>Reservation</b> column = activity tickets, meals, and tours only — not transport. <b>Train</b> rows = high-speed rail (Frecciarossa / Italo); buy at the station or app same day — advance booking optional for cheaper fares or guaranteed seats together.</p>
-          <p><b>Res: Needed</b> = must book in advance (timed entry, sold-out risk, or fixed seat). <b>Res: Optional</b> = walk-in OK; booking only if you want a guaranteed table or skip lines. Blank = no reservation required. Activity <b>Skip OK</b> = you can drop this stop — separate from whether a reservation is needed if you go.</p>
-          <p>👔 after a location = modest dress (shoulders &amp; knees covered). 🥂 = smart / fine dining dress.</p>
-          <p class="gn-diet"><b>At the table:</b> <b>Debi</b> — no raw fish, no red meat (beef, veal, liver, horse, donkey, game). Poultry and cooked fish are fine. <b>Tom</b> — no strongly fishy flavours: anchovy, salt cod, sardines, cuttlefish ink. Mild white fish and shellfish in sauce are fine. <b>Debi &amp; Tom, pork:</b> not as a dish — no roast pork, chops, sausage or pork ragù — but <i>cured</i> pork is the standing exception, so prosciutto, speck, soppressa, salami and bacon are all welcome. That matters more than it sounds in the Veneto, where salumi boards and cured-meat cicchetti are often the easiest thing on the menu for them. <b>Debi &amp; Tom, sweets:</b> both love gelato and ice cream, and anything from a bakery or pastry counter — treat a gelateria stop or a morning pastry as part of the plan, not a detour. <b>Angelo</b> — no restrictions, so the regional specialities that rule the other two out are noted as his.</p>
-          <p class="gn-card"><b>Verona: buy a 48-hour VeronaCard (€32 each).</b> Activate it Thursday morning at the Arena and it runs to Saturday morning, covering the Arena, Sant'Anastasia, the Duomo complex, Piazza dei Signori's Arche Scaligere, the Teatro Romano museum and Torre dei Lamberti — roughly €40 of entries — plus free ATV city buses. <b>Not covered:</b> the Castel San Pietro funicular (~€2 each way), the Lamberti lift (€1), and Giardino Giusti, which is only discounted (€11 → €8). <b>Book separately and in advance:</b> Casa di Giulietta sells timed tickets <i>online only</i> at museiverona.com — no door sales even with the card. Sunday's Castelvecchio (€6) and San Zeno (€4) fall outside the 48 hours; just pay at the door.</p>
-        </div>
-      </details>
-    </div>
 
     <!-- ============ DAY 0 ============ -->
     <section class="city plain">
@@ -3525,6 +3467,46 @@
       openPanelShell();
     }
 
+    function openTripNotes() {
+      currentTop10Guide = null;
+      showListMode(true);
+      el.listView.dataset.theme = 'wishlist';
+      el.accent.style.background = 'var(--muted)';
+      el.type.textContent = 'Guide';
+      el.type.style.background = 'var(--muted)';
+      el.title.textContent = 'Trip Notes';
+      el.day.textContent = 'Legend · diet · VeronaCard';
+      el.back.style.color = 'var(--muted)';
+      el.photoWrap.hidden = true;
+      el.photo.removeAttribute('src');
+      el.tips.style.display = 'none';
+      renderStats([
+        { l: 'How to use', v: 'Tap any activity' },
+        { l: 'Transport R', v: 'Book in advance' },
+        { l: 'Diet', v: 'Debi · Tom · Angelo' },
+        { l: 'Verona', v: '48-hour VeronaCard' }
+      ], null, null);
+      renderReservation('trip-notes', false);
+      el.listView.innerHTML =
+        '<div class="tn-block">' +
+          '<h4>Using the planner</h4>' +
+          '<p class="hint hint-desktop" style="text-align:left;margin:0 0 8px">Click any activity row to open details — restaurants, attractions, logistics &amp; tips</p>' +
+          '<p class="hint hint-phone" style="text-align:left;margin:0 0 8px">Tap any activity for full details</p>' +
+          '<p><span class="mode-res" title="Book in advance">R</span> in Transport = book in advance (flights, private transfers, private boat). <span class="mode-res mode-res-done" title="Booked">R</span> green = transport booked. <b>Reservation</b> column = activity tickets, meals, and tours only — not transport. <b>Train</b> rows = high-speed rail (Frecciarossa / Italo); buy at the station or app same day — advance booking optional for cheaper fares or guaranteed seats together.</p>' +
+          '<p><b>Res: Needed</b> = must book in advance (timed entry, sold-out risk, or fixed seat). <b>Res: Optional</b> = walk-in OK; booking only if you want a guaranteed table or skip lines. Blank = no reservation required. Activity <b>Skip OK</b> = you can drop this stop — separate from whether a reservation is needed if you go.</p>' +
+          '<p>👔 after a location = modest dress (shoulders &amp; knees covered). 🥂 = smart / fine dining dress.</p>' +
+        '</div>' +
+        '<div class="tn-block tn-diet">' +
+          '<h4>At the table</h4>' +
+          '<p><b>Debi</b> — no raw fish, no red meat (beef, veal, liver, horse, donkey, game). Poultry and cooked fish are fine. <b>Tom</b> — no strongly fishy flavours: anchovy, salt cod, sardines, cuttlefish ink. Mild white fish and shellfish in sauce are fine. <b>Debi &amp; Tom, pork:</b> not as a dish — no roast pork, chops, sausage or pork ragù — but <i>cured</i> pork is the standing exception, so prosciutto, speck, soppressa, salami and bacon are all welcome. That matters more than it sounds in the Veneto, where salumi boards and cured-meat cicchetti are often the easiest thing on the menu for them. <b>Debi &amp; Tom, sweets:</b> both love gelato and ice cream, and anything from a bakery or pastry counter — treat a gelateria stop or a morning pastry as part of the plan, not a detour. <b>Angelo</b> — no restrictions, so the regional specialities that rule the other two out are noted as his.</p>' +
+        '</div>' +
+        '<div class="tn-block tn-card">' +
+          '<h4>VeronaCard</h4>' +
+          '<p><b>Verona: buy a 48-hour VeronaCard (€32 each).</b> Activate it Thursday morning at the Arena and it runs to Saturday morning, covering the Arena, Sant\'Anastasia, the Duomo complex, Piazza dei Signori\'s Arche Scaligere, the Teatro Romano museum and Torre dei Lamberti — roughly €40 of entries — plus free ATV city buses. <b>Not covered:</b> the Castel San Pietro funicular (~€2 each way), the Lamberti lift (€1), and Giardino Giusti, which is only discounted (€11 → €8). <b>Book separately and in advance:</b> Casa di Giulietta sells timed tickets <i>online only</i> at museiverona.com — no door sales even with the card. Sunday\'s Castelvecchio (€6) and San Zeno (€4) fall outside the 48 hours; just pay at the door.</p>' +
+        '</div>';
+      openPanelShell();
+    }
+
 
     var overlay = document.getElementById('overlay');
     var panel   = document.getElementById('panel');
@@ -3969,6 +3951,10 @@
 
       if (k === 'packing') {
         openPackingList();
+        return;
+      }
+      if (k === 'trip-notes') {
+        openTripNotes();
         return;
       }
 
