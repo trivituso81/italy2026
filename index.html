@@ -1389,6 +1389,18 @@
     .cal-cell .cc-dt { font-size: 18px; }
     .cal-cell:hover { transform: none; }
     .cal-cell:active { transform: scale(0.96); }
+
+    /* Stuck day strip: taller tap targets (Apple HIG ~44pt) */
+    .calbar.stuck .wrap { padding: 10px 18px 12px; }
+    .calbar.stuck .cal-grid { gap: 6px; }
+    .calbar.stuck .cal-cell {
+      min-height: 44px;
+      padding: 10px 2px;
+    }
+    .calbar.stuck .cal-cell .cc-dt { font-size: 17px; }
+    .calbar.stuck .cal-summary { margin-top: 8px; gap: 10px; }
+    .calbar.stuck .cs-badge { font-size: 12px; padding: 5px 8px; min-width: 40px; }
+    .calbar.stuck .cs-text b { font-size: 14px; }
     article.day, #day-0 { scroll-margin-top: var(--calbar-offset, 210px); }
 
     /* --- Day cards --- */
@@ -1556,6 +1568,15 @@
       width: min(460px, 44vw);
     }
     .cal-cities { gap: 10px; font-size: 11px; }
+    /* Stuck day strip: same taller targets as portrait iPad */
+    .calbar.stuck .wrap { padding: 10px 20px 12px; }
+    .calbar.stuck .cal-grid { gap: 6px; }
+    .calbar.stuck .cal-cell {
+      min-height: 44px;
+      padding: 10px 2px;
+    }
+    .calbar.stuck .cal-cell .cc-dt { font-size: 17px; }
+    .calbar.stuck .cal-summary { margin-top: 8px; }
     article.day, #day-0 { scroll-margin-top: var(--calbar-offset, 220px); }
   }
 
