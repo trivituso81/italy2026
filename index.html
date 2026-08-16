@@ -191,6 +191,51 @@
   .cal-cell .cc-mo { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
   .cal-cell .cc-dt { font-size: 19px; font-weight: 800; line-height: 1; color: var(--ink); }
   .cal-cell .cc-dn { font-size: 9px; font-weight: 700; color: var(--muted); letter-spacing: 0.04em; }
+  .cal-cell .cc-res {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    margin-top: 3px;
+    line-height: 1;
+    font-weight: 800;
+  }
+  .cal-cell .cc-res.cc-res-done,
+  .cal-cell .cc-res.cc-res-pending {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    font-size: 11px;
+  }
+  .cal-cell .cc-res.cc-res-done {
+    background: #e7f6ea;
+    color: #1f7a3d;
+  }
+  .cal-cell .cc-res.cc-res-pending {
+    background: #fff8e1;
+    color: #8a6d00;
+  }
+  .cal-cell .cc-res.cc-res-open {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #c62828;
+    font-size: 0;
+  }
+  /* Sticky strip: sit the status mark in the space under the day number */
+  .calbar.stuck .cal-cell .cc-res { display: inline-flex; }
+  .cal-cell.active .cc-res.cc-res-done {
+    background: rgba(255,255,255,0.95);
+    color: #1f7a3d;
+  }
+  .cal-cell.active .cc-res.cc-res-pending {
+    background: rgba(255,255,255,0.95);
+    color: #8a6d00;
+  }
+  .cal-cell.active .cc-res.cc-res-open {
+    background: #ff8a80;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.55);
+  }
 
   .cal-cell:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
 
@@ -256,7 +301,7 @@
   .calbar.stuck .cal-head { display: none; }
   .calbar.stuck .cal-dow { display: none; }
   .calbar.stuck .cal-cell.empty { display: none !important; }
-  .calbar.stuck .cal-cell { padding: 4px 2px 3px; }
+  .calbar.stuck .cal-cell { padding: 6px 2px 5px; }
   .calbar.stuck .cal-cell .cc-mo,
   .calbar.stuck .cal-cell .cc-dn { display: none; }
   .calbar.stuck .cal-cell .cc-dt { font-size: 15px; }
@@ -281,7 +326,7 @@
     }
     .calbar.stuck .cal-cell {
       min-height: 52px;
-      padding: 14px 4px;
+      padding: 10px 4px 8px;
     }
     .calbar.stuck .cal-cell .cc-dt { font-size: 18px; line-height: 1; }
     .calbar.stuck .cal-summary { margin-top: 10px; gap: 10px; }
@@ -1188,7 +1233,11 @@
     .cal-cell:hover { transform: none; box-shadow: none; }
     .cal-cell:active { transform: scale(0.94); }
 
-    .calbar.stuck .wrap { padding: 5px 14px 7px; }
+    .calbar.stuck .wrap { padding: 6px 14px 8px; }
+    .calbar.stuck .cal-cell {
+      min-height: 48px;
+      padding: 8px 2px 6px;
+    }
     .cal-summary {
       margin-top: 8px;
       padding-top: 8px;
@@ -2521,6 +2570,9 @@
       document.fonts.ready.then(function () { refreshCalbar(true); }).catch(function () {});
     }
     document.addEventListener('italy:unlocked', function () {
+      requestAnimationFrame(function () { refreshCalbar(true); });
+    });
+    document.addEventListener('italy:daystatus', function () {
       requestAnimationFrame(function () { refreshCalbar(true); });
     });
 
@@ -4595,50 +4647,87 @@
       return wrap;
     }
 
+    function dayResStatus(dayEl) {
+      if (!dayEl) return { state: 'open', label: 'No reservation status' };
+      var now = new Date();
+      var done = 0, outstanding = 0, notYet = 0, awaiting = 0;
+      Array.prototype.forEach.call(dayEl.querySelectorAll('li.row'), function (row) {
+        var badge = row.querySelector('.stat .stat-badge') || row.querySelector('.stat-badge');
+        if (!badge) return;
+        if (badge.classList.contains('st-done')) { done++; return; }
+        // Walk-in optional, or Skip OK with any incomplete reservation —
+        // neither should keep the day check from going green.
+        if (badge.classList.contains('st-flex')) return;
+        if (row.hasAttribute('data-skip')) return;
+        if (badge.classList.contains('st-pending')) { awaiting++; return; }
+        if (!badge.classList.contains('st-todo')) return;
+        var hint = row.querySelector('.stat-hint');
+        var opens = bookingOpensAt(hint ? hint.textContent : '');
+        if (opens && now < opens) notYet++; else outstanding++;
+      });
+
+      if (!outstanding && (notYet || awaiting)) {
+        var parts = [];
+        if (awaiting) parts.push(awaiting + ' awaiting the venue\u2019s reply');
+        if (notYet) parts.push(notYet + ' not yet bookable');
+        var total = awaiting + notYet;
+        return {
+          state: 'pending',
+          label: total + ' reservation' + (total === 1 ? '' : 's') + ' still in flight: ' +
+            parts.join(', ') +
+            (done ? ' \u2014 the other ' + done + ' on this day ' +
+              (done === 1 ? 'is' : 'are') + ' confirmed' : '') +
+            '. Nothing to do right now.'
+        };
+      }
+      if (!outstanding && done) {
+        return {
+          state: 'done',
+          label: 'All ' + done + ' reservation' + (done === 1 ? '' : 's') + ' confirmed'
+        };
+      }
+      if (outstanding) {
+        return {
+          state: 'open',
+          label: outstanding + ' reservation' + (outstanding === 1 ? '' : 's') + ' still to arrange'
+        };
+      }
+      return { state: 'open', label: 'No confirmed reservations on this day' };
+    }
+
+    function ensureCalResMark(cell) {
+      var mark = cell.querySelector('.cc-res');
+      if (mark) return mark;
+      mark = document.createElement('span');
+      mark.className = 'cc-res';
+      mark.setAttribute('aria-hidden', 'true');
+      cell.appendChild(mark);
+      return mark;
+    }
+
     function renderDayLocks() {
-      var days = document.querySelectorAll('article.day');
-      Array.prototype.forEach.call(days, function (day) {
+      // Calendar cells cover D0–D14; day cards are article.day (D1+) plus #day-0.
+      Array.prototype.forEach.call(document.querySelectorAll('.cal-cell[data-day]'), function (cell) {
+        var n = parseInt(cell.getAttribute('data-day'), 10);
+        var dayEl = document.getElementById('day-' + n);
+        var info = dayResStatus(dayEl);
+        var mark = ensureCalResMark(cell);
+        mark.className = 'cc-res cc-res-' + info.state;
+        mark.textContent = info.state === 'open' ? '' : '✓';
+        mark.title = info.label;
+        cell.setAttribute('data-res', info.state);
+      });
+
+      Array.prototype.forEach.call(document.querySelectorAll('article.day'), function (day) {
         var top = day.querySelector('.day-top');
         if (!top) return;
         var wrap = dayBadgeWrap(top);
         if (!wrap) return;
 
-        var now = new Date();
-        var done = 0, outstanding = 0, notYet = 0, awaiting = 0;
-        Array.prototype.forEach.call(day.querySelectorAll('.day-body li.row'), function (row) {
-          var badge = row.querySelector('.stat .stat-badge');
-          if (!badge) return;
-          if (badge.classList.contains('st-done')) { done++; return; }
-          // Walk-in optional, or Skip OK with any incomplete reservation —
-          // neither should keep the day check from going green.
-          if (badge.classList.contains('st-flex')) return;
-          if (row.hasAttribute('data-skip')) return;
-          if (badge.classList.contains('st-pending')) { awaiting++; return; }
-          if (!badge.classList.contains('st-todo')) return;
-          var hint = row.querySelector('.stat-hint');
-          var opens = bookingOpensAt(hint ? hint.textContent : '');
-          if (opens && now < opens) notYet++; else outstanding++;
-        });
-
+        var info = dayResStatus(day);
         var lock = wrap.querySelector('.day-lock');
-        var state = null, label = '';
-        if (!outstanding && (notYet || awaiting)) {
-          var parts = [];
-          if (awaiting) parts.push(awaiting + ' awaiting the venue\u2019s reply');
-          if (notYet) parts.push(notYet + ' not yet bookable');
-          var total = awaiting + notYet;
-          state = 'pending';
-          label = total + ' reservation' + (total === 1 ? '' : 's') + ' still in flight: ' +
-            parts.join(', ') +
-            (done ? ' \u2014 the other ' + done + ' on this day ' +
-              (done === 1 ? 'is' : 'are') + ' confirmed' : '') +
-            '. Nothing to do right now.';
-        } else if (!outstanding && done) {
-          state = 'done';
-          label = 'All ' + done + ' reservation' + (done === 1 ? '' : 's') + ' confirmed';
-        }
-
-        if (!state) {
+        // Day-card lock stays green / yellow only — red is for the sticky strip.
+        if (info.state !== 'done' && info.state !== 'pending') {
           if (lock) lock.parentNode.removeChild(lock);
           return;
         }
@@ -4647,10 +4736,11 @@
           lock.textContent = '✓';
           wrap.insertBefore(lock, wrap.firstChild);
         }
-        lock.className = 'day-lock' + (state === 'pending' ? ' day-lock-pending' : '');
-        lock.setAttribute('title', label);
-        lock.setAttribute('aria-label', label);
+        lock.className = 'day-lock' + (info.state === 'pending' ? ' day-lock-pending' : '');
+        lock.setAttribute('title', info.label);
+        lock.setAttribute('aria-label', info.label);
       });
+      document.dispatchEvent(new CustomEvent('italy:daystatus'));
     }
     renderDayLocks();
 
