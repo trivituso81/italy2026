@@ -196,14 +196,14 @@
     align-items: center;
     justify-content: center;
     flex: 0 0 auto;
-    margin-top: 3px;
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
     line-height: 1;
     font-weight: 800;
   }
   .cal-cell .cc-res.cc-res-done,
   .cal-cell .cc-res.cc-res-pending {
-    width: 16px;
-    height: 16px;
     border-radius: 50%;
     font-size: 11px;
   }
@@ -216,13 +216,21 @@
     color: #8a6d00;
   }
   .cal-cell .cc-res.cc-res-open {
+    background: transparent;
+    font-size: 0;
+  }
+  .cal-cell .cc-res.cc-res-open::after {
+    content: '';
     width: 8px;
     height: 8px;
     border-radius: 50%;
     background: #c62828;
-    font-size: 0;
   }
-  /* Sticky strip: sit the status mark in the space under the day number */
+  /* Sticky strip: number + mark as a centered stack in the day square */
+  .calbar.stuck .cal-cell {
+    justify-content: center;
+    align-items: center;
+  }
   .calbar.stuck .cal-cell .cc-res { display: inline-flex; }
   .cal-cell.active .cc-res.cc-res-done {
     background: rgba(255,255,255,0.95);
@@ -232,7 +240,7 @@
     background: rgba(255,255,255,0.95);
     color: #8a6d00;
   }
-  .cal-cell.active .cc-res.cc-res-open {
+  .cal-cell.active .cc-res.cc-res-open::after {
     background: #ff8a80;
     box-shadow: 0 0 0 1px rgba(255,255,255,0.55);
   }
@@ -301,7 +309,7 @@
   .calbar.stuck .cal-head { display: none; }
   .calbar.stuck .cal-dow { display: none; }
   .calbar.stuck .cal-cell.empty { display: none !important; }
-  .calbar.stuck .cal-cell { padding: 6px 2px 5px; }
+  .calbar.stuck .cal-cell { padding: 6px 2px; }
   .calbar.stuck .cal-cell .cc-mo,
   .calbar.stuck .cal-cell .cc-dn { display: none; }
   .calbar.stuck .cal-cell .cc-dt { font-size: 15px; }
@@ -326,7 +334,7 @@
     }
     .calbar.stuck .cal-cell {
       min-height: 52px;
-      padding: 10px 4px 8px;
+      padding: 8px 4px;
     }
     .calbar.stuck .cal-cell .cc-dt { font-size: 18px; line-height: 1; }
     .calbar.stuck .cal-summary { margin-top: 10px; gap: 10px; }
@@ -1236,7 +1244,7 @@
     .calbar.stuck .wrap { padding: 6px 14px 8px; }
     .calbar.stuck .cal-cell {
       min-height: 48px;
-      padding: 8px 2px 6px;
+      padding: 6px 2px;
     }
     .cal-summary {
       margin-top: 8px;
@@ -4647,24 +4655,41 @@
       return wrap;
     }
 
+    function transportIsBooked(row) {
+      if (row.getAttribute('data-transport-done') === '1') return true;
+      var actEl = row.querySelector('.act');
+      var act = actEl ? actEl.textContent.replace(/\s*Skip OK\s*/g, '').trim() : '';
+      var stat = row.querySelector('.stat .stat-badge') || row.querySelector('.stat-badge');
+      return (act === 'Flight' || act === 'Train') && stat && stat.classList.contains('st-done');
+    }
+
     function dayResStatus(dayEl) {
-      if (!dayEl) return { state: 'open', label: 'No reservation status' };
+      if (!dayEl) return { state: 'none', label: 'No reservation status' };
       var now = new Date();
-      var done = 0, outstanding = 0, notYet = 0, awaiting = 0;
+      var done = 0, outstanding = 0, notYet = 0, awaiting = 0, transportOpen = 0;
       Array.prototype.forEach.call(dayEl.querySelectorAll('li.row'), function (row) {
         var badge = row.querySelector('.stat .stat-badge') || row.querySelector('.stat-badge');
+        var skip = row.hasAttribute('data-skip');
+        var flex = badge && badge.classList.contains('st-flex');
+        var todo = badge && badge.classList.contains('st-todo');
+        var modeRes = row.querySelector('.mode .mode-res');
+        // Advance-book transport (private transfer, flight, etc.) still open —
+        // even when the activity reservation on the same row is already done.
+        if (modeRes && !skip && !transportIsBooked(row) && !todo) transportOpen++;
+
         if (!badge) return;
         if (badge.classList.contains('st-done')) { done++; return; }
         // Walk-in optional, or Skip OK with any incomplete reservation —
         // neither should keep the day check from going green.
-        if (badge.classList.contains('st-flex')) return;
-        if (row.hasAttribute('data-skip')) return;
+        if (flex) return;
+        if (skip) return;
         if (badge.classList.contains('st-pending')) { awaiting++; return; }
-        if (!badge.classList.contains('st-todo')) return;
+        if (!todo) return;
         var hint = row.querySelector('.stat-hint');
         var opens = bookingOpensAt(hint ? hint.textContent : '');
         if (opens && now < opens) notYet++; else outstanding++;
       });
+      outstanding += transportOpen;
 
       if (!outstanding && (notYet || awaiting)) {
         var parts = [];
@@ -4687,9 +4712,13 @@
         };
       }
       if (outstanding) {
+        var openBits = [];
+        var resOpen = outstanding - transportOpen;
+        if (resOpen) openBits.push(resOpen + ' reservation' + (resOpen === 1 ? '' : 's'));
+        if (transportOpen) openBits.push(transportOpen + ' transport booking' + (transportOpen === 1 ? '' : 's'));
         return {
           state: 'open',
-          label: outstanding + ' reservation' + (outstanding === 1 ? '' : 's') + ' still to arrange'
+          label: openBits.join(' and ') + ' still to arrange'
         };
       }
       // Travel-only / walk-in days: no required bookings → no calendar mark
