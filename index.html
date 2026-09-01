@@ -1158,8 +1158,9 @@
     align-items: center;
     justify-content: center;
   }
-  .daynum small { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; opacity: .85; }
-  .daynum span { font-size: 24px; }
+  /* Month abbr on top, calendar date below — distinct from sticky cal’s D1/D2 chips */
+  .daynum small { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; opacity: .9; text-transform: uppercase; }
+  .daynum span { font-size: 22px; font-variant-numeric: tabular-nums; }
   .milan .daynum { background: var(--milan); }
   .venice .daynum { background: var(--venice); }
   .verona .daynum { background: var(--verona); }
@@ -1965,9 +1966,9 @@
       <!-- Day 1 -->
       <article class="day">
         <div class="day-top">
-          <div class="day-badge"><div class="daynum"><small>DAY</small><span>1</span></div></div>
+          <div class="day-badge"><div class="daynum"><small>Sep</small><span>22</span></div></div>
           <div class="day-titles">
-            <div class="date">Tue · September 22</div>
+            <div class="date">Tue · Day 1</div>
             <div class="theme">Milan Icons – Duomo &amp; Galleria</div>
           </div>
           <div class="day-hotel"><span class="lbl">Hotel</span><b>Hotel Milu Milano</b></div>
@@ -1987,9 +1988,9 @@
       <!-- Day 2 -->
       <article class="day">
         <div class="day-top">
-          <div class="day-badge"><div class="daynum"><small>DAY</small><span>2</span></div></div>
+          <div class="day-badge"><div class="daynum"><small>Sep</small><span>23</span></div></div>
           <div class="day-titles">
-            <div class="date">Wed · September 23</div>
+            <div class="date">Wed · Day 2</div>
             <div class="theme">Art &amp; History Deep Dive</div>
           </div>
           <div class="day-hotel"><span class="lbl">Hotel</span><b>Hotel Milu Milano</b></div>
@@ -2013,9 +2014,9 @@
       <!-- Day 3 -->
       <article class="day">
         <div class="day-top">
-          <div class="day-badge"><div class="daynum"><small>DAY</small><span>3</span></div></div>
+          <div class="day-badge"><div class="daynum"><small>Sep</small><span>24</span></div></div>
           <div class="day-titles">
-            <div class="date">Thu · September 24</div>
+            <div class="date">Thu · Day 3</div>
             <div class="theme">Lake Como Nature Escape</div>
           </div>
           <div class="day-hotel"><span class="lbl">Hotel</span><b>Hotel Milu Milano</b></div>
@@ -2039,9 +2040,9 @@
       <!-- Day 4 -->
       <article class="day">
         <div class="day-top">
-          <div class="day-badge"><div class="daynum"><small>DAY</small><span>4</span></div></div>
+          <div class="day-badge"><div class="daynum"><small>Sep</small><span>25</span></div></div>
           <div class="day-titles">
-            <div class="date">Fri · September 25</div>
+            <div class="date">Fri · Day 4</div>
             <div class="theme">Renaissance Art &amp; Navigli Vibes</div>
           </div>
           <div class="day-hotel"><span class="lbl">Hotel</span><b>Hotel Milu Milano</b></div>
@@ -2086,10 +2087,9 @@
 
       <!-- Day 5 -->
       <article class="day">
-        <div class="day-top">
-          <div class="daynum"><small>DAY</small><span>5</span></div>
+        <div class="day-top"><div class="day-badge"><div class="daynum"><small>Sep</small><span>26</span></div></div>
           <div class="day-titles">
-            <div class="date">Sat · September 26</div>
+            <div class="date">Sat · Day 5</div>
             <div class="theme">Venice Introduction &amp; Hidden Neighborhoods</div>
           </div>
           <div class="day-hotel"><span class="lbl">Hotel</span><b>Carnival Palace</b></div>
@@ -2110,10 +2110,9 @@
 
       <!-- Day 6 -->
       <article class="day">
-        <div class="day-top">
-          <div class="daynum"><small>DAY</small><span>6</span></div>
+        <div class="day-top"><div class="day-badge"><div class="daynum"><small>Sep</small><span>27</span></div></div>
           <div class="day-titles">
-            <div class="date">Sun · September 27</div>
+            <div class="date">Sun · Day 6</div>
             <div class="theme">San Marco, Doge's Palace &amp; San Giorgio Sunset</div>
           </div>
           <div class="day-hotel"><span class="lbl">Hotel</span><b>Carnival Palace</b></div>
@@ -2136,10 +2135,9 @@
 
       <!-- Day 7 -->
       <article class="day">
-        <div class="day-top">
-          <div class="daynum"><small>DAY</small><span>7</span></div>
+        <div class="day-top"><div class="day-badge"><div class="daynum"><small>Sep</small><span>28</span></div></div>
           <div class="day-titles">
-            <div class="date">Mon · September 28</div>
+            <div class="date">Mon · Day 7</div>
             <div class="theme">Art Masters, Hidden Churches &amp; Rialto</div>
           </div>
           <div class="day-hotel"><span class="lbl">Hotel</span><b>Carnival Palace</b></div>
@@ -2166,9 +2164,9 @@
       <!-- Day 8 -->
       <article class="day">
         <div class="day-top">
-          <div class="day-badge"><div class="daynum"><small>DAY</small><span>8</span></div></div>
+          <div class="day-badge"><div class="daynum"><small>Sep</small><span>29</span></div></div>
           <div class="day-titles">
-            <div class="date">Tue · September 29</div>
+            <div class="date">Tue · Day 8</div>
             <div class="theme">Murano Glass, Venissa &amp; Burano's Painted Canals</div>
           </div>
           <div class="day-hotel"><span class="lbl">Hotel</span><b>Carnival Palace</b></div>
@@ -2212,10 +2210,9 @@
 
       <!-- Day 9 -->
       <article class="day">
-        <div class="day-top">
-          <div class="daynum"><small>DAY</small><span>9</span></div>
+        <div class="day-top"><div class="day-badge"><div class="daynum"><small>Sep</small><span>30</span></div></div>
           <div class="day-titles">
-            <div class="date">Wed · September 30</div>
+            <div class="date">Wed · Day 9</div>
             <div class="theme">The Grand Entry · Venice to Verona</div>
           </div>
           <div class="day-hotel"><span class="lbl">Hotel</span><b>Verona House Aparthotel</b></div>
@@ -2240,10 +2237,9 @@
 
       <!-- Day 10 -->
       <article class="day">
-        <div class="day-top">
-          <div class="daynum"><small>DAY</small><span>10</span></div>
+        <div class="day-top"><div class="day-badge"><div class="daynum"><small>Oct</small><span>1</span></div></div>
           <div class="day-titles">
-            <div class="date">Thu · October 1</div>
+            <div class="date">Thu · Day 10</div>
             <div class="theme">Roman Arena, Gothic Verona &amp; Il Desco</div>
           </div>
           <div class="day-hotel"><span class="lbl">Hotel</span><b>Verona House Aparthotel</b></div>
@@ -2265,10 +2261,9 @@
 
       <!-- Day 11 -->
       <article class="day">
-        <div class="day-top">
-          <div class="daynum"><small>DAY</small><span>11</span></div>
+        <div class="day-top"><div class="day-badge"><div class="daynum"><small>Oct</small><span>2</span></div></div>
           <div class="day-titles">
-            <div class="date">Fri · October 2</div>
+            <div class="date">Fri · Day 11</div>
             <div class="theme">Valpolicella Truffles, Roman Verona &amp; Sunset</div>
           </div>
           <div class="day-hotel"><span class="lbl">Hotel</span><b>Verona House Aparthotel</b></div>
@@ -2290,10 +2285,9 @@
 
       <!-- Day 12 -->
       <article class="day">
-        <div class="day-top">
-          <div class="daynum"><small>DAY</small><span>12</span></div>
+        <div class="day-top"><div class="day-badge"><div class="daynum"><small>Oct</small><span>3</span></div></div>
           <div class="day-titles">
-            <div class="date">Sat · October 3</div>
+            <div class="date">Sat · Day 12</div>
             <div class="theme">The Azure Frontier · Lake Garda &amp; Sirmione</div>
           </div>
           <div class="day-hotel"><span class="lbl">Hotel</span><b>Verona House Aparthotel</b></div>
@@ -2316,10 +2310,9 @@
 
       <!-- Day 13 -->
       <article class="day">
-        <div class="day-top">
-          <div class="daynum"><small>DAY</small><span>13</span></div>
+        <div class="day-top"><div class="day-badge"><div class="daynum"><small>Oct</small><span>4</span></div></div>
           <div class="day-titles">
-            <div class="date">Sun · October 4</div>
+            <div class="date">Sun · Day 13</div>
             <div class="theme">Romanesque West &amp; Farewell</div>
           </div>
           <div class="day-hotel"><span class="lbl">Hotel</span><b>Verona House Aparthotel</b></div>
@@ -2350,10 +2343,9 @@
       <div class="city-rule" style="background:var(--muted)"></div>
 
       <article class="day">
-        <div class="day-top">
-          <div class="daynum"><small>DAY</small><span>14</span></div>
+        <div class="day-top"><div class="day-badge"><div class="daynum"><small>Oct</small><span>5</span></div></div>
           <div class="day-titles">
-            <div class="date">Mon · October 5</div>
+            <div class="date">Mon · Day 14</div>
             <div class="theme">The Precision Exit</div>
           </div>
           <div class="day-hotel"><span class="lbl">Return</span><b>MXP → LAX · 18h 28m</b></div>
