@@ -1998,7 +1998,7 @@
           <ul class="tl">
           <li class="tl-head" aria-hidden="true"><span>Time</span><span>Activity</span><span>Location</span><span>Transport</span><span>Reservation</span></li>
             <li class="row" data-k="d2a"><span class="time">8:30am</span><span class="act">Breakfast</span><span class="loc">Hotel Milu Milano</span><span class="mode">—</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d2b"><span class="time">9:15–11:15</span><span class="act">Museum</span><span class="loc">Museo Scienza e Tecnologia (Leonardo da Vinci)</span><span class="mode">Metro (25 min) / Taxi (15 min)</span><span class="stat stat-has-hint"><span class="stat-badge st-todo">Res: Needed</span><span class="stat-hint">*book after Sep 1</span></span></li>
+            <li class="row" data-k="d2b"><span class="time">9:15–11:15</span><span class="act">Museum</span><span class="loc">Museo Scienza e Tecnologia (Leonardo da Vinci)</span><span class="mode">Metro (25 min) / Taxi (15 min)</span><span class="stat"><span class="stat-badge st-todo">Res: Needed</span></span></li>
             <li class="row" data-k="d2c"><span class="time">11:15–11:45</span><span class="act">Coffee Stop</span><span class="loc">Local café near Cadorna</span><span class="mode">Walk (5 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d2d"><span class="time">12:00–1:30</span><span class="act">Castle Museum</span><span class="loc">Castello Sforzesco</span><span class="mode">Walk (10 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d2e"><span class="time">1:45–2:45</span><span class="act">Lunch</span><span class="loc">Cadorna / Magenta area</span><span class="mode">Walk (8 min)</span><span class="stat"></span></li>
@@ -2666,13 +2666,13 @@
 
     var DETAILS = {
       d1a:{type:'Flight',desc:'Delta DL184, nonstop JFK \u2192 Milan-Malpensa aboard a Boeing 767-400 (8h 10m). Departs JFK Terminal 4 at 9:55 PM (Mon, Sep 21); arrives MXP Terminal 1 at 12:05 PM. Cabin: Delta Premium Select Classic (RV).',tips:'Your seat: 21D. Parents on the same flight \u2014 seats TBD. Clear immigration and baggage, then transfer to Hotel Milu.'},
-      d1b:{type:'Hotel',desc:'Boutique hotel on Piazza Oberdan (Porta Venezia). Arrive from MXP, drop bags, freshen up \u2014 official check-in from 3 PM.',tips:'Expedia confirmed. Family Suite for Thomas Rivituso \u00b7 Sep 22\u201326 \u00b7 breakfast buffet included. City tax (~\u20ac10/person/night) due at property.'},
+      d1b:{type:'Hotel',desc:'Boutique hotel on Piazza Oberdan (Porta Venezia). Arrive from MXP, drop bags, freshen up \u2014 official check-in from 3 PM.',tips:'HOTEL CONFIRMED via Expedia \u00b7 Family Suite for Thomas Rivituso \u00b7 Sep 22\u201326 \u00b7 breakfast buffet included \u00b7 conf 73349411928282. City tax (~\u20ac10/person/night) due at property. PRIVATE TRANSFER FROM MXP IS NOT BOOKED YET — arrange through the hotel (see panel note) at least 72 hours before arrival.'},
       d1d:{type:'Culture',desc:'One of Milan\u2019s oldest and most important churches, founded by St. Ambrose in the 4th century. A masterpiece of Lombard-Romanesque architecture with a serene arcaded atrium.',tips:'Free entry; dress modestly. No reservation needed \u2014 just walk in.'},
       d1e:{type:'Culture',desc:'Castello Sforzesco courtyards and exteriors, then a gentle stroll through Parco Sempione if energy allows.',tips:'Day 1 skips the hotel rest block — stay out and walk straight to dinner nearby. Museums and Piet\u00e0 Rondanini come on Day 2.'},
       d1g:{type:'Meal',desc:'Old-school Milanese trattoria near Corso Magenta \u2014 cotoletta, risotto, and a no-fuss room where locals eat.',tips:'Walk-in fine for an early ~7 PM dinner after jet lag. No taxi needed from the castle area. Walk back to the hotel (~15 min) when you\'re done.'},
 
       d2a:{type:'Meal',desc:'Breakfast at the hotel before a full day of art and history.'},
-      d2b:{type:'Culture',desc:'Italy\u2019s largest science and technology museum, with galleries devoted to Leonardo da Vinci\u2019s inventions, plus transport, space, and more.',tips:'Buy a timed ticket online to skip the queue.'},
+      d2b:{type:'Culture',desc:'Italy\u2019s largest science and technology museum, with galleries devoted to Leonardo da Vinci\u2019s inventions, plus transport, space, and more.',tips:'Res: Needed \u2014 buy a timed ticket online now (window is open). Skip-the-line timed entry at museoscienzamilano.it for the 9:15\u201311:15 AM visit.'},
       d2c:{type:'Break',desc:'A quick espresso stop to recharge between the museum and the castle.'},
       d2d:{type:'Culture',desc:'Return to the Sforza castle for a focused interior visit \u2014 courtyards, ramparts, and a museum highlight or two. Keep it short ahead of the Last Supper.',tips:'Museum ticket at the door (~\u20ac5); no advance booking required.'},
       d2e:{type:'Meal',desc:'Lunch in the Magenta / Cadorna district, close to Santa Maria delle Grazie. Plenty of trattorias and caf\u00e9s to choose from.',tips:'Walk-in friendly — pick from the nearby suggestions in the detail panel.'},
@@ -2877,7 +2877,7 @@
           { l: 'Due at property', v: '€3,368.00 (incl. taxes & fees)' },
           { l: 'Deposit', v: '€300 damage deposit before check-in' }
         ],
-        notes: 'Free cancel until Sep 20, 6:00 PM local. Tel: +39 333 917 4548. Airport transfer: contact property 72 hrs before arrival (see panel note).'
+        notes: 'Hotel only is confirmed here (Expedia 73349411928282). Free cancel until Sep 20, 6:00 PM local. Tel: +39 333 917 4548. PRIVATE TRANSFER FROM MXP IS STILL OPEN — contact the property at least 72 hours before arrival (see panel note).'
       }]},
       d2g: { sections: [{
         bookedVia: 'Viator.com',
@@ -4770,9 +4770,12 @@
 
     function transportIsBooked(row) {
       if (row.getAttribute('data-transport-done') === '1') return true;
-      if (!row.querySelector('.mode .mode-res')) return false;
+      // Hotel Complete does not mean the private transfer on the same row is booked.
+      // Only Flight/Train rows share one badge for both activity and transport.
+      var actEl = row.querySelector('.act');
+      var act = actEl ? actEl.textContent.replace(/\s*Skip OK\s*/g, '').trim() : '';
       var stat = row.querySelector('.stat .stat-badge') || row.querySelector('.stat-badge');
-      return !!(stat && stat.classList.contains('st-done'));
+      return (act === 'Flight' || act === 'Train') && !!(stat && stat.classList.contains('st-done'));
     }
 
     function dayResStatus(dayEl) {
@@ -4977,9 +4980,11 @@
       document.querySelectorAll('li.row').forEach(function (row) {
         var badge = row.querySelector('.mode-res');
         if (!badge) return;
+        var actEl = row.querySelector('.act');
+        var act = actEl ? actEl.textContent.replace(/\s*Skip OK\s*/g, '').trim() : '';
         var stat = row.querySelector('.stat-badge');
         var done = row.getAttribute('data-transport-done') === '1' ||
-          !!(stat && stat.classList.contains('st-done'));
+          ((act === 'Flight' || act === 'Train') && stat && stat.classList.contains('st-done'));
         if (done) {
           badge.classList.add('mode-res-done');
           badge.title = 'Booked';
