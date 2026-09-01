@@ -2231,7 +2231,7 @@
             <li class="row" data-k="d9d"><span class="time">12:45–1:45pm</span><span class="act">Lunch</span><span class="loc">Piazza Bra</span><span class="mode">Walk (~8 min)</span><span class="stat"></span></li>
             <li class="row" data-k="d9e"><span class="time">2:00–3:30pm</span><span class="act">Check-in &amp; Rest</span><span class="loc">Verona House Aparthotel</span><span class="mode">Check-in · unpack · rest (90 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d9b"><span class="time">3:45–4:45pm</span><span class="act">Evening Stroll</span><span class="loc">Piazza Bra, Liston &amp; Arena exterior</span><span class="mode">Walk (~8 min)</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d9g"><span class="time">5:00–5:40pm</span><span class="act">Juliet's Balcony</span><span class="loc">Casa di Giulietta</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Walk (~7 min up Via Mazzini) · top-10 vr05</span><span class="stat"><span class="stat-badge st-todo">Res: Needed</span></span></li>
+            <li class="row" data-k="d9g"><span class="time">5:00–5:40pm</span><span class="act">Juliet's Balcony</span><span class="loc">Casa di Giulietta</span><span class="mode">Walk (~7 min up Via Mazzini) · top-10 vr05</span><span class="stat"><span class="stat-badge st-todo">Res: Needed</span></span></li>
             <li class="row" data-k="d9f"><span class="time">5:50–6:45pm</span><span class="act">Square &amp; Tower</span><span class="loc">Piazza delle Erbe &amp; Torre dei Lamberti</span><span class="mode">Walk (~3 min from Casa di Giulietta)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d9c"><span class="time">7:00–8:30pm</span><span class="act">Dinner</span><span class="loc">Trattoria Pane e Vino</span><span class="mode">Walk (~10 min from Erbe)</span><span class="stat"><span class="stat-badge st-flex">Res: Optional</span></span></li>
           </ul>
@@ -2258,7 +2258,7 @@
             <li class="row" data-k="d10c"><span class="time">2:00–3:00pm</span><span class="act">Church</span><span class="loc">Basilica di Sant'Anastasia 👔</span><span class="mode">Walk (~5 min) · top-10 vr10</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d10i" data-skip="1"><span class="time">3:15–4:15pm</span><span class="act">Cathedral<span class="act-skip">Skip OK</span></span><span class="loc">Duomo complex &amp; Biblioteca Capitolare 👔</span><span class="mode">Walk (~6 min along the Adige)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d10e"><span class="time">4:30–5:45pm</span><span class="act">Hotel Break</span><span class="loc">Verona House Aparthotel</span><span class="mode">Rest · shower · smart dress for Il Desco</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d13c"><span class="time">8:00–10:00pm</span><span class="act">Fine Dining</span><span class="loc">Il Desco 🥂</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Walk (~10 min) · Michelin star · à la carte OK</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
+            <li class="row" data-k="d13c"><span class="time">8:00–10:00pm</span><span class="act">Fine Dining</span><span class="loc">Il Desco 🥂</span><span class="mode">Walk (~10 min) · Michelin star · à la carte OK</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
           </ul>
         </div>
       </article>
@@ -2335,7 +2335,7 @@
             <li class="row" data-k="d13f" data-skip="1"><span class="time">3:25–4:20pm</span><span class="act">Church &amp; Crypt<span class="act-skip">Skip OK</span></span><span class="loc">Chiesa di San Fermo Maggiore 👔</span><span class="mode">Bus 11/12/13 (~12 min) or walk (~25 min) · opens 1:00 PM Sun</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d13g"><span class="time">4:30–5:25pm</span><span class="act">Shops &amp; Spritz</span><span class="loc">Via Mazzini &amp; Piazza delle Erbe</span><span class="mode">Walk (~7 min) · last stroll · gifts &amp; aperitivo</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d13e"><span class="time">5:35–6:45pm</span><span class="act">Rest &amp; Pack</span><span class="loc">Verona House Aparthotel</span><span class="mode">Rest · pack · shower · smart dress</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d13d"><span class="time">7:00pm</span><span class="act">Farewell Dinner</span><span class="loc">5 options near Verona House 🥂</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Walk (~3–12 min) · pick one · open Sundays</span><span class="stat"><span class="stat-badge st-flex">Res: Pick one</span></span></li>
+            <li class="row" data-k="d13d"><span class="time">7:00pm</span><span class="act">Farewell Dinner</span><span class="loc">5 options near Verona House 🥂</span><span class="mode">Walk (~3–12 min) · pick one · open Sundays</span><span class="stat"><span class="stat-badge st-todo">Res: Pick one</span></span></li>
           </ul>
         </div>
       </article>
@@ -4770,10 +4770,9 @@
 
     function transportIsBooked(row) {
       if (row.getAttribute('data-transport-done') === '1') return true;
-      var actEl = row.querySelector('.act');
-      var act = actEl ? actEl.textContent.replace(/\s*Skip OK\s*/g, '').trim() : '';
+      if (!row.querySelector('.mode .mode-res')) return false;
       var stat = row.querySelector('.stat .stat-badge') || row.querySelector('.stat-badge');
-      return (act === 'Flight' || act === 'Train') && stat && stat.classList.contains('st-done');
+      return !!(stat && stat.classList.contains('st-done'));
     }
 
     function dayResStatus(dayEl) {
@@ -4970,15 +4969,9 @@
       document.querySelectorAll('li.row').forEach(function (row) {
         var badge = row.querySelector('.mode-res');
         if (!badge) return;
-        var actEl = row.querySelector('.act');
-        var act = actEl ? actEl.textContent.replace(/\s*Skip OK\s*/g, '').trim() : '';
         var stat = row.querySelector('.stat-badge');
-        var done = false;
-        if (row.getAttribute('data-transport-done') === '1') {
-          done = true;
-        } else if ((act === 'Flight' || act === 'Train') && stat && stat.classList.contains('st-done')) {
-          done = true;
-        }
+        var done = row.getAttribute('data-transport-done') === '1' ||
+          !!(stat && stat.classList.contains('st-done'));
         if (done) {
           badge.classList.add('mode-res-done');
           badge.title = 'Booked';
