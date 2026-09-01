@@ -1140,10 +1140,7 @@
     align-items: center;
     gap: 10px;
   }
-  .day-lock.day-lock-pending {
-    background: #fff8e1;
-    color: #8a6d00;
-  }
+  /* Always reserve lock width so the date badge never shifts when a ✓ appears */
   .day-lock {
     flex: 0 0 auto;
     width: 24px;
@@ -1157,6 +1154,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+  .day-lock.day-lock-pending {
+    background: #fff8e1;
+    color: #8a6d00;
+  }
+  .day-lock.day-lock-empty {
+    background: transparent;
+    color: transparent;
+    visibility: hidden;
   }
   /* Month abbr on top, calendar date below — distinct from sticky cal’s D1/D2 chips */
   .daynum small { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; opacity: .9; text-transform: uppercase; }
@@ -4901,19 +4907,25 @@
 
         var info = dayResStatus(day);
         var lock = wrap.querySelector('.day-lock');
-        // Day-card lock stays green / yellow only — red is for the sticky strip.
-        if (info.state !== 'done' && info.state !== 'pending') {
-          if (lock) lock.parentNode.removeChild(lock);
-          return;
-        }
         if (!lock) {
           lock = document.createElement('span');
-          lock.textContent = '✓';
           wrap.insertBefore(lock, wrap.firstChild);
         }
-        lock.className = 'day-lock' + (info.state === 'pending' ? ' day-lock-pending' : '');
-        lock.setAttribute('title', info.label);
-        lock.setAttribute('aria-label', info.label);
+        // Always keep the slot so the date badge stays aligned across days.
+        // Green / yellow ✓ only; red stays on the sticky calendar strip.
+        if (info.state === 'done' || info.state === 'pending') {
+          lock.textContent = '✓';
+          lock.className = 'day-lock' + (info.state === 'pending' ? ' day-lock-pending' : '');
+          lock.setAttribute('title', info.label);
+          lock.setAttribute('aria-label', info.label);
+          lock.removeAttribute('aria-hidden');
+        } else {
+          lock.textContent = '';
+          lock.className = 'day-lock day-lock-empty';
+          lock.removeAttribute('title');
+          lock.removeAttribute('aria-label');
+          lock.setAttribute('aria-hidden', 'true');
+        }
       });
       document.dispatchEvent(new CustomEvent('italy:daystatus'));
     }
