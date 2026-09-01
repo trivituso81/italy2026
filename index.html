@@ -4778,11 +4778,11 @@
     function dayResStatus(dayEl) {
       if (!dayEl) return { state: 'none', label: 'No reservation status' };
       var now = new Date();
-      var done = 0, outstanding = 0, notYet = 0, awaiting = 0, transportOpen = 0;
+      var done = 0, outstanding = 0, notYet = 0, awaiting = 0, transportOpen = 0, flex = 0;
       Array.prototype.forEach.call(dayEl.querySelectorAll('li.row'), function (row) {
         var badge = row.querySelector('.stat .stat-badge') || row.querySelector('.stat-badge');
         var skip = row.hasAttribute('data-skip');
-        var flex = badge && badge.classList.contains('st-flex');
+        var isFlex = badge && badge.classList.contains('st-flex');
         var todo = badge && badge.classList.contains('st-todo');
         var modeRes = row.querySelector('.mode .mode-res');
         // Advance-book transport (private transfer, flight, etc.) still open —
@@ -4793,7 +4793,7 @@
         if (badge.classList.contains('st-done')) { done++; return; }
         // Walk-in optional, or Skip OK with any incomplete reservation —
         // neither should keep the day check from going green.
-        if (flex) return;
+        if (isFlex) { flex++; return; }
         if (skip) return;
         if (badge.classList.contains('st-pending')) { awaiting++; return; }
         if (!todo) return;
@@ -4820,7 +4820,15 @@
       if (!outstanding && done) {
         return {
           state: 'done',
-          label: 'All ' + done + ' reservation' + (done === 1 ? '' : 's') + ' confirmed'
+          label: 'All ' + done + ' reservation' + (done === 1 ? '' : 's') + ' confirmed' +
+            (flex ? ' \u2014 ' + flex + ' optional' : '')
+        };
+      }
+      // Optional-only day (e.g. Oct 4 farewell dinner): nothing required → green.
+      if (!outstanding && flex) {
+        return {
+          state: 'done',
+          label: 'No required reservations \u2014 ' + flex + ' optional'
         };
       }
       if (outstanding) {
@@ -4833,7 +4841,7 @@
           label: openBits.join(' and ') + ' still to arrange'
         };
       }
-      // Travel-only / walk-in days: no required bookings → no calendar mark
+      // Travel-only / blank days: no reservation badges at all → no calendar mark
       // (do not treat "nothing to book" as a red open status).
       return { state: 'none', label: 'No reservations required on this day' };
     }
