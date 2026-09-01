@@ -189,6 +189,13 @@
   .cal-cell.plain::before  { background: var(--muted); }
 
   .cal-cell .cc-mo { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+  .cal-cell .cc-dt-row {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    line-height: 1;
+  }
   .cal-cell .cc-dt { font-size: 19px; font-weight: 800; line-height: 1; color: var(--ink); }
   .cal-cell .cc-dn { font-size: 9px; font-weight: 700; color: var(--muted); letter-spacing: 0.04em; }
   .cal-cell .cc-res {
@@ -196,12 +203,13 @@
     align-items: center;
     justify-content: center;
     flex: 0 0 auto;
-    width: 16px;
-    height: 16px;
-    margin-top: 2px;
+    width: 14px;
+    height: 14px;
+    margin-top: 0;
     line-height: 1;
     font-weight: 800;
   }
+  .cal-cell .cc-res:not([hidden]) { display: inline-flex; }
   .cal-cell .cc-res.cc-res-done,
   .cal-cell .cc-res.cc-res-pending {
     border-radius: 50%;
@@ -226,12 +234,12 @@
     border-radius: 50%;
     background: #c62828;
   }
-  /* Sticky strip: number + mark as a centered stack in the day square */
+  /* Sticky strip: mark sits left of the date number */
   .calbar.stuck .cal-cell {
     justify-content: center;
     align-items: center;
   }
-  .calbar.stuck .cal-cell .cc-res { display: inline-flex; }
+  .calbar.stuck .cal-cell .cc-dt-row { gap: 4px; }
   .cal-cell.active .cc-res.cc-res-done {
     background: rgba(255,255,255,0.95);
     color: #1f7a3d;
@@ -4831,13 +4839,31 @@
       return { state: 'none', label: 'No reservations required on this day' };
     }
 
+    function ensureCalDtRow(cell) {
+      var dt = cell.querySelector('.cc-dt');
+      if (!dt) return null;
+      var row = cell.querySelector('.cc-dt-row');
+      if (!row) {
+        row = document.createElement('span');
+        row.className = 'cc-dt-row';
+        dt.parentNode.insertBefore(row, dt);
+        row.appendChild(dt);
+      }
+      return row;
+    }
+
     function ensureCalResMark(cell) {
+      var row = ensureCalDtRow(cell);
+      if (!row) return null;
       var mark = cell.querySelector('.cc-res');
-      if (mark) return mark;
-      mark = document.createElement('span');
-      mark.className = 'cc-res';
-      mark.setAttribute('aria-hidden', 'true');
-      cell.appendChild(mark);
+      if (!mark) {
+        mark = document.createElement('span');
+        mark.className = 'cc-res';
+        mark.setAttribute('aria-hidden', 'true');
+        row.insertBefore(mark, row.firstChild);
+      } else if (mark.parentNode !== row) {
+        row.insertBefore(mark, row.firstChild);
+      }
       return mark;
     }
 
