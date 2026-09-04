@@ -272,6 +272,29 @@
   .cal-cell.empty:hover { transform: none; box-shadow: none; }
   .cal-cell.empty::before { display: none; }
 
+  /* Sticky-only Top square — left of Sep 21; hidden in the full week grid */
+  .cal-cell.cal-top {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: #f3ebe0;
+    border-color: rgba(43, 33, 24, 0.18);
+  }
+  .cal-cell.cal-top::before { background: var(--gold); }
+  .cal-cell.cal-top .cc-dt {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .calbar.stuck .cal-cell.cal-top {
+    display: flex;
+  }
+  .calbar.stuck .cal-cell.cal-top .cc-dt {
+    display: block;
+    font-size: 11px;
+  }
+
   .cal-summary {
     display: flex;
     align-items: center;
@@ -337,7 +360,7 @@
   @media (min-width: 481px) {
     .calbar.stuck .wrap { padding: 12px 22px 14px; }
     .calbar.stuck .cal-grid {
-      grid-template-columns: repeat(15, minmax(40px, 1fr));
+      grid-template-columns: repeat(16, minmax(36px, 1fr));
       gap: 6px;
     }
     .calbar.stuck .cal-cell {
@@ -2183,6 +2206,7 @@
         <div class="cal-dow">Thu</div><div class="cal-dow">Fri</div><div class="cal-dow">Sat</div><div class="cal-dow">Sun</div>
 
         <!-- Week 1: Sep 21–27 -->
+        <button type="button" class="cal-cell cal-top" id="calTop" aria-label="Back to top of page" title="Top of page"><span class="cc-dt">Top</span></button>
         <button class="cal-cell plain"  data-day="0"  data-date="Mon · Sep 21" data-city="Departure" data-theme="DL184 · JFK 9:55 PM → Milan-Malpensa (overnight)"><span class="cc-mo">Sep</span><span class="cc-dt">21</span><span class="cc-dn">D0</span></button>
         <button class="cal-cell milan"  data-day="1"  data-date="Tue · Sep 22" data-city="Milan" data-theme="Milan Icons – Duomo &amp; Galleria"><span class="cc-mo">Sep</span><span class="cc-dt">22</span><span class="cc-dn">D1</span></button>
         <button class="cal-cell milan"  data-day="2"  data-date="Wed · Sep 23" data-city="Milan" data-theme="Art &amp; History Deep Dive"><span class="cc-mo">Sep</span><span class="cc-dt">23</span><span class="cc-dn">D2</span></button>
@@ -2741,6 +2765,14 @@
     cells.forEach(function (c) {
       c.addEventListener('click', function () { jumpTo(parseInt(c.getAttribute('data-day'), 10)); });
     });
+
+    var calTopBtn = document.getElementById('calTop');
+    if (calTopBtn) {
+      calTopBtn.addEventListener('click', function () {
+        lockUntil = Date.now() + 900;
+        window.scrollTo({ top: 0, behavior: isPhone() ? 'auto' : 'smooth' });
+      });
+    }
 
     var calbarWrap = document.getElementById('calbarWrap');
     var calbar = document.getElementById('calbar');
