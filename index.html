@@ -711,6 +711,21 @@
     border-color: rgba(31,122,61,.28);
     color: #1f7a3d;
   }
+  .pay-sheet-table tr.pay-sheet-xfer td {
+    color: #8a6420;
+    font-weight: 600;
+  }
+  .pay-sheet-xfer-note {
+    margin: 0 0 10px;
+    padding: 9px 11px;
+    border-radius: 8px;
+    background: rgba(184,135,59,.1);
+    border: 1px solid rgba(184,135,59,.3);
+    font-size: 13px;
+    line-height: 1.45;
+    color: #6e5018;
+  }
+  .pay-sheet-xfer-note b { color: #8a6420; }
   .pay-sheet-note {
     margin: 10px 0 0;
     font-size: 11.5px;
@@ -4362,6 +4377,11 @@
     /* Rough mid-2026 rate for settlement math only — shown in the sheet. */
     var PAY_USD_TO_EUR = 0.92;
 
+    /* Cash moved outside bookings (counts toward who owes whom, not the trip pool). */
+    var PAY_TRANSFERS = [
+      { from: 'parents', to: 'tom', usd: 2000, note: 'Debi (mom) sent Tom $2,000' }
+    ];
+
     function parseMoneyNumber(raw) {
       var s = String(raw || '').replace(/[^\d.,]/g, '');
       if (!s) return 0;
@@ -4480,21 +4500,52 @@
       var pool = tom.equiv + parents.equiv;
       var tomFair = pool / 3;
       var parentsFair = pool * 2 / 3;
-      var tomDelta = tom.equiv - tomFair; /* + means Tom overpaid */
+      var tomDelta = tom.equiv - tomFair; /* + means Tom overpaid on bookings → parents owe Tom */
+
+      var transferUsd = 0;
+      var transferEur = 0;
+      var transferNotes = [];
+      PAY_TRANSFERS.forEach(function (t) {
+        var eur = (t.eur || 0) + (t.usd || 0) * PAY_USD_TO_EUR;
+        if (t.from === 'parents' && t.to === 'tom') {
+          transferUsd += t.usd || 0;
+          transferEur += eur;
+          transferNotes.push(t.note || ('Parents → Tom ' + formatUsd(t.usd || 0)));
+        } else if (t.from === 'tom' && t.to === 'parents') {
+          transferUsd -= t.usd || 0;
+          transferEur -= eur;
+          transferNotes.push(t.note || ('Tom → parents ' + formatUsd(t.usd || 0)));
+        }
+      });
+
+      /* After transfers: + still means parents owe Tom */
+      var netParentsOweTom = tomDelta - transferEur;
+
       var settleHtml;
       var settleClass;
+      var bookingSettle;
       if (pool <= 0) {
+        bookingSettle = 'No priced prepaid bookings yet.';
+      } else if (Math.abs(tomDelta) < 0.5) {
+        bookingSettle = 'Bookings alone are even on the ⅓ / ⅔ split.';
+      } else if (tomDelta > 0) {
+        bookingSettle = 'From bookings alone, parents would owe Tom ' + formatEur(tomDelta) + '.';
+      } else {
+        bookingSettle = 'From bookings alone, Tom would owe parents ' + formatEur(-tomDelta) + '.';
+      }
+
+      if (pool <= 0 && Math.abs(transferEur) < 0.5) {
         settleClass = 'pay-sheet-even';
         settleHtml = 'No priced prepaid bookings yet — nothing to settle.';
-      } else if (Math.abs(tomDelta) < 0.5) {
+      } else if (Math.abs(netParentsOweTom) < 0.5) {
         settleClass = 'pay-sheet-even';
-        settleHtml = 'Settled — Tom’s ⅓ and parents’ ⅔ match what’s been paid.';
-      } else if (tomDelta > 0) {
+        settleHtml = 'Settled after transfers — Tom’s ⅓ and parents’ ⅔ are even.';
+      } else if (netParentsOweTom > 0) {
         settleClass = 'pay-sheet-owe-tom';
-        settleHtml = 'Parents owe Tom ' + formatEur(tomDelta) + ' to even the ⅓ / ⅔ split.';
+        settleHtml = 'After transfers, parents still owe Tom ' + formatEur(netParentsOweTom) + '.';
       } else {
         settleClass = 'pay-sheet-owe-parents';
-        settleHtml = 'Tom owes parents ' + formatEur(-tomDelta) + ' to even the ⅓ / ⅔ split.';
+        settleHtml = 'After transfers, Tom owes parents ' + formatEur(-netParentsOweTom) + '.';
       }
 
       function moneyCell(parts) {
@@ -4504,22 +4555,34 @@
         return bits.length ? bits.join(' + ') : '—';
       }
 
+      var xferBlock = '';
+      if (transferNotes.length) {
+        xferBlock =
+          '<p class="pay-sheet-xfer-note"><b>Transfer:</b> ' + escHtml(transferNotes.join(' · ')) +
+          ' ≈ ' + formatEur(Math.abs(transferEur)) + ' (counts toward settlement, not the booking pool).</p>';
+      }
+
       return '<div class="pay-sheet">' +
         '<h4>Balance sheet</h4>' +
         '<p class="pay-sheet-rule"><b>Split rule:</b> Tom ⅓ · parents (Debi &amp; Angelo) ⅔ of prepaid trip costs. USD converted at <b>' +
           formatEur(PAY_USD_TO_EUR) + ' / $1</b> for settlement only.</p>' +
+        xferBlock +
         '<table class="pay-sheet-table">' +
           '<thead><tr><th></th><th>Paid</th><th>≈ EUR</th></tr></thead>' +
           '<tbody>' +
-            '<tr><td>Tom paid</td><td>' + moneyCell(tom) + '</td><td>' + formatEur(tom.equiv) + '</td></tr>' +
-            '<tr><td>Parents paid</td><td>' + moneyCell(parents) + '</td><td>' + formatEur(parents.equiv) + '</td></tr>' +
-            '<tr class="pay-sheet-total"><td>Pool so far</td><td></td><td>' + formatEur(pool) + '</td></tr>' +
+            '<tr><td>Tom paid (bookings)</td><td>' + moneyCell(tom) + '</td><td>' + formatEur(tom.equiv) + '</td></tr>' +
+            '<tr><td>Parents paid (bookings)</td><td>' + moneyCell(parents) + '</td><td>' + formatEur(parents.equiv) + '</td></tr>' +
+            (transferEur
+              ? '<tr class="pay-sheet-xfer"><td>Debi → Tom transfer</td><td>' + formatUsd(transferUsd) + '</td><td>' + formatEur(transferEur) + '</td></tr>'
+              : '') +
+            '<tr class="pay-sheet-total"><td>Booking pool</td><td></td><td>' + formatEur(pool) + '</td></tr>' +
             '<tr class="pay-sheet-fair"><td>Tom fair share (⅓)</td><td></td><td>' + formatEur(tomFair) + '</td></tr>' +
             '<tr class="pay-sheet-fair"><td>Parents fair share (⅔)</td><td></td><td>' + formatEur(parentsFair) + '</td></tr>' +
           '</tbody>' +
         '</table>' +
+        '<p class="pay-sheet-note" style="margin:0 0 8px">' + escHtml(bookingSettle) + '</p>' +
         '<p class="pay-sheet-settle ' + settleClass + '">' + settleHtml + '</p>' +
-        '<p class="pay-sheet-note">Counts attributed prepaid bookings with a known price (including Debi’s Hotel Milu). Excludes outstanding hotels / transfers, the unpaid truffle Stripe invoice, restaurants, and flights with no price on file. Update Paid lines as you book and this sheet recalculates.</p>' +
+        '<p class="pay-sheet-note">Counts attributed prepaid bookings with a known price (including Debi’s Hotel Milu), then cash transfers like Debi’s $2,000 to Tom. Excludes outstanding hotels / transfers, the unpaid truffle Stripe invoice, restaurants, and flights with no price on file.</p>' +
       '</div>';
     }
 
