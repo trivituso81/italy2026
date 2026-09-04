@@ -469,6 +469,9 @@
     letter-spacing: 0;
     text-transform: none;
   }
+  li.row .stat-hint.stat-hint-alert {
+    color: #b3261e;
+  }
   .stat-badge.st-done   { background: #e7f6ea; color: #1f7a3d; }
   .stat-badge.st-todo   { background: #fde7e7; color: #b3261e; }
   .stat-badge.st-pending { background: #fff8e1; color: #8a6d00; }
@@ -1929,7 +1932,7 @@
         <button class="cal-cell verona" data-day="13" data-date="Sun · Oct 4"  data-city="Verona" data-theme="Medieval Gems &amp; Farewell Dinner"><span class="cc-mo">Oct</span><span class="cc-dt">4</span><span class="cc-dn">D13</span></button>
 
         <!-- Week 3: Oct 5 -->
-        <button class="cal-cell plain"  data-day="14" data-date="Mon · Oct 5"  data-city="Departure" data-theme="The Precision Exit · MXP → JFK → LAX"><span class="cc-mo">Oct</span><span class="cc-dt">5</span><span class="cc-dn">D14</span></button>
+        <button class="cal-cell plain"  data-day="14" data-date="Mon · Oct 5"  data-city="Departure" data-theme="Arrivaderci · MXP → JFK → LAX"><span class="cc-mo">Oct</span><span class="cc-dt">5</span><span class="cc-dn">D14</span></button>
         <div class="cal-cell empty"></div><div class="cal-cell empty"></div><div class="cal-cell empty"></div>
         <div class="cal-cell empty"></div><div class="cal-cell empty"></div><div class="cal-cell empty"></div>
       </div>
@@ -2030,7 +2033,7 @@
           <ul class="tl">
           <li class="tl-head" aria-hidden="true"><span>Time</span><span>Activity</span><span>Location</span><span>Transport <span class="mode-res" title="Book in advance">R</span></span><span>Reservation</span></li>
             <li class="row" data-k="d3a"><span class="time">6:40–7:00am</span><span class="act">Breakfast</span><span class="loc">Hotel Milu Milano</span><span class="mode">—</span><span class="stat stat-empty"></span></li>
-            <li class="row" data-k="d3c"><span class="time">8:30–9:15am</span><span class="act">Train</span><span class="loc">Milano Centrale → Varenna-Esino</span><span class="mode">Trenord regional · ~7:20 AM out (~1 hr 10 min) · walk to waterfront (~8 min)</span><span class="stat stat-has-hint"><span class="stat-hint">*buy night before on app</span></span></li>
+            <li class="row" data-k="d3c"><span class="time">8:30–9:15am</span><span class="act">Train</span><span class="loc">Milano Centrale → Varenna-Esino</span><span class="mode">Trenord regional · ~7:20 AM out (~1 hr 10 min) · walk to waterfront (~8 min)</span><span class="stat stat-has-hint"><span class="stat-hint stat-hint-alert">*buy night before on app</span></span></li>
             <li class="row" data-k="d3d"><span class="time">9:30–10:45am</span><span class="act">Gardens</span><span class="loc">Villa Monastero, Varenna</span><span class="mode">Walk from waterfront (~8 min)</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d3f" data-transport-done="1"><span class="time">11:15am–12:45pm</span><span class="act">Ferry &amp; Lunch</span><span class="loc">Varenna → Bellagio</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Traghetto ordinary · ~15 min · walk to dock (~5 min) · walk from landing (~5 min)</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
             <li class="row" data-k="d3g"><span class="time">1:00–3:30pm</span><span class="act">Old Town Walk</span><span class="loc">Bellagio</span><span class="mode">—</span><span class="stat stat-empty"></span></li>
@@ -2350,7 +2353,7 @@
         <div class="day-top"><div class="day-badge"><div class="daynum"><small>Oct</small><span>5</span></div></div>
           <div class="day-titles">
             <div class="date">Mon · Day 14</div>
-            <div class="theme">The Precision Exit</div>
+            <div class="theme">Arrivaderci</div>
           </div>
           <div class="day-hotel"><span class="lbl">Return</span><b>MXP → LAX · 18h 28m</b></div>
         </div>
@@ -5035,7 +5038,7 @@
   (function () {
     function syncModeResBooked() {
       document.querySelectorAll('li.row').forEach(function (row) {
-        var badge = row.querySelector('.mode-res');
+        var badge = row.querySelector('.mode .mode-res');
         if (!badge) return;
         var actEl = row.querySelector('.act');
         var act = actEl ? actEl.textContent.replace(/\s*Skip OK\s*/g, '').trim() : '';
@@ -5048,6 +5051,24 @@
         } else {
           badge.classList.remove('mode-res-done');
           badge.title = 'Book in advance';
+        }
+      });
+      /* Column-header R is a legend — green it when every transport R that day is booked. */
+      document.querySelectorAll('article.day, #day-0').forEach(function (day) {
+        var headBadge = day.querySelector('li.tl-head .mode-res');
+        if (!headBadge) return;
+        var badges = day.querySelectorAll('li.row .mode .mode-res');
+        if (!badges.length) return;
+        var allDone = true;
+        for (var i = 0; i < badges.length; i++) {
+          if (!badges[i].classList.contains('mode-res-done')) { allDone = false; break; }
+        }
+        if (allDone) {
+          headBadge.classList.add('mode-res-done');
+          headBadge.title = 'All transport booked';
+        } else {
+          headBadge.classList.remove('mode-res-done');
+          headBadge.title = 'Book in advance';
         }
       });
     }
