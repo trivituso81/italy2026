@@ -623,6 +623,100 @@
     color: var(--muted);
     font-style: italic;
   }
+  .pay-sheet {
+    margin: 18px 0 0;
+    padding: 14px 14px 12px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    border-left: 3px solid var(--gold);
+  }
+  .pay-sheet h4 {
+    margin: 0 0 6px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: #8a6420;
+  }
+  .pay-sheet .pay-sheet-rule {
+    margin: 0 0 12px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+  .pay-sheet .pay-sheet-rule b { color: var(--ink); }
+  .pay-sheet-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 0 0 12px;
+  }
+  .pay-sheet-table th,
+  .pay-sheet-table td {
+    padding: 7px 6px;
+    text-align: right;
+    border-bottom: 1px solid var(--line);
+    vertical-align: baseline;
+  }
+  .pay-sheet-table th:first-child,
+  .pay-sheet-table td:first-child {
+    text-align: left;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .pay-sheet-table th {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom-color: rgba(231,221,207,.95);
+  }
+  .pay-sheet-table tr.pay-sheet-total td {
+    font-weight: 800;
+    border-bottom: none;
+    padding-top: 9px;
+  }
+  .pay-sheet-table tr.pay-sheet-fair td {
+    color: var(--muted);
+    font-weight: 600;
+    border-bottom: none;
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+  .pay-sheet-settle {
+    margin: 0;
+    padding: 11px 12px;
+    border-radius: 10px;
+    background: rgba(14,143,155,.08);
+    border: 1px solid rgba(14,143,155,.28);
+    font-size: 14px;
+    font-weight: 700;
+    color: #0a6e77;
+    line-height: 1.4;
+  }
+  .pay-sheet-settle.pay-sheet-owe-tom {
+    background: rgba(14,143,155,.08);
+    border-color: rgba(14,143,155,.28);
+    color: #0a6e77;
+  }
+  .pay-sheet-settle.pay-sheet-owe-parents {
+    background: rgba(184,135,59,.1);
+    border-color: rgba(184,135,59,.35);
+    color: #8a6420;
+  }
+  .pay-sheet-settle.pay-sheet-even {
+    background: rgba(31,122,61,.08);
+    border-color: rgba(31,122,61,.28);
+    color: #1f7a3d;
+  }
+  .pay-sheet-note {
+    margin: 10px 0 0;
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: var(--muted);
+  }
 
   /* ---------- SIDE PANEL ---------- */
   #overlay {
@@ -4229,7 +4323,7 @@
     function paymentItemTitle(sec) {
       var prefer = ['Hotel', 'Activity', 'Experience', 'Flight', 'Train', 'Service', 'Ticket', 'Venue', 'Route', 'Room'];
       var lines = sec.lines || [];
-      var i, j, line;
+      var i, j;
       for (i = 0; i < prefer.length; i++) {
         for (j = 0; j < lines.length; j++) {
           if (lines[j].l === prefer[i] && lines[j].v) return lines[j].v;
@@ -4260,9 +4354,51 @@
     function paymentBucket(paidBy) {
       var s = String(paidBy || '').toLowerCase();
       if (s.indexOf('outstanding') !== -1) return 'out';
-      if (s.indexOf('debi') !== -1 || s.indexOf('mom') !== -1) return 'debi';
+      if (s.indexOf('debi') !== -1 || s.indexOf('mom') !== -1 || s.indexOf('angelo') !== -1 || s.indexOf('parents') !== -1) return 'debi';
       if (s.indexOf('tom') !== -1) return 'tom';
       return 'other';
+    }
+
+    /* Rough mid-2026 rate for settlement math only — shown in the sheet. */
+    var PAY_USD_TO_EUR = 0.92;
+
+    function parseMoneyNumber(raw) {
+      var s = String(raw || '').replace(/[^\d.,]/g, '');
+      if (!s) return 0;
+      if (/^\d{1,3}(,\d{3})+(\.\d+)?$/.test(s)) s = s.replace(/,/g, '');
+      else if (/^\d+,\d{1,2}$/.test(s)) s = s.replace(',', '.');
+      else s = s.replace(/,/g, '');
+      var n = parseFloat(s);
+      return isFinite(n) ? n : 0;
+    }
+
+    function parseMoneyFromText(text) {
+      var t = String(text || '');
+      var eur = 0;
+      var usd = 0;
+      var m;
+      /* Prefer explicit party totals: (€411 for 3) / (€33.00 total) */
+      m = t.match(/[€\u20ac]\s*([\d.,]+)\s*(?:for\s*\d+|total)/i);
+      if (m) eur = parseMoneyNumber(m[1]);
+      if (!eur) {
+        m = t.match(/[€\u20ac]\s*([\d.,]+)/);
+        if (m) eur = parseMoneyNumber(m[1]);
+      }
+      m = t.match(/(?:USD\s*)?\$\s*([\d.,]+)/i);
+      if (m) usd = parseMoneyNumber(m[1]);
+      return { eur: eur, usd: usd };
+    }
+
+    function moneyToEur(parts) {
+      return (parts.eur || 0) + (parts.usd || 0) * PAY_USD_TO_EUR;
+    }
+
+    function formatEur(n) {
+      return '€' + (Math.round(n * 100) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function formatUsd(n) {
+      return '$' + (Math.round(n * 100) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
     function collectPaymentRows() {
@@ -4283,6 +4419,8 @@
           var amt = paymentAmount(sec);
           var day = paymentDayLabel(k);
           var conf = sec.confirmation || '';
+          var paidByVal = paidLine ? paidLine.v : '';
+          var money = parseMoneyFromText(amt + ' ' + paidByVal);
           if (paidLine) {
             paid.push({
               k: k,
@@ -4290,8 +4428,10 @@
               day: day,
               amount: amt,
               confirmation: conf,
-              paidBy: paidLine.v,
-              bucket: paymentBucket(paidLine.v)
+              paidBy: paidByVal,
+              bucket: paymentBucket(paidByVal),
+              eur: money.eur,
+              usd: money.usd
             });
           } else if (isMeal) {
             restaurants.push({
@@ -4301,12 +4441,24 @@
               amount: amt,
               confirmation: conf,
               paidBy: 'Not attributed (restaurant)',
-              bucket: 'rest'
+              bucket: 'rest',
+              eur: money.eur,
+              usd: money.usd
             });
           }
         });
       });
       return { paid: paid, restaurants: restaurants };
+    }
+
+    function sumMoney(items) {
+      var eur = 0;
+      var usd = 0;
+      items.forEach(function (it) {
+        eur += it.eur || 0;
+        usd += it.usd || 0;
+      });
+      return { eur: eur, usd: usd, equiv: moneyToEur({ eur: eur, usd: usd }) };
     }
 
     function renderPayItems(items) {
@@ -4322,6 +4474,55 @@
       }).join('');
     }
 
+    function renderBalanceSheet(tomItems, parentItems) {
+      var tom = sumMoney(tomItems.filter(function (it) { return (it.eur || 0) + (it.usd || 0) > 0; }));
+      var parents = sumMoney(parentItems.filter(function (it) { return (it.eur || 0) + (it.usd || 0) > 0; }));
+      var pool = tom.equiv + parents.equiv;
+      var tomFair = pool / 3;
+      var parentsFair = pool * 2 / 3;
+      var tomDelta = tom.equiv - tomFair; /* + means Tom overpaid */
+      var settleHtml;
+      var settleClass;
+      if (pool <= 0) {
+        settleClass = 'pay-sheet-even';
+        settleHtml = 'No priced prepaid bookings yet — nothing to settle.';
+      } else if (Math.abs(tomDelta) < 0.5) {
+        settleClass = 'pay-sheet-even';
+        settleHtml = 'Settled — Tom’s ⅓ and parents’ ⅔ match what’s been paid.';
+      } else if (tomDelta > 0) {
+        settleClass = 'pay-sheet-owe-tom';
+        settleHtml = 'Parents owe Tom ' + formatEur(tomDelta) + ' to even the ⅓ / ⅔ split.';
+      } else {
+        settleClass = 'pay-sheet-owe-parents';
+        settleHtml = 'Tom owes parents ' + formatEur(-tomDelta) + ' to even the ⅓ / ⅔ split.';
+      }
+
+      function moneyCell(parts) {
+        var bits = [];
+        if (parts.eur) bits.push(formatEur(parts.eur));
+        if (parts.usd) bits.push(formatUsd(parts.usd));
+        return bits.length ? bits.join(' + ') : '—';
+      }
+
+      return '<div class="pay-sheet">' +
+        '<h4>Balance sheet</h4>' +
+        '<p class="pay-sheet-rule"><b>Split rule:</b> Tom ⅓ · parents (Debi &amp; Angelo) ⅔ of prepaid trip costs. USD converted at <b>' +
+          formatEur(PAY_USD_TO_EUR) + ' / $1</b> for settlement only.</p>' +
+        '<table class="pay-sheet-table">' +
+          '<thead><tr><th></th><th>Paid</th><th>≈ EUR</th></tr></thead>' +
+          '<tbody>' +
+            '<tr><td>Tom paid</td><td>' + moneyCell(tom) + '</td><td>' + formatEur(tom.equiv) + '</td></tr>' +
+            '<tr><td>Parents paid</td><td>' + moneyCell(parents) + '</td><td>' + formatEur(parents.equiv) + '</td></tr>' +
+            '<tr class="pay-sheet-total"><td>Pool so far</td><td></td><td>' + formatEur(pool) + '</td></tr>' +
+            '<tr class="pay-sheet-fair"><td>Tom fair share (⅓)</td><td></td><td>' + formatEur(tomFair) + '</td></tr>' +
+            '<tr class="pay-sheet-fair"><td>Parents fair share (⅔)</td><td></td><td>' + formatEur(parentsFair) + '</td></tr>' +
+          '</tbody>' +
+        '</table>' +
+        '<p class="pay-sheet-settle ' + settleClass + '">' + settleHtml + '</p>' +
+        '<p class="pay-sheet-note">Counts attributed prepaid bookings with a known price (including Debi’s Hotel Milu). Excludes outstanding hotels / transfers, the unpaid truffle Stripe invoice, restaurants, and flights with no price on file. Update Paid lines as you book and this sheet recalculates.</p>' +
+      '</div>';
+    }
+
     function openPayments() {
       currentTop10Guide = null;
       showListMode(true);
@@ -4330,7 +4531,7 @@
       el.type.textContent = 'Money';
       el.type.style.background = 'var(--gold)';
       el.title.textContent = 'Payments';
-      el.day.textContent = 'Who paid for what';
+      el.day.textContent = 'Who paid for what · ⅓ / ⅔ split';
       el.back.style.color = 'var(--gold)';
       el.photoWrap.hidden = true;
       el.photo.removeAttribute('src');
@@ -4342,26 +4543,29 @@
       var out = rows.paid.filter(function (r) { return r.bucket === 'out'; });
       var other = rows.paid.filter(function (r) { return r.bucket === 'other'; });
       var rest = rows.restaurants;
+      var tomSum = sumMoney(tom);
+      var parentSum = sumMoney(debi);
 
       renderStats([
-        { l: 'Tom paid', v: String(tom.length) },
-        { l: 'Debi paid', v: String(debi.length) },
+        { l: 'Tom ≈', v: formatEur(tomSum.equiv) },
+        { l: 'Parents ≈', v: formatEur(parentSum.equiv) },
         { l: 'Outstanding', v: String(out.length) },
-        { l: 'Restaurants', v: String(rest.length) }
+        { l: 'Split', v: '⅓ / ⅔' }
       ], null, null);
       renderReservation('payments', false);
       renderLunchPicks({});
 
       el.listView.innerHTML =
-        '<p class="pay-intro"><b>Track who covered each booking.</b> Tap a row to open its reservation details. Non-restaurant prepaid items are attributed; restaurants stay unattributed until you settle them.</p>' +
-        '<div class="pay-block pay-tom"><h4>Tom Rivituso <span class="pay-count">' + tom.length + '</span></h4>' + renderPayItems(tom) + '</div>' +
-        '<div class="pay-block pay-debi"><h4>Debi (mom) <span class="pay-count">' + debi.length + '</span></h4>' + renderPayItems(debi) + '</div>' +
+        '<p class="pay-intro"><b>Track who covered each booking.</b> Tap a row to open its reservation details. Non-restaurant prepaid items are attributed; restaurants stay unattributed until you settle them. Balance sheet at the bottom uses a <b>Tom ⅓ · parents ⅔</b> split.</p>' +
+        '<div class="pay-block pay-tom"><h4>Tom Rivituso <span class="pay-count">' + tom.length + ' · ' + formatEur(tomSum.equiv) + '</span></h4>' + renderPayItems(tom) + '</div>' +
+        '<div class="pay-block pay-debi"><h4>Parents (Debi) <span class="pay-count">' + debi.length + ' · ' + formatEur(parentSum.equiv) + '</span></h4>' + renderPayItems(debi) + '</div>' +
         '<div class="pay-block pay-out"><h4>Outstanding <span class="pay-count">' + out.length + '</span></h4>' + renderPayItems(out) + '</div>' +
         (other.length ? '<div class="pay-block"><h4>Other <span class="pay-count">' + other.length + '</span></h4>' + renderPayItems(other) + '</div>' : '') +
         '<div class="pay-block pay-rest"><h4>Restaurants — not attributed <span class="pay-count">' + rest.length + '</span></h4>' +
-          '<p class="pay-empty" style="font-style:normal;margin:0 0 8px">Table holds / pay at venue — not counted as Tom prepaid.</p>' +
+          '<p class="pay-empty" style="font-style:normal;margin:0 0 8px">Table holds / pay at venue — not in the ⅓ / ⅔ prepaid pool.</p>' +
           renderPayItems(rest) +
-        '</div>';
+        '</div>' +
+        renderBalanceSheet(tom, debi);
       openPanelShell();
     }
 
