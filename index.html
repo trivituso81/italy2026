@@ -715,6 +715,62 @@
     color: #8a6420;
     font-weight: 600;
   }
+  .pay-sheet-party {
+    margin: 0 0 8px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #faf7f2;
+    overflow: hidden;
+  }
+  .pay-sheet-party > summary {
+    list-style: none;
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 8px 10px;
+    align-items: baseline;
+    padding: 9px 11px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    user-select: none;
+  }
+  .pay-sheet-party > summary::-webkit-details-marker { display: none; }
+  .pay-sheet-party > summary .pay-sheet-party-label {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    min-width: 0;
+  }
+  .pay-sheet-party > summary .pay-sheet-party-label::before {
+    content: '▸';
+    display: inline-block;
+    color: var(--muted);
+    font-weight: 800;
+    transition: transform .15s ease;
+  }
+  .pay-sheet-party[open] > summary .pay-sheet-party-label::before { transform: rotate(90deg); }
+  .pay-sheet-party > summary .pay-sheet-party-paid,
+  .pay-sheet-party > summary .pay-sheet-party-eur {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .pay-sheet-party > summary .pay-sheet-party-eur {
+    color: var(--muted);
+    min-width: 4.5rem;
+  }
+  .pay-sheet-party-body {
+    padding: 0 8px 8px;
+    border-top: 1px solid var(--line);
+  }
+  .pay-sheet-party-body .pay-item {
+    margin-top: 6px;
+  }
+  .pay-sheet-party-body .pay-empty {
+    margin: 8px 2px 2px;
+  }
   .pay-sheet-xfer-note {
     margin: 0 0 10px;
     padding: 9px 11px;
@@ -4421,6 +4477,10 @@
       return '$' + (Math.round(n * 100) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
+    function eurToUsd(n) {
+      return PAY_USD_TO_EUR ? (n / PAY_USD_TO_EUR) : 0;
+    }
+
     function collectPaymentRows() {
       var paid = [];
       var restaurants = [];
@@ -4495,8 +4555,10 @@
     }
 
     function renderBalanceSheet(tomItems, parentItems) {
-      var tom = sumMoney(tomItems.filter(function (it) { return (it.eur || 0) + (it.usd || 0) > 0; }));
-      var parents = sumMoney(parentItems.filter(function (it) { return (it.eur || 0) + (it.usd || 0) > 0; }));
+      var tomPriced = tomItems.filter(function (it) { return (it.eur || 0) + (it.usd || 0) > 0; });
+      var parentPriced = parentItems.filter(function (it) { return (it.eur || 0) + (it.usd || 0) > 0; });
+      var tom = sumMoney(tomPriced);
+      var parents = sumMoney(parentPriced);
       var pool = tom.equiv + parents.equiv;
       var tomFair = pool / 3;
       var parentsFair = pool * 2 / 3;
@@ -4520,6 +4582,7 @@
 
       /* After transfers: + still means parents owe Tom */
       var netParentsOweTom = tomDelta - transferEur;
+      var netParentsOweTomUsd = eurToUsd(netParentsOweTom);
 
       var settleHtml;
       var settleClass;
@@ -4542,10 +4605,10 @@
         settleHtml = 'Settled after transfers — Tom’s ⅓ and parents’ ⅔ are even.';
       } else if (netParentsOweTom > 0) {
         settleClass = 'pay-sheet-owe-tom';
-        settleHtml = 'After transfers, parents still owe Tom ' + formatEur(netParentsOweTom) + '.';
+        settleHtml = 'After transfers, parents still owe Tom ' + formatUsd(netParentsOweTomUsd) + '.';
       } else {
         settleClass = 'pay-sheet-owe-parents';
-        settleHtml = 'After transfers, Tom owes parents ' + formatEur(-netParentsOweTom) + '.';
+        settleHtml = 'After transfers, Tom owes parents ' + formatUsd(-netParentsOweTomUsd) + '.';
       }
 
       function moneyCell(parts) {
@@ -4553,6 +4616,17 @@
         if (parts.eur) bits.push(formatEur(parts.eur));
         if (parts.usd) bits.push(formatUsd(parts.usd));
         return bits.length ? bits.join(' + ') : '—';
+      }
+
+      function partyBlock(label, parts, items) {
+        return '<details class="pay-sheet-party">' +
+          '<summary>' +
+            '<span class="pay-sheet-party-label">' + escHtml(label) + '</span>' +
+            '<span class="pay-sheet-party-paid">' + moneyCell(parts) + '</span>' +
+            '<span class="pay-sheet-party-eur">' + formatEur(parts.equiv) + '</span>' +
+          '</summary>' +
+          '<div class="pay-sheet-party-body">' + renderPayItems(items) + '</div>' +
+        '</details>';
       }
 
       var xferBlock = '';
@@ -4565,13 +4639,13 @@
       return '<div class="pay-sheet">' +
         '<h4>Balance sheet</h4>' +
         '<p class="pay-sheet-rule"><b>Split rule:</b> Tom ⅓ · parents (Debi &amp; Angelo) ⅔ of prepaid trip costs. USD converted at <b>' +
-          formatEur(PAY_USD_TO_EUR) + ' / $1</b> for settlement only.</p>' +
+          formatEur(PAY_USD_TO_EUR) + ' / $1</b> for settlement only. Final “who owes whom” is shown in <b>USD</b>.</p>' +
         xferBlock +
+        partyBlock('Tom paid (bookings)', tom, tomPriced) +
+        partyBlock('Parents paid (bookings)', parents, parentPriced) +
         '<table class="pay-sheet-table">' +
           '<thead><tr><th></th><th>Paid</th><th>≈ EUR</th></tr></thead>' +
           '<tbody>' +
-            '<tr><td>Tom paid (bookings)</td><td>' + moneyCell(tom) + '</td><td>' + formatEur(tom.equiv) + '</td></tr>' +
-            '<tr><td>Parents paid (bookings)</td><td>' + moneyCell(parents) + '</td><td>' + formatEur(parents.equiv) + '</td></tr>' +
             (transferEur
               ? '<tr class="pay-sheet-xfer"><td>Debi → Tom transfer</td><td>' + formatUsd(transferUsd) + '</td><td>' + formatEur(transferEur) + '</td></tr>'
               : '') +
@@ -4582,7 +4656,7 @@
         '</table>' +
         '<p class="pay-sheet-note" style="margin:0 0 8px">' + escHtml(bookingSettle) + '</p>' +
         '<p class="pay-sheet-settle ' + settleClass + '">' + settleHtml + '</p>' +
-        '<p class="pay-sheet-note">Counts attributed prepaid bookings with a known price (including Debi’s Hotel Milu), then cash transfers like Debi’s $2,000 to Tom. Excludes outstanding hotels / transfers, the unpaid truffle Stripe invoice, restaurants, and flights with no price on file.</p>' +
+        '<p class="pay-sheet-note">Counts attributed prepaid bookings with a known price (including Debi’s Hotel Milu), then cash transfers like Debi’s $2,000 to Tom. Excludes outstanding hotels / transfers, the unpaid truffle Stripe invoice, restaurants, and flights with no price on file. Expand Tom / Parents above for every line item in the pool.</p>' +
       '</div>';
     }
 
