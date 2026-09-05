@@ -2000,6 +2000,7 @@
     padding-top: var(--safe-top); padding-bottom: var(--safe-bottom);
     box-sizing: border-box;
   }
+  #daymode:not(.open) { pointer-events: none; }
   #daymode.open { opacity: 1; visibility: visible; }
   .dm-col {
     height: 100%; max-width: 560px; margin: 0 auto;
@@ -2017,7 +2018,6 @@
     display: flex; align-items: center; justify-content: center;
     transition: all .12s ease;
   }
-  .dm-daynav:hover:not(:disabled) { background: var(--ink); color: #fff; border-color: var(--ink); }
   .dm-daynav:disabled { opacity: 0.3; cursor: default; }
   .dm-daylbl { flex: 1; min-width: 0; text-align: center; line-height: 1.25; }
   .dm-daylbl b { display: block; font-size: 15px; font-weight: 800; letter-spacing: -0.2px; }
@@ -2030,7 +2030,6 @@
     cursor: pointer; display: flex; align-items: center; justify-content: center;
     transition: all .12s ease;
   }
-  .dm-exit:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
   .dm-clock {
     display: flex; align-items: center; justify-content: center; gap: 8px;
     padding: 0 12px 6px;
@@ -2133,7 +2132,6 @@
     box-shadow: 0 4px 14px rgba(43,33,24,0.08);
     transition: all .12s ease;
   }
-  .dm-step:hover:not(:disabled) { background: var(--ink); color: #fff; border-color: var(--ink); }
   .dm-step:disabled { opacity: 0.3; cursor: default; box-shadow: none; }
   .dm-now {
     display: inline-flex; align-items: center; gap: 8px;
@@ -2143,8 +2141,12 @@
     box-shadow: 0 4px 14px rgba(43,33,24,0.08);
     transition: all .12s ease;
   }
-  .dm-now:hover { background: var(--gold); color: #fff; }
   .dm-hint { text-align: center; font-size: 11px; color: var(--muted); padding: 0 14px 6px; }
+  /* Hover only where a pointer can hover — taps must not leave buttons stuck filled. */
+  @media (hover: hover) {
+    .dm-daynav:hover:not(:disabled), .dm-exit:hover, .dm-step:hover:not(:disabled) { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .dm-now:hover { background: var(--gold); color: #fff; }
+  }
 
   /* Test-clock dialog (long-press the header, or ?daymode=1&simNow=…) */
   #dmSim {
@@ -6297,16 +6299,18 @@
     var STATUS_TEXT = { live: 'Live now', upcoming: 'Upcoming', past: 'Past' };
 
     function dayMetaText(n) {
+      // DAY_LABEL is "Day 3 · Thu, Sep 24 · Lake Como" — keep the date, swap the city for the day's theme.
       var label = DATA.DAY_LABEL['d' + n] || '';
       var parts = label.split('\u00b7').map(function (s) { return s.trim(); });
       var model = dayModel(n);
-      var meta = parts.slice(1).join(' \u00b7 ');
-      if (!meta) {
+      var date = parts[1];
+      if (!date) {
         var dt = dateForDay(n);
-        meta = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dt.getUTCDay()] + ', ' +
+        date = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dt.getUTCDay()] + ', ' +
           ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][dt.getUTCMonth()] + ' ' + dt.getUTCDate();
       }
-      return meta + (model.theme ? ' \u2014 ' + model.theme : '');
+      var tail = model.theme || parts.slice(2).join(' \u00b7 ');
+      return date + (tail ? ' \u00b7 ' + tail : '');
     }
 
     function cardHtml(item, i, dayN, now) {
@@ -6490,8 +6494,10 @@
       var seed = (now.sim || inTrip(dayIndexFor(now))) ? now : { y: one[0], m: one[1], d: one[2], h: 10, mi: 0 };
       ui.simInput.value = toInputValue(seed);
       ui.sim.classList.add('open');
+      simOpenedAt = Date.now();
       try { ui.simInput.focus({ preventScroll: true }); } catch (e) {}
     }
+    var simOpenedAt = 0;
     function closeSim() { ui.sim.classList.remove('open'); }
     function applySim(iso) {
       if (!parseIsoLocal(iso)) { ui.simInput.focus(); return; }
@@ -6511,7 +6517,10 @@
     ui.simInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') applySim(ui.simInput.value); });
     ui.simReal.addEventListener('click', useRealTime);
     ui.simClose.addEventListener('click', closeSim);
-    ui.sim.addEventListener('click', function (e) { if (e.target === ui.sim) closeSim(); });
+    ui.sim.addEventListener('click', function (e) {
+      // Releasing a long-press synthesizes a click on the backdrop — don't let it close what it just opened.
+      if (e.target === ui.sim && Date.now() - simOpenedAt > 500) closeSim();
+    });
     ui.simChip.addEventListener('click', openSim);
     ui.pillClear.addEventListener('click', useRealTime);
 
