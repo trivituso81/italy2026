@@ -647,7 +647,7 @@
     font-style: italic;
   }
   .pay-sheet {
-    margin: 18px 0 0;
+    margin: 0 0 14px;
     padding: 14px 14px 12px;
     border: 1px solid var(--line);
     border-radius: 12px;
@@ -5031,7 +5031,8 @@
       renderLunchPicks({});
 
       el.listView.innerHTML =
-        '<p class="pay-intro"><b>Track who covered each booking.</b> Tap a row to open its reservation details. Non-restaurant prepaid items are attributed; restaurants stay unattributed until you settle them. Balance sheet at the bottom uses a <b>Tom ⅓ · parents ⅔</b> split.</p>' +
+        renderBalanceSheet(tom, debi) +
+        '<p class="pay-intro"><b>Track who covered each booking.</b> Tap a row to open its reservation details. Non-restaurant prepaid items are attributed; restaurants stay unattributed until you settle them. Lists below are the full attributed ledger under the <b>Tom ⅓ · parents ⅔</b> split.</p>' +
         '<div class="pay-block pay-tom"><h4>Tom Rivituso <span class="pay-count">' + tom.length + ' · ' + formatEur(tomSum.equiv) + '</span></h4>' + renderPayItems(tom) + '</div>' +
         '<div class="pay-block pay-debi"><h4>Parents (Debi) <span class="pay-count">' + debi.length + ' · ' + formatEur(parentSum.equiv) + '</span></h4>' + renderPayItems(debi) + '</div>' +
         '<div class="pay-block pay-out"><h4>Outstanding <span class="pay-count">' + out.length + '</span></h4>' + renderPayItems(out) + '</div>' +
@@ -5039,8 +5040,7 @@
         '<div class="pay-block pay-rest"><h4>Restaurants — not attributed <span class="pay-count">' + rest.length + '</span></h4>' +
           '<p class="pay-empty" style="font-style:normal;margin:0 0 8px">Table holds / pay at venue — not in the ⅓ / ⅔ prepaid pool.</p>' +
           renderPayItems(rest) +
-        '</div>' +
-        renderBalanceSheet(tom, debi);
+        '</div>';
       openPanelShell();
     }
 
