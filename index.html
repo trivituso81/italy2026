@@ -6343,8 +6343,10 @@
       html += '<div class="dm-head"><span class="dm-time">' +
         (item.time ? escHtml(fmtRange(item.time)) : escHtml(item.rawTime || 'Time TBD')) + '</span>' +
         '<span class="dm-status ' + st + '" data-i="' + i + '"' + (st ? '' : ' hidden') + '>' + (STATUS_TEXT[st] || '') + '</span></div>';
-      html += '<h3 class="dm-title">' + escHtml(item.title) + '</h3>';
-      var sub = item.act + (item.loc && item.loc !== item.title ? ' \u00b7 ' + item.loc : '') + (item.skip ? ' \u00b7 Skip OK' : '');
+      var title = item.act || item.title;
+      var sub = (item.loc && item.loc !== title ? item.loc : (item.title !== title ? item.title : '')) +
+        (item.skip ? (item.loc || item.title ? ' \u00b7 ' : '') + 'Skip OK' : '');
+      html += '<h3 class="dm-title">' + escHtml(title) + '</h3>';
       if (sub) html += '<p class="dm-sub">' + escHtml(sub) + '</p>';
       if (item.mode) html += '<p class="dm-mode"><span class="ic" aria-hidden="true">\uD83D\uDEB6</span><span>' + escHtml(item.mode) + '</span></p>';
       if (res) html += '<div class="dm-res"><span class="p-status ' + res[1] + '">' + escHtml(res[0]) + '</span></div>';
