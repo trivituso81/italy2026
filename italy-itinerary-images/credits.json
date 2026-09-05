@@ -1,8 +1,8 @@
 {
  "villa-monastero.jpg": {
   "source": "Wikimedia Commons",
-  "file": "File:Villa Monastero Vista sul Lago di Como.jpg",
-  "url": "https://commons.wikimedia.org/wiki/File%3AVilla%20Monastero%20Vista%20sul%20Lago%20di%20Como.jpg"
+  "file": "File:Villa monastero.jpg",
+  "url": "https://commons.wikimedia.org/wiki/File:Villa_monastero.jpg"
  },
  "bellagio.jpg": {
   "source": "Wikimedia Commons",
@@ -11,13 +11,13 @@
  },
  "villa-melzi.jpg": {
   "source": "Wikimedia Commons",
-  "file": "File:Villa Melzi (Bellagio) - DSC02716.JPG",
-  "url": "https://commons.wikimedia.org/wiki/File%3AVilla%20Melzi%20%28Bellagio%29%20-%20DSC02716.JPG"
+  "file": "File:Bellagio - Villa Melzi d'Eril - 2023-09-01 00-15-09 003.JPG",
+  "url": "https://commons.wikimedia.org/wiki/File:Bellagio_-_Villa_Melzi_d%27Eril_-_2023-09-01_00-15-09_003.JPG"
  },
  "mt07.jpg": {
   "source": "Wikimedia Commons",
-  "file": "File:Milano Teatro alla Scala Fassade 3.jpg",
-  "url": "https://commons.wikimedia.org/wiki/File%3AMilano%20Teatro%20alla%20Scala%20Fassade%203.jpg"
+  "file": "File:Exterior Teatro Alla Scala high quality 01.jpg",
+  "url": "https://commons.wikimedia.org/wiki/File:Exterior_Teatro_Alla_Scala_high_quality_01.jpg"
  },
  "mt06.jpg": {
   "source": "Wikimedia Commons",
@@ -26,8 +26,8 @@
  },
  "madonna-orto.jpg": {
   "source": "Wikimedia Commons",
-  "file": "File:Madonna dell'Orto 6 apôtres et la Tempérance.jpg",
-  "url": "https://commons.wikimedia.org/wiki/File%3AMadonna%20dell%27Orto%206%20ap%C3%B4tres%20et%20la%20Temp%C3%A9rance.jpg"
+  "file": "File:Venezia Madonna dell'Orto R01.jpg",
+  "url": "https://commons.wikimedia.org/wiki/File:Venezia_Madonna_dell%27Orto_R01.jpg"
  },
  "gondola.jpg": {
   "source": "Wikimedia Commons",
@@ -36,8 +36,8 @@
  },
  "vt05.jpg": {
   "source": "Wikimedia Commons",
-  "file": "File:Palazzo Venier dei Leoni a Dorsoduro Venezia.jpg",
-  "url": "https://commons.wikimedia.org/wiki/File%3APalazzo%20Venier%20dei%20Leoni%20a%20Dorsoduro%20Venezia.jpg"
+  "file": "File:PI5DAE~2 - CopyPeggy Guggenheim Museum.JPG",
+  "url": "https://commons.wikimedia.org/wiki/File:PI5DAE~2_-_CopyPeggy_Guggenheim_Museum.JPG"
  },
  "rialto-market.jpg": {
   "source": "Wikimedia Commons",
@@ -71,8 +71,8 @@
  },
  "teatro-romano.jpg": {
   "source": "Wikimedia Commons",
-  "file": "File:Verona Italy Teatro-Romano-01.jpg",
-  "url": "https://commons.wikimedia.org/wiki/File%3AVerona%20Italy%20Teatro-Romano-01.jpg"
+  "file": "File:Roman Theatre in Verona (89828).jpg",
+  "url": "https://commons.wikimedia.org/wiki/File:Roman_Theatre_in_Verona_%2889828%29.jpg"
  },
  "rocca-scaligera.jpg": {
   "source": "Wikimedia Commons",
@@ -86,8 +86,8 @@
  },
  "vr07.jpg": {
   "source": "Wikimedia Commons",
-  "file": "File:1993-1994-Giardino Giusti (Verona)-testo e photo Paolo Villa-nA04 (light and perspective corrections) -tesi Accademia Belle Arti Bologna-cortile e portico di Palazzo Giusti-Kodak EKTACHROME ELITE 200 5056.jpg",
-  "url": "https://commons.wikimedia.org/wiki/File%3A1993-1994-Giardino%20Giusti%20%28Verona%29-testo%20e%20photo%20Paolo%20Villa-nA04%20%28light%20and%20perspective%20corrections%29%20-tesi%20Accademia%20Belle%20Arti%20Bologna-cortile%20e%20portico%20di%20Palazzo%20Giusti-Kodak%20EKTACHROME%20ELITE%20200%205056.jpg"
+  "file": "File:Green symphony, giardino Giusti (Verona).jpg",
+  "url": "https://commons.wikimedia.org/wiki/File:Green_symphony%2C_giardino_Giusti_%28Verona%29.jpg"
  },
  "vr09.jpg": {
   "source": "Wikimedia Commons",
@@ -171,8 +171,8 @@
  },
  "agnolotti-plin.jpg": {
   "source": "Wikimedia Commons",
-  "file": "File:PotatoChipAgnolotti (8324572509).jpg",
-  "url": "https://commons.wikimedia.org/wiki/File%3APotatoChipAgnolotti%20%288324572509%29.jpg"
+  "file": "File:Agnolotti.JPG",
+  "url": "https://commons.wikimedia.org/wiki/File:Agnolotti.JPG"
  },
  "cicchetti.jpg": {
   "source": "Wikimedia Commons",
@@ -191,8 +191,8 @@
  },
  "tortellini-valeggio.jpg": {
   "source": "Wikimedia Commons",
-  "file": "File:Tortellini di Valeggio sul Mincio.jpg",
-  "url": "https://commons.wikimedia.org/wiki/File%3ATortellini%20di%20Valeggio%20sul%20Mincio.jpg"
+  "file": "File:Tortellini Bolognesi.jpg",
+  "url": "https://commons.wikimedia.org/wiki/File:Tortellini_Bolognesi.jpg"
  },
  "pasta-class.jpg": {
   "source": "Wikimedia Commons",
@@ -249,5 +249,16 @@
  },
  "wave-murano.jpg": {
   "source": "https://wavemuranoglass.com/"
+ },
+ "malpensa.jpg": {
+  "source": "Wikimedia Commons",
+  "file": "File:Milan malpensa terminal airport.jpg",
+  "url": "https://commons.wikimedia.org/wiki/File:Milan_malpensa_terminal_airport.jpg"
+ },
+ "maio.jpg": {
+  "source": "https://www.maiorestaurant.com/"
+ },
+ "valtellina.jpg": {
+  "source": "https://www.valtellinaosteria.it/"
  }
 }
