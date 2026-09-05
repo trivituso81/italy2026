@@ -2035,6 +2035,7 @@
     padding: 0 12px 6px;
     font-size: 12px; color: var(--muted); font-weight: 600;
   }
+  #dmClock { cursor: pointer; }
   .dm-simchip {
     display: none; align-items: center; gap: 5px;
     padding: 2px 9px; border-radius: 999px;
@@ -2192,6 +2193,11 @@
   /* ---------- PASSWORD GATE ---------- */
   html:not(.unlocked) #app-content { display: none; }
   html.unlocked #auth-gate { display: none; }
+  /* Day Mode lives outside #app-content so iOS Safari will paint the
+     position:fixed overlay after unlock (a display:none ancestor breaks it). */
+  html:not(.unlocked) #dmPill,
+  html:not(.unlocked) #daymode,
+  html:not(.unlocked) #dmSim { display: none !important; }
 
   #auth-gate {
     min-height: 100vh;
@@ -2334,6 +2340,57 @@
     </div>
   </div>
 
+  <!-- Day Mode overlay is a body child (not inside #app-content) so iOS Safari
+       will paint the position:fixed layer after the password gate unlocks. -->
+  <div id="dmPill" hidden>
+    <button type="button" class="dm-pill-main" id="dmPillOpen">
+      <span class="dm-live-dot" aria-hidden="true"></span>
+      <span class="dm-pill-text" id="dmPillText">Day 1 is happening now</span>
+      <span class="dm-pill-arrow" aria-hidden="true">→</span>
+    </button>
+    <button type="button" class="dm-pill-x" id="dmPillClear" aria-label="Turn off the test clock" title="Turn off the test clock">×</button>
+  </div>
+
+  <div id="daymode" role="dialog" aria-modal="true" aria-label="Day Mode" aria-hidden="true">
+    <div class="dm-col">
+      <div class="dm-top">
+        <button type="button" class="dm-daynav" id="dmPrevDay" aria-label="Previous day" title="Previous day">‹</button>
+        <div class="dm-daylbl"><b id="dmDayNum">Day 1</b><span id="dmDayMeta"></span></div>
+        <button type="button" class="dm-daynav" id="dmNextDay" aria-label="Next day" title="Next day">›</button>
+        <button type="button" class="dm-exit" id="dmExit" aria-label="Exit Day Mode" title="Back to itinerary">×</button>
+      </div>
+      <div class="dm-clock">
+        <span id="dmClock"></span>
+        <button type="button" class="dm-simchip" id="dmSimChip" title="Change the test clock">Test clock</button>
+      </div>
+      <div class="dm-stage" id="dmStage">
+        <div class="dm-track" id="dmTrack"></div>
+        <div class="dm-dots" id="dmDots" aria-hidden="true"></div>
+      </div>
+      <div class="dm-bottom">
+        <button type="button" class="dm-step" id="dmPrevAct" aria-label="Previous activity">↑</button>
+        <button type="button" class="dm-now" id="dmNow">◎ Jump to now</button>
+        <button type="button" class="dm-step" id="dmNextAct" aria-label="Next activity">↓</button>
+      </div>
+      <div class="dm-hint">Swipe up or down for the next stop</div>
+    </div>
+  </div>
+
+  <div id="dmSim" role="dialog" aria-modal="true" aria-labelledby="dmSimTitle">
+    <div class="dm-sim-card">
+      <h3 id="dmSimTitle">Day Mode test clock</h3>
+      <p>Preview any day and time of the trip as if it were happening right now in Italy. This only affects this browser tab.</p>
+      <label for="dmSimInput">Pretend it is (Italy time)</label>
+      <input type="datetime-local" id="dmSimInput" step="60">
+      <div class="dm-sim-actions">
+        <button type="button" class="primary" id="dmSimApply">Preview</button>
+        <button type="button" id="dmSimReal">Use real time</button>
+        <button type="button" id="dmSimClose">Close</button>
+      </div>
+      <p class="dm-sim-note">From the itinerary, tap <b>Day Mode</b> in the header. Or open <code>?daymode=1&amp;simNow=2026-09-24T13:30</code>.</p>
+    </div>
+  </div>
+
   <div id="app-content">
 
   <header class="hero">
@@ -2359,6 +2416,11 @@
       <button type="button" class="hero-link" data-k="payments" aria-label="Open payment tracker">
         <span class="hl-icon" aria-hidden="true">€</span>
         <span class="hl-text">Payments</span>
+        <span class="hl-arrow" aria-hidden="true">›</span>
+      </button>
+      <button type="button" class="hero-link" id="dmHero" aria-label="Open Day Mode">
+        <span class="hl-icon" aria-hidden="true">◎</span>
+        <span class="hl-text">Day Mode</span>
         <span class="hl-arrow" aria-hidden="true">›</span>
       </button>
     </div>
@@ -2943,58 +3005,6 @@
       </div>
     </div>
   </aside>
-
-  <!-- Day Mode: entry pill (only during the trip, or with the test clock) -->
-  <div id="dmPill" hidden>
-    <button type="button" class="dm-pill-main" id="dmPillOpen">
-      <span class="dm-live-dot" aria-hidden="true"></span>
-      <span class="dm-pill-text" id="dmPillText">Day 1 is happening now</span>
-      <span class="dm-pill-arrow" aria-hidden="true">→</span>
-    </button>
-    <button type="button" class="dm-pill-x" id="dmPillClear" aria-label="Turn off the test clock" title="Turn off the test clock">×</button>
-  </div>
-
-  <!-- Day Mode: full-screen view -->
-  <div id="daymode" role="dialog" aria-modal="true" aria-label="Day Mode" aria-hidden="true">
-    <div class="dm-col">
-      <div class="dm-top">
-        <button type="button" class="dm-daynav" id="dmPrevDay" aria-label="Previous day" title="Previous day">‹</button>
-        <div class="dm-daylbl"><b id="dmDayNum">Day 1</b><span id="dmDayMeta"></span></div>
-        <button type="button" class="dm-daynav" id="dmNextDay" aria-label="Next day" title="Next day">›</button>
-        <button type="button" class="dm-exit" id="dmExit" aria-label="Exit Day Mode" title="Back to itinerary">×</button>
-      </div>
-      <div class="dm-clock">
-        <span id="dmClock"></span>
-        <button type="button" class="dm-simchip" id="dmSimChip" title="Change the test clock">Test clock</button>
-      </div>
-      <div class="dm-stage" id="dmStage">
-        <div class="dm-track" id="dmTrack"></div>
-        <div class="dm-dots" id="dmDots" aria-hidden="true"></div>
-      </div>
-      <div class="dm-bottom">
-        <button type="button" class="dm-step" id="dmPrevAct" aria-label="Previous activity">↑</button>
-        <button type="button" class="dm-now" id="dmNow">◎ Jump to now</button>
-        <button type="button" class="dm-step" id="dmNextAct" aria-label="Next activity">↓</button>
-      </div>
-      <div class="dm-hint">Swipe up or down for the next stop</div>
-    </div>
-  </div>
-
-  <!-- Day Mode: test clock (session-only override of "Italy now") -->
-  <div id="dmSim" role="dialog" aria-modal="true" aria-labelledby="dmSimTitle">
-    <div class="dm-sim-card">
-      <h3 id="dmSimTitle">Day Mode test clock</h3>
-      <p>Preview any day and time of the trip as if it were happening right now in Italy. This only affects this browser tab.</p>
-      <label for="dmSimInput">Pretend it is (Italy time)</label>
-      <input type="datetime-local" id="dmSimInput" step="60">
-      <div class="dm-sim-actions">
-        <button type="button" class="primary" id="dmSimApply">Preview</button>
-        <button type="button" id="dmSimReal">Use real time</button>
-        <button type="button" id="dmSimClose">Close</button>
-      </div>
-      <p class="dm-sim-note">Shortcut: <code>?daymode=1&amp;simNow=2026-09-24T13:30</code> in the address bar. Long-press the header to reopen this.</p>
-    </div>
-  </div>
 
   <footer>
     Buon viaggio! <span class="heart">♥</span> · Italy 2026 · Milan → Venice → Verona
@@ -6522,6 +6532,19 @@
       if (e.target === ui.sim && Date.now() - simOpenedAt > 500) closeSim();
     });
     ui.simChip.addEventListener('click', openSim);
+    if (ui.clock) ui.clock.addEventListener('click', openSim);
+    var heroBtn = document.getElementById('dmHero');
+    if (heroBtn) {
+      heroBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (!readSim() && !inTrip(dayIndexFor(realRomeNow()))) {
+          openDayMode(1, 0);
+          openSim();
+        } else {
+          openDayMode(null);
+        }
+      });
+    }
     ui.pillClear.addEventListener('click', useRealTime);
 
     // Long-press the header (not its buttons) to bring up the test clock.
@@ -6671,17 +6694,26 @@
     document.addEventListener('visibilitychange', function () { if (!document.hidden) tick(); });
 
     /* ---- Boot: URL override, then the real-clock entry point ---- */
-    var qs;
-    try { qs = new URLSearchParams(window.location.search); } catch (e) { qs = null; }
+    function readQuery() {
+      var raw = window.location.search || '';
+      if (raw.length <= 1 && window.location.hash) raw = window.location.hash.replace(/^#/, '?');
+      try { return new URLSearchParams(raw.charAt(0) === '?' ? raw.slice(1) : raw); } catch (e) { return null; }
+    }
+    var qs = readQuery();
     var simParam = qs && (qs.get('simNow') || qs.get('simnow'));
     if (simParam && parseIsoLocal(simParam)) writeSim(simParam);
-    var forceOpen = !!(qs && (qs.get('daymode') === '1' || qs.get('daymode') === 'true'));
+    var forceOpen = !!(qs && (qs.get('daymode') === '1' || qs.get('daymode') === 'true' || qs.get('daymode') === ''));
 
     renderPill();
-    if (forceOpen) {
+    function bootFromUrl() {
+      if (!forceOpen) return;
       if (document.documentElement.classList.contains('unlocked')) openDayMode(null);
       else document.addEventListener('italy:unlocked', function () { openDayMode(null); }, { once: true });
     }
+    bootFromUrl();
+    window.addEventListener('pageshow', function () {
+      if (forceOpen && document.documentElement.classList.contains('unlocked') && !isOpen) openDayMode(null);
+    });
   })();
   </script>
 
