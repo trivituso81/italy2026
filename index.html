@@ -2020,7 +2020,7 @@
   }
   .dm-daynav:disabled { opacity: 0.3; cursor: default; }
   .dm-daylbl { flex: 1; min-width: 0; text-align: center; line-height: 1.25; }
-  .dm-daylbl b { display: block; font-size: 15px; font-weight: 800; letter-spacing: -0.2px; }
+  .dm-daylbl b { display: block; font-size: 16px; font-weight: 800; letter-spacing: -0.2px; }
   .dm-daylbl span { display: block; font-size: 12px; color: var(--muted); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .dm-exit {
     flex: 0 0 auto; margin-left: 6px;
@@ -2355,7 +2355,7 @@
     <div class="dm-col">
       <div class="dm-top">
         <button type="button" class="dm-daynav" id="dmPrevDay" aria-label="Previous day" title="Previous day">‹</button>
-        <div class="dm-daylbl"><b id="dmDayNum">Day 1</b><span id="dmDayMeta"></span></div>
+        <div class="dm-daylbl"><b id="dmDayDate">Tue, Sep 22</b><span id="dmDayNum">Day 1</span></div>
         <button type="button" class="dm-daynav" id="dmNextDay" aria-label="Next day" title="Next day">›</button>
         <button type="button" class="dm-exit" id="dmExit" aria-label="Exit Day Mode" title="Back to itinerary">×</button>
       </div>
@@ -6071,8 +6071,8 @@
       pillClear: document.getElementById('dmPillClear'),
       prevDay: document.getElementById('dmPrevDay'),
       nextDay: document.getElementById('dmNextDay'),
+      dayDate: document.getElementById('dmDayDate'),
       dayNum: document.getElementById('dmDayNum'),
-      dayMeta: document.getElementById('dmDayMeta'),
       exit: document.getElementById('dmExit'),
       clock: document.getElementById('dmClock'),
       simChip: document.getElementById('dmSimChip'),
@@ -6308,8 +6308,8 @@
     var scrollLockY = 0;
     var STATUS_TEXT = { live: 'Live now', upcoming: 'Upcoming', past: 'Past' };
 
-    function dayMetaText(n) {
-      // DAY_LABEL is "Day 3 · Thu, Sep 24 · Lake Como" — keep the date, swap the city for the day's theme.
+    function dayHeader(n) {
+      // DAY_LABEL is "Day 3 · Thu, Sep 24 · Lake Como" — date is the title, Day N the subtitle.
       var label = DATA.DAY_LABEL['d' + n] || '';
       var parts = label.split('\u00b7').map(function (s) { return s.trim(); });
       var model = dayModel(n);
@@ -6320,7 +6320,7 @@
           ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][dt.getUTCMonth()] + ' ' + dt.getUTCDate();
       }
       var tail = model.theme || parts.slice(2).join(' \u00b7 ');
-      return date + (tail ? ' \u00b7 ' + tail : '');
+      return { date: date, sub: 'Day ' + n + (tail ? ' \u00b7 ' + tail : '') };
     }
 
     function cardHtml(item, i, dayN, now) {
@@ -6343,8 +6343,10 @@
       html += '<div class="dm-head"><span class="dm-time">' +
         (item.time ? escHtml(fmtRange(item.time)) : escHtml(item.rawTime || 'Time TBD')) + '</span>' +
         '<span class="dm-status ' + st + '" data-i="' + i + '"' + (st ? '' : ' hidden') + '>' + (STATUS_TEXT[st] || '') + '</span></div>';
-      html += '<h3 class="dm-title">' + escHtml(item.title) + '</h3>';
-      var sub = item.act + (item.loc && item.loc !== item.title ? ' \u00b7 ' + item.loc : '') + (item.skip ? ' \u00b7 Skip OK' : '');
+      var title = item.act || item.title;
+      var sub = (item.loc && item.loc !== title ? item.loc : (item.title !== title ? item.title : '')) +
+        (item.skip ? (item.loc || item.title ? ' \u00b7 ' : '') + 'Skip OK' : '');
+      html += '<h3 class="dm-title">' + escHtml(title) + '</h3>';
       if (sub) html += '<p class="dm-sub">' + escHtml(sub) + '</p>';
       if (item.mode) html += '<p class="dm-mode"><span class="ic" aria-hidden="true">\uD83D\uDEB6</span><span>' + escHtml(item.mode) + '</span></p>';
       if (res) html += '<div class="dm-res"><span class="p-status ' + res[1] + '">' + escHtml(res[0]) + '</span></div>';
@@ -6366,8 +6368,9 @@
       curDay = clampDay(n);
       var now = romeNow();
       var model = dayModel(curDay);
-      ui.dayNum.textContent = 'Day ' + curDay;
-      ui.dayMeta.textContent = dayMetaText(curDay);
+      var head = dayHeader(curDay);
+      ui.dayDate.textContent = head.date;
+      ui.dayNum.textContent = head.sub;
       ui.prevDay.disabled = curDay <= 1;
       ui.nextDay.disabled = curDay >= DAY_COUNT;
 
