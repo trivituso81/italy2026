@@ -2121,32 +2121,10 @@
   .dm-dot.on { height: 18px; background: var(--ink); }
   .dm-dot.on.live { background: #1f7a3d; }
 
-  .dm-bottom {
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    padding: 8px 14px 10px;
-  }
-  .dm-step {
-    width: 44px; height: 44px; border-radius: 50%;
-    border: 1px solid var(--line); background: #fff; color: var(--ink);
-    font: inherit; font-size: 18px; line-height: 1; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 14px rgba(43,33,24,0.08);
-    transition: all .12s ease;
-  }
-  .dm-step:disabled { opacity: 0.3; cursor: default; box-shadow: none; }
-  .dm-now {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 11px 18px; border-radius: 999px;
-    border: 1px solid var(--gold); background: #fff; color: var(--ink);
-    font: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer;
-    box-shadow: 0 4px 14px rgba(43,33,24,0.08);
-    transition: all .12s ease;
-  }
   .dm-hint { text-align: center; font-size: 11px; color: var(--muted); padding: 0 14px 6px; }
   /* Hover only where a pointer can hover — taps must not leave buttons stuck filled. */
   @media (hover: hover) {
-    .dm-daynav:hover:not(:disabled), .dm-exit:hover, .dm-step:hover:not(:disabled) { background: var(--ink); color: #fff; border-color: var(--ink); }
-    .dm-now:hover { background: var(--gold); color: #fff; }
+    .dm-daynav:hover:not(:disabled), .dm-exit:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
   }
 
   /* Test-clock dialog (long-press the header, or ?daymode=1&simNow=…) */
@@ -2366,11 +2344,6 @@
       <div class="dm-stage" id="dmStage">
         <div class="dm-track" id="dmTrack"></div>
         <div class="dm-dots" id="dmDots" aria-hidden="true"></div>
-      </div>
-      <div class="dm-bottom">
-        <button type="button" class="dm-step" id="dmPrevAct" aria-label="Previous activity">↑</button>
-        <button type="button" class="dm-now" id="dmNow">◎ Jump to now</button>
-        <button type="button" class="dm-step" id="dmNextAct" aria-label="Next activity">↓</button>
       </div>
       <div class="dm-hint">Swipe up or down for the next stop</div>
     </div>
@@ -5535,9 +5508,6 @@
       stage: document.getElementById('dmStage'),
       track: document.getElementById('dmTrack'),
       dots: document.getElementById('dmDots'),
-      prevAct: document.getElementById('dmPrevAct'),
-      nextAct: document.getElementById('dmNextAct'),
-      now: document.getElementById('dmNow'),
       sim: document.getElementById('dmSim'),
       simInput: document.getElementById('dmSimInput'),
       simApply: document.getElementById('dmSimApply'),
@@ -5847,9 +5817,6 @@
 
     function positionTrack() {
       ui.track.style.transform = 'translateY(' + (-curIdx * 100) + '%)';
-      var count = dayModel(curDay).items.length;
-      ui.prevAct.disabled = curIdx <= 0;
-      ui.nextAct.disabled = curIdx >= count - 1;
       Array.prototype.forEach.call(ui.dots.children, function (dot, i) {
         dot.classList.toggle('on', i === curIdx);
       });
@@ -6030,9 +5997,6 @@
     /* ---- Controls ---- */
     ui.pillOpen.addEventListener('click', function () { openDayMode(null); });
     ui.exit.addEventListener('click', closeDayMode);
-    ui.now.addEventListener('click', jumpToNow);
-    ui.prevAct.addEventListener('click', function () { goTo(curIdx - 1); });
-    ui.nextAct.addEventListener('click', function () { goTo(curIdx + 1); });
     ui.prevDay.addEventListener('click', function () { changeDay(-1); });
     ui.nextDay.addEventListener('click', function () { changeDay(1); });
 
