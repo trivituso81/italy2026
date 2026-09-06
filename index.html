@@ -2098,7 +2098,7 @@
     padding: 3px 9px; border-radius: 999px;
     box-shadow: 0 2px 8px rgba(43,33,24,.10);
   }
-  .dm-block-tip .dm-morepill { right: 8px; bottom: 6px; }
+  .dm-block-tip .dm-morepill { right: 8px; bottom: 5px; }
   .dm-block.clipped .dm-morepill { display: inline-block; }
   .dm-facts {
     display: grid; grid-template-columns: 1fr 1fr; gap: 6px; align-content: start;
@@ -2129,7 +2129,11 @@
   .dm-lead { font-size: 15.5px; font-weight: 700; color: var(--ink); margin: 0; line-height: 1.4; }
   .dm-desc { font-size: 15px; line-height: 1.5; color: var(--ink); margin: 0; }
   .dm-body .p-tips { margin: 0; padding: 9px 12px; font-size: 13.5px; line-height: 1.5; }
-  .dm-block-text.clamp { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; height: 100%; box-sizing: border-box; }
+  .dm-block-text.clamp { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+  .dm-block-tip.clipped { background: #f7f1e7; border-left: 3px solid var(--gold); border-radius: 0 8px 8px 0; }
+  /* Padding inside an overflow box still shows the next line through it, so the
+     clamped tip keeps only its top padding and the block supplies the bottom. */
+  .dm-block-tip.clipped .p-tips { background: transparent; border-left: 0; border-radius: 0; padding-bottom: 0; }
 
   .dm-detail {
     display: none; position: absolute; inset: 0; z-index: 4;
@@ -6060,12 +6064,15 @@
         block.style.flex = '0 0 ' + h + 'px';
         block.style.height = h + 'px';
         if (!text) return;
+        // Whole lines only, with a clear strip under them for the pill, so the
+        // last visible line is fully legible and ends in an ellipsis.
         var cs = getComputedStyle(text);
         var lh = parseFloat(cs.lineHeight);
         if (!lh || isNaN(lh)) lh = parseFloat(cs.fontSize) * 1.45;
         var padY = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
         var borderY = (parseFloat(cs.borderTopWidth) || 0) + (parseFloat(cs.borderBottomWidth) || 0);
-        var lines = Math.max(1, Math.floor((h - padY - borderY) / lh));
+        var lines = Math.max(1, Math.floor((h - padY - borderY - PILL_H) / lh));
+        block.classList.add('rows');
         text.classList.add('clamp');
         text.style.webkitLineClamp = String(lines);
       });
