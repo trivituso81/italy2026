@@ -2016,7 +2016,7 @@
     touch-action: pan-y;
   }
   .dm-card-in::-webkit-scrollbar { width: 0; height: 0; }
-  .dm-img-wrap { position: relative; aspect-ratio: 16 / 9; background: #e8e0d4; overflow: hidden; border-radius: 17px 17px 0 0; }
+  .dm-img-wrap { position: relative; aspect-ratio: 2 / 1; background: #e8e0d4; overflow: hidden; border-radius: 17px 17px 0 0; }
   .dm-img-wrap::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(26,22,18,.40) 0%, transparent 55%); pointer-events: none; }
   .dm-img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .dm-img-wrap .dm-type { position: absolute; left: 14px; bottom: 12px; z-index: 1; }
@@ -5810,14 +5810,14 @@
       if (sub) html += '<p class="dm-sub">' + escHtml(sub) + '</p>';
       if (item.mode) html += '<p class="dm-mode"><span class="ic" aria-hidden="true">\uD83D\uDEB6</span><span>' + escHtml(item.mode) + '</span></p>';
       if (res) html += '<div class="dm-res"><span class="p-status ' + res[1] + '">' + escHtml(res[0]) + '</span></div>';
-      if (enrich.lead) html += '<p class="dm-lead">' + escHtml(enrich.lead) + '</p>';
-      var desc = enrich.desc || d.desc || '';
-      if (desc) html += '<p class="dm-desc"' + (enrich.lead ? '' : ' style="margin-top:14px"') + '>' + escHtml(desc) + '</p>';
       if (stats.length) {
         html += '<div class="p-stats">' + stats.map(function (s) {
           return '<div class="p-stat"><div class="ps-label">' + escHtml(s.l) + '</div><div class="ps-val">' + escHtml(s.v) + '</div></div>';
         }).join('') + '</div>';
       }
+      if (enrich.lead) html += '<p class="dm-lead">' + escHtml(enrich.lead) + '</p>';
+      var desc = enrich.desc || d.desc || '';
+      if (desc) html += '<p class="dm-desc"' + (enrich.lead ? '' : ' style="margin-top:14px"') + '>' + escHtml(desc) + '</p>';
       // Tips are authored as inline HTML for the detail panel — same treatment here.
       if (d.tips) html += '<div class="p-tips"><b>Tip:</b> ' + d.tips + '</div>';
       html += '</div></div></div>';
