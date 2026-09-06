@@ -2048,7 +2048,25 @@
   .dm-res { margin-top: 10px; }
   .dm-lead { font-size: 15.5px; font-weight: 600; color: var(--ink); margin: 14px 0 8px; line-height: 1.45; }
   .dm-desc { font-size: 14.5px; line-height: 1.6; color: var(--ink); margin: 0; }
-  .dm-body .p-stats { margin: 14px 0 0; }
+  .dm-body .p-stats {
+    display: flex; flex-direction: column; gap: 0;
+    margin: 12px 0 0;
+    background: #f7f2ea;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 2px 12px;
+  }
+  .dm-body .p-stat {
+    display: flex; align-items: baseline; gap: 10px;
+    background: none; border: 0; border-radius: 0;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .dm-body .p-stat:last-child { border-bottom: 0; }
+  .dm-body .p-stat .ps-label {
+    flex: 0 0 7.2em; margin-bottom: 0; line-height: 1.35;
+  }
+  .dm-body .p-stat .ps-val { flex: 1; min-width: 0; }
   .dm-body .p-tips { margin-top: 16px; }
   .dm-empty {
     height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -3451,7 +3469,7 @@
 
     var SITE_ENRICH = {
       d1a:{img: 'italy-itinerary-images/delta-767.jpg', alt: 'Delta Boeing 767-400ER', lead: 'Overnight Delta nonstop from New York into Malpensa.', stats: [{l: 'Depart', v: '9:55 PM JFK T4, Sep 21'}, {l: 'Arrive', v: '12:05 PM MXP T1, Sep 22'}, {l: 'Aircraft', v: 'Boeing 767-400'}, {l: 'Cabin', v: 'Premium Select Classic'}, {l: 'Transfer', v: '~50 min to city center'}], desc: 'Touch down at Milan-Malpensa after the overnight crossing. Clear passport control and collect the bags, then the private transfer takes about 50 minutes into the city.'},
-      d1b:{img: 'italy-itinerary-images/d1b.jpg', alt: 'Hotel Milu Milano', lead: 'Milan base for four nights in Porta Venezia.', stats: [{l: 'Check-in', v: 'From 3:00 PM'}, {l: 'Check-out', v: 'Sat Sep 26 by 11:00 AM'}, {l: 'Room', v: 'Family Suite for 3 · breakfast'}, {l: 'Nights', v: 'Sep 22–26'}, {l: 'Address', v: 'Piazza G. Oberdan 12'}], desc: 'Boutique hotel on Piazza Oberdan, the base for the Milan days. You will likely arrive from the airport before the room is ready, so ask the front desk to store the bags, then freshen up before Sant\'Ambrogio.', panelNote: {title: 'MXP transfer, email sent, awaiting Hotel Milu', body: 'You emailed Hotel Milu to arrange the private airport car. Stay is confirmed on Expedia (73349411928282); parents (Debi & Angelo) prepaid the €3,368 stay; city tax and a €300 damage deposit are still due at the property. When they reply about the transfer, confirm the details below and add price + pickup instructions here. Tel: +39 333 917 4548.', askFor: ['Private transfer, not shared shuttle', 'Vehicle size for your party (3 of you + parents = likely a van/minivan, not a sedan)', 'Fixed price including tolls, parking, and meet & greet', 'Flight-tracked pickup for DL184, MXP Terminal 1']}},
+      d1b:{img: 'italy-itinerary-images/d1b.jpg', alt: 'Hotel Milu Milano', lead: 'Milan base for four nights in Porta Venezia.', stats: [{l: 'Check-in', v: 'From 3:00 PM'}, {l: 'Check-out', v: 'Sat Sep 26 by 11:00 AM'}, {l: 'Room', v: 'Family Suite for 3 · breakfast'}, {l: 'Nights', v: 'Sep 22–26'}, {l: 'Address', v: 'Piazza G. Oberdan 12'}, {l: 'Conf #', v: '73349411928282'}], desc: 'Boutique hotel on Piazza Oberdan, the base for the Milan days. You will likely arrive from the airport before the room is ready, so ask the front desk to store the bags, then freshen up before Sant\'Ambrogio.', panelNote: {title: 'MXP transfer, email sent, awaiting Hotel Milu', body: 'You emailed Hotel Milu to arrange the private airport car. Stay is confirmed on Expedia (73349411928282); parents (Debi & Angelo) prepaid the €3,368 stay; city tax and a €300 damage deposit are still due at the property. When they reply about the transfer, confirm the details below and add price + pickup instructions here. Tel: +39 333 917 4548.', askFor: ['Private transfer, not shared shuttle', 'Vehicle size for your party (3 of you + parents = likely a van/minivan, not a sedan)', 'Fixed price including tolls, parking, and meet & greet', 'Flight-tracked pickup for DL184, MXP Terminal 1']}},
       d1d:{img: 'italy-itinerary-images/d1d.jpg', alt: 'Basilica di Sant\'Ambrogio', lead: 'Milan\'s most venerated early Christian church.', stats: [{l: 'Visit', v: '45 min'}, {l: 'Entry', v: 'Free'}, {l: 'Hours', v: '10 AM–12 PM, 2:30–6 PM'}, {l: 'Founded', v: '379 AD'}, {l: 'Dress', v: 'Modest, church'}], desc: 'Founded by St. Ambrose himself in the 4th century, this is one of Milan\'s oldest churches, in one of its oldest neighborhoods. Look for the brick Lombard-Romanesque front, the quiet arcaded atrium, and the gold mosaics in the apse.'},
       d1e:{img: 'italy-itinerary-images/d1e.jpg', alt: 'Castello Sforzesco', lead: 'Castle courtyards, a park loop, then straight to dinner.', stats: [{l: 'Focus', v: 'Exteriors & courtyards'}, {l: 'Entry', v: 'Free (courtyards)'}, {l: 'After', v: 'Walk to dinner'}], desc: 'Walk the courtyards and outer walls of Castello Sforzesco, then a gentle loop through Parco Sempione if the energy is there. Day 1 stays out: walk to the trattoria rather than taxi back to the hotel.'},
       d1g:{img: 'italy-itinerary-images/masuelli.jpg', alt: 'Trattoria Masuelli San Marco dining room', lead: 'Casual neighborhood trattoria, a short walk from the castle.', stats: [{l: 'Walk', v: '~12 min from castle'}, {l: 'Cuisine', v: 'Milanese trattoria'}, {l: 'Order', v: 'Cotoletta, risotto'}, {l: 'Table', v: 'Walk-in'}], desc: 'A neighborhood institution on Viale Papiniano since 1921, with unfussy Milanese cooking and a room where locals eat. A good first night: eat early, no taxi, no reservation pressure.'},
@@ -5397,6 +5415,7 @@
     window.ITALY_DATA = {
       DETAILS: DETAILS,
       SITE_ENRICH: SITE_ENRICH,
+      RESERVATIONS: RESERVATIONS,
       TYPE_COLOR: TYPE_COLOR,
       DAY_LABEL: DAY_LABEL,
       TRIP_YEAR: TRIP_YEAR,
@@ -5404,7 +5423,8 @@
       panelPhoto: panelPhoto,
       rowTitle: rowTitle,
       rowAct: rowAct,
-      rowStatus: rowStatus
+      rowStatus: rowStatus,
+      reservationKeyFor: reservationKeyFor
     };
   })();
   </script>
@@ -5717,6 +5737,33 @@
     var scrollLockY = 0;
     var STATUS_TEXT = { live: 'Live now', upcoming: 'Upcoming', past: 'Past' };
 
+    function mergeResFacts(k, stats) {
+      var out = (stats || []).slice();
+      var have = {};
+      out.forEach(function (s) { have[String(s.l).toLowerCase().replace(/[\s#]+/g, '')] = 1; });
+      var key = DATA.reservationKeyFor && DATA.reservationKeyFor(k);
+      var rec = key && DATA.RESERVATIONS && DATA.RESERVATIONS[key];
+      if (!rec || !rec.sections) return out;
+      rec.sections.forEach(function (sec) {
+        if (sec.confirmation && !have['conf'] && !have['confirmation']) {
+          out.push({ l: 'Conf #', v: sec.confirmation });
+          have['conf'] = 1;
+        }
+        if (sec.bookedVia && !have['via'] && !have['bookedvia']) {
+          out.push({ l: 'Via', v: sec.bookedVia });
+          have['via'] = 1;
+        }
+        var extra = { paidby: 1, cost: 1, citytax: 1, deposit: 1 };
+        (sec.lines || []).forEach(function (line) {
+          var lk = String(line.l).toLowerCase().replace(/[\s#]+/g, '');
+          if (!extra[lk] || have[lk]) return;
+          out.push({ l: line.l, v: line.v });
+          have[lk] = 1;
+        });
+      });
+      return out;
+    }
+
     function dayHeader(n) {
       // DAY_LABEL is "Day 3 · Thu, Sep 24 · Lake Como" — date is the title, Day N the subtitle.
       var label = DATA.DAY_LABEL['d' + n] || '';
@@ -5740,7 +5787,7 @@
       var photo = DATA.panelPhoto(enrich, item.loc, item.title);
       var st = statusFor(item, dayN, now);
       var res = DATA.rowStatus(item.row);
-      var stats = (enrich.stats || []).filter(function (s) { return s && s.l !== 'Dress'; });
+      var stats = mergeResFacts(item.k, (enrich.stats || []).filter(function (s) { return s && s.l !== 'Dress'; }));
 
       var html = '<div class="dm-card" style="top:' + (i * 100) + '%" data-i="' + i + '"><div class="dm-card-in">';
       if (photo) {
