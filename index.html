@@ -2059,7 +2059,7 @@
   .dm-body .p-stat {
     display: flex; align-items: baseline; gap: 10px;
     background: none; border: 0; border-radius: 0;
-    padding: 7px 0;
+    padding: 5px 0;
     border-bottom: 1px solid var(--line);
   }
   .dm-body .p-stat:last-child { border-bottom: 0; }
@@ -5744,22 +5744,26 @@
       var key = DATA.reservationKeyFor && DATA.reservationKeyFor(k);
       var rec = key && DATA.RESERVATIONS && DATA.RESERVATIONS[key];
       if (!rec || !rec.sections) return out;
+      var hotel = ((DATA.DETAILS[k] || {}).type === 'Hotel');
       rec.sections.forEach(function (sec) {
         if (sec.confirmation && !have['conf'] && !have['confirmation']) {
           out.push({ l: 'Conf #', v: sec.confirmation });
           have['conf'] = 1;
         }
-        if (sec.bookedVia && !have['via'] && !have['bookedvia']) {
-          out.push({ l: 'Via', v: sec.bookedVia });
-          have['via'] = 1;
-        }
-        var extra = { paidby: 1, cost: 1, citytax: 1, deposit: 1 };
+        if (!hotel) return;
+        var due = [];
         (sec.lines || []).forEach(function (line) {
           var lk = String(line.l).toLowerCase().replace(/[\s#]+/g, '');
-          if (!extra[lk] || have[lk]) return;
-          out.push({ l: line.l, v: line.v });
-          have[lk] = 1;
+          if (lk === 'paidby' && !have[lk]) {
+            out.push({ l: line.l, v: line.v });
+            have[lk] = 1;
+          }
+          if ((lk === 'citytax' || lk === 'deposit') && !have['due']) due.push(line.v);
         });
+        if (due.length && !have['due'] && !have['citytax'] && !have['deposit']) {
+          out.push({ l: 'Due', v: due.join(' · ') });
+          have['due'] = 1;
+        }
       });
       return out;
     }
