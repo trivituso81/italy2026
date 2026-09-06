@@ -2019,15 +2019,17 @@
     touch-action: none;
     display: flex; flex-direction: column;
   }
-  .dm-img-wrap {
-    position: relative; flex: 0 1 18vh; width: 100%;
-    aspect-ratio: 2 / 1; max-height: 18vh; min-height: 72px;
-    background: #e8e0d4; overflow: hidden; border-radius: 17px 17px 0 0;
-    cursor: pointer;
+  /* Square photo with the who/when/where beside it — the iPhone is tall, so
+     a banner photo wastes the width the identity block can use. */
+  .dm-toprow { display: flex; gap: 10px; padding: 10px 12px 0; flex: 0 0 auto; align-items: flex-start; }
+  .dm-thumb {
+    position: relative; flex: 0 0 auto; width: 96px; height: 96px;
+    border-radius: 12px; overflow: hidden; background: #e8e0d4;
   }
-  .dm-img-wrap::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(26,22,18,.40) 0%, transparent 55%); pointer-events: none; }
+  .dm-thumb::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(26,22,18,.45) 0%, transparent 55%); pointer-events: none; }
   .dm-img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
-  .dm-img-wrap .dm-type { position: absolute; left: 12px; bottom: 10px; z-index: 1; }
+  .dm-thumb .dm-type { position: absolute; left: 6px; bottom: 6px; z-index: 1; font-size: 9px; padding: 3px 7px; letter-spacing: .08em; }
+  .dm-ident { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
   .dm-type {
     display: inline-block; font-size: 11px; font-weight: 800;
     letter-spacing: 0.1em; text-transform: uppercase;
@@ -2036,17 +2038,17 @@
   }
   .dm-body {
     flex: 1 1 auto; min-height: 0; overflow: hidden;
-    display: flex; flex-direction: column;
-    padding: 10px 14px 12px;
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 8px 12px 10px;
   }
-  .dm-body .dm-type { margin-bottom: 8px; align-self: flex-start; }
-  .dm-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; flex: 0 0 auto; }
+  .dm-ident .dm-type { margin-bottom: 6px; align-self: flex-start; }
+  .dm-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 2px; flex: 0 0 auto; }
   .dm-time { font-size: 13px; font-weight: 800; color: var(--ink); letter-spacing: -0.1px; white-space: nowrap; }
   .dm-time small { font-weight: 600; color: var(--muted); margin-left: 6px; }
   .dm-status {
     display: inline-flex; align-items: center; gap: 6px;
-    font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
-    padding: 4px 10px; border-radius: 999px;
+    font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 999px;
     background: #f4efe6; color: #8a7a55;
   }
   .dm-status.live { background: #e7f6ea; color: #1f7a3d; }
@@ -2054,48 +2056,80 @@
   .dm-status.upcoming { background: #fff8e1; color: #8a6d00; }
   .dm-status.past { background: #f4efe6; color: #8a7a55; }
   .dm-title {
-    margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.2;
+    margin: 0; font-size: 19px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.15;
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
     flex: 0 0 auto;
   }
   .dm-sub {
-    margin: 4px 0 0; font-size: 13px; color: var(--muted); font-weight: 600;
+    margin: 2px 0 0; font-size: 12.5px; color: var(--muted); font-weight: 600;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     flex: 0 0 auto;
   }
   .dm-mode {
-    margin: 6px 0 0; display: flex; gap: 6px; align-items: center;
-    font-size: 12.5px; color: var(--ink); line-height: 1.3;
+    margin: 4px 0 0; display: flex; gap: 5px; align-items: center;
+    font-size: 12px; color: var(--ink); line-height: 1.3;
     min-width: 0; flex: 0 0 auto;
   }
   .dm-mode .ic { flex: 0 0 auto; }
   .dm-mode span:last-child { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .dm-res { margin-top: 8px; flex: 0 0 auto; }
+  .dm-res { margin-top: 6px; flex: 0 0 auto; }
+  .dm-res .p-status { font-size: 11px; padding: 3px 9px; }
+
+  /* Every kind of information gets a block on the first screen. A block only
+     shrinks (and becomes tappable) when the card runs out of room; the text is
+     never rewritten, just clipped, and the tap opens that one block in full. */
+  .dm-block { position: relative; min-height: 0; overflow: hidden; flex: 0 1 auto; }
+  .dm-block-facts { flex-shrink: 1; min-height: 34px; }
+  .dm-block-lead { flex-shrink: 0; }
+  .dm-block-desc { flex-shrink: 3; min-height: 2.9em; }
+  .dm-block-tip { flex-shrink: 2; min-height: 2.6em; }
+  .dm-block.clipped { cursor: pointer; }
+  .dm-block.clipped::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 26px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0), var(--card) 85%);
+    pointer-events: none;
+  }
+  .dm-block-tip.clipped::after { background: linear-gradient(to bottom, rgba(247,241,231,0), #f7f1e7 85%); }
+  .dm-block-facts.clipped::after { background: linear-gradient(to bottom, rgba(255,255,255,0), var(--card) 90%); }
+  .dm-morepill {
+    display: none; position: absolute; right: 0; bottom: 0; z-index: 1;
+    font-size: 11px; font-weight: 800; letter-spacing: .04em;
+    color: var(--ink); background: #fff; border: 1px solid var(--line);
+    padding: 3px 9px; border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(43,33,24,.10);
+  }
+  .dm-block-tip .dm-morepill { right: 8px; bottom: 6px; }
+  .dm-block.clipped .dm-morepill { display: inline-block; }
   .dm-facts {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
-    margin: 8px 0 0; min-height: 0; overflow: hidden; flex: 1 1 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px; align-content: start;
+    margin: 0;
   }
   .dm-fact {
+    position: relative;
     background: #f7f2ea; border: 1px solid var(--line); border-radius: 10px;
-    padding: 6px 8px; min-width: 0;
+    padding: 5px 8px; min-width: 0;
   }
-  .dm-fact .ps-label { margin-bottom: 1px; }
+  .dm-fact .ps-label {
+    font-size: 9.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 1px; line-height: 1.3;
+  }
   .dm-fact .ps-val {
-    font-size: 12.5px; line-height: 1.25;
+    font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.25;
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
-  .dm-more {
-    flex: 0 0 auto; margin-top: 8px;
-    display: flex; align-items: center; justify-content: space-between; gap: 10px;
-    width: 100%; padding: 10px 12px;
-    border: 1px solid var(--line); border-radius: 12px;
-    background: #fff; color: var(--ink);
-    font: inherit; font-size: 14px; font-weight: 700;
-    cursor: pointer; text-align: left;
+  /* A value that did not fit its tile: chevron on the tile, whole facts block taps open. */
+  .dm-fact.cut { padding-right: 18px; }
+  .dm-fact.cut::after {
+    content: '\203a'; position: absolute; right: 7px; bottom: 3px;
+    font-size: 15px; font-weight: 700; color: var(--muted); line-height: 1;
   }
-  .dm-more .dm-more-go { color: var(--muted); font-weight: 600; font-size: 16px; line-height: 1; }
-  .dm-lead { font-size: 15.5px; font-weight: 600; color: var(--ink); margin: 14px 0 8px; line-height: 1.45; }
-  .dm-desc { font-size: 14.5px; line-height: 1.6; color: var(--ink); margin: 0; }
+  .dm-block.nofade::after, .dm-block.rows::after { display: none; }
+  .dm-fact.dm-hide { display: none; }
+  .dm-block.nofade .dm-morepill { display: none; }
+  .dm-lead { font-size: 15.5px; font-weight: 700; color: var(--ink); margin: 0; line-height: 1.4; }
+  .dm-desc { font-size: 15px; line-height: 1.5; color: var(--ink); margin: 0; }
+  .dm-body .p-tips { margin: 0; padding: 9px 12px; font-size: 13.5px; line-height: 1.5; }
+  .dm-block-text.clamp { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; height: 100%; box-sizing: border-box; }
 
   .dm-detail {
     display: none; position: absolute; inset: 0; z-index: 4;
@@ -2114,10 +2148,11 @@
     font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
   }
   .dm-detail-ttl {
-    flex: 1; min-width: 0;
+    flex: 1; min-width: 0; line-height: 1.2;
     font-size: 15px; font-weight: 800; letter-spacing: -0.2px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
+  .dm-detail-ttl small { display: block; font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
   .dm-detail-scroll {
     flex: 1; min-height: 0; overflow-y: auto;
     -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
@@ -2127,16 +2162,22 @@
     background: var(--card); border: 1px solid var(--line); border-radius: 18px;
     box-shadow: var(--shadow); overflow: hidden;
   }
-  .dm-detail-card .dm-img-wrap {
-    flex: none; max-height: none; min-height: 0; cursor: default; aspect-ratio: 16 / 9;
+  .dm-detail-body { padding: 16px 16px 20px; }
+  .dm-detail-body .dm-lead { font-size: 17px; line-height: 1.4; }
+  .dm-detail-body .dm-desc { font-size: 16px; line-height: 1.6; }
+  .dm-detail-body .p-tips { margin: 0; font-size: 15px; line-height: 1.6; padding: 14px 16px; }
+  .dm-detail-body .p-stats {
+    display: flex; flex-direction: column; gap: 0; margin: 0;
+    background: #f7f2ea; border: 1px solid var(--line); border-radius: 12px; padding: 2px 12px;
   }
-  .dm-detail-body { padding: 14px 16px 22px; }
-  .dm-detail-body .dm-title { -webkit-line-clamp: unset; display: block; overflow: visible; }
-  .dm-detail-body .dm-sub, .dm-detail-body .dm-mode span:last-child {
-    white-space: normal; overflow: visible; text-overflow: unset;
+  .dm-detail-body .p-stat {
+    display: flex; align-items: baseline; gap: 10px;
+    background: none; border: 0; border-radius: 0; padding: 8px 0;
+    border-bottom: 1px solid var(--line);
   }
-  .dm-detail-body .p-stats { margin: 12px 0 0; }
-  .dm-detail-body .p-tips { margin-top: 16px; }
+  .dm-detail-body .p-stat:last-child { border-bottom: 0; }
+  .dm-detail-body .p-stat .ps-label { flex: 0 0 7.2em; margin-bottom: 0; line-height: 1.35; }
+  .dm-detail-body .p-stat .ps-val { flex: 1; min-width: 0; font-size: 14px; }
   .dm-empty {
     height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
     text-align: center; padding: 30px; color: var(--muted); box-sizing: border-box;
@@ -2156,8 +2197,8 @@
   .dm-hint { text-align: center; font-size: 11px; color: var(--muted); padding: 0 14px 6px; }
   /* Hover only where a pointer can hover — taps must not leave buttons stuck filled. */
   @media (hover: hover) {
-    .dm-daynav:hover:not(:disabled), .dm-exit:hover, .dm-detail-back:hover, .dm-more:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
-    .dm-more:hover .dm-more-go { color: #fff; }
+    .dm-daynav:hover:not(:disabled), .dm-exit:hover, .dm-detail-back:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .dm-block.clipped:hover .dm-morepill { background: var(--ink); color: #fff; border-color: var(--ink); }
   }
 
   /* Test-clock dialog (long-press the header, or ?daymode=1&simNow=…) */
@@ -2192,13 +2233,13 @@
   .dm-sim-note code { font-size: 11px; background: #f4efe6; padding: 1px 5px; border-radius: 5px; }
 
   @media (max-width: 480px) {
-    .dm-title { font-size: 19px; }
-    .dm-body { padding: 8px 12px 10px; }
     .dm-card { padding: 4px 22px 6px 12px; }
-    .dm-img-wrap { max-height: 16vh; }
   }
-  @media (max-height: 760px) {
-    .dm-img-wrap { max-height: 14vh; }
+  @media (min-width: 420px) {
+    .dm-thumb { width: 108px; height: 108px; }
+  }
+  @media (max-height: 700px) {
+    .dm-thumb { width: 84px; height: 84px; }
     .dm-title { font-size: 18px; }
   }
   @media (min-width: 900px) {
@@ -5894,26 +5935,26 @@
       };
     }
 
-    function photoHtml(meta, openable) {
+    function thumbHtml(meta) {
       if (!meta.photo) return '';
-      return '<div class="dm-img-wrap"' + (openable ? ' data-dm-detail="1" role="button" tabindex="0" aria-label="Open details"' : '') + '>' +
+      return '<div class="dm-thumb">' +
         '<img class="dm-img" loading="lazy" src="' + escHtml(DATA.resolveImg(meta.photo.img)) + '" alt="' + escHtml(meta.photo.alt || meta.title) + '">' +
         '<span class="dm-type" style="background:' + meta.color + '">' + escHtml(meta.type) + '</span></div>';
     }
 
-    function identityHtml(item, meta, i, dayN, now, badge) {
+    function identityHtml(item, meta, i, dayN, now) {
       var st = statusFor(item, dayN, now);
       var res = DATA.rowStatus(item.row);
-      var html = '';
+      var html = '<div class="dm-ident">';
       if (!meta.photo) html += '<span class="dm-type" style="background:' + meta.color + '">' + escHtml(meta.type) + '</span>';
       html += '<div class="dm-head"><span class="dm-time">' +
         (item.time ? escHtml(fmtRange(item.time)) : escHtml(item.rawTime || 'Time TBD')) + '</span>' +
-        '<span class="dm-status ' + st + '"' + (badge ? ' data-i="' + i + '"' : '') + (st ? '' : ' hidden') + '>' + (STATUS_TEXT[st] || '') + '</span></div>';
+        '<span class="dm-status ' + st + '" data-i="' + i + '"' + (st ? '' : ' hidden') + '>' + (STATUS_TEXT[st] || '') + '</span></div>';
       html += '<h3 class="dm-title">' + escHtml(meta.title) + '</h3>';
       if (meta.sub) html += '<p class="dm-sub">' + escHtml(meta.sub) + '</p>';
       if (item.mode) html += '<p class="dm-mode"><span class="ic" aria-hidden="true">\uD83D\uDEB6</span><span>' + escHtml(item.mode) + '</span></p>';
       if (res) html += '<div class="dm-res"><span class="p-status ' + res[1] + '">' + escHtml(res[0]) + '</span></div>';
-      return html;
+      return html + '</div>';
     }
 
     function factsHtml(stats, cls) {
@@ -5924,60 +5965,145 @@
       }).join('') + '</div>';
     }
 
-    // Lead, description, and tips stay verbatim — they only move into the details view.
-    function proseHtml(meta) {
-      var html = '';
-      if (meta.lead) html += '<p class="dm-lead">' + escHtml(meta.lead) + '</p>';
-      if (meta.desc) html += '<p class="dm-desc"' + (meta.lead ? '' : ' style="margin-top:14px"') + '>' + escHtml(meta.desc) + '</p>';
-      if (meta.tips) html += '<div class="p-tips"><b>Tip:</b> ' + meta.tips + '</div>';
-      return html;
+    var BLOCK_LABEL = { facts: 'All facts', lead: 'Full text', desc: 'Full text', tip: 'Full tip' };
+    var BLOCK_TITLE = { facts: 'Facts', lead: 'Summary', desc: 'Description', tip: 'Tip' };
+
+    function blockHtml(kind, inner) {
+      return '<div class="dm-block dm-block-' + kind + '" data-kind="' + kind + '">' + inner +
+        '<span class="dm-morepill" aria-hidden="true">' + BLOCK_LABEL[kind] + ' \u203a</span></div>';
+    }
+
+    // Lead, description, and tip text are rendered verbatim; the fit pass only
+    // decides how many lines are visible before the tap-to-open pill appears.
+    function textHtml(meta, kind, full) {
+      var cls = full ? '' : ' dm-block-text';
+      if (kind === 'lead') return meta.lead ? '<p class="dm-lead' + cls + '">' + escHtml(meta.lead) + '</p>' : '';
+      if (kind === 'desc') return meta.desc ? '<p class="dm-desc' + cls + '">' + escHtml(meta.desc) + '</p>' : '';
+      if (kind === 'tip') return meta.tips ? '<div class="p-tips' + cls + '"><b>Tip:</b> ' + meta.tips + '</div>' : '';
+      if (kind === 'facts') return factsHtml(meta.stats, full ? 'p-stats' : 'dm-facts');
+      return '';
     }
 
     function cardHtml(item, i, dayN, now) {
       var meta = itemMeta(item);
       var html = '<div class="dm-card" style="top:' + (i * 100) + '%" data-i="' + i + '"><div class="dm-card-in">';
-      html += photoHtml(meta, true);
+      html += '<div class="dm-toprow">' + thumbHtml(meta) + identityHtml(item, meta, i, dayN, now) + '</div>';
       html += '<div class="dm-body">';
-      html += identityHtml(item, meta, i, dayN, now, true);
-      html += factsHtml(meta.stats, 'dm-facts');
-      html += '<button type="button" class="dm-more" data-dm-detail="1"><span>Details</span><span class="dm-more-go" aria-hidden="true">›</span></button>';
+      ['facts', 'lead', 'desc', 'tip'].forEach(function (kind) {
+        var inner = textHtml(meta, kind, false);
+        if (inner) html += blockHtml(kind, inner);
+      });
       html += '</div></div></div>';
       return html;
     }
 
-    function detailHtml(item, dayN, now) {
-      var meta = itemMeta(item);
-      return '<div class="dm-detail-card">' + photoHtml(meta, false) +
-        '<div class="dm-detail-body">' + identityHtml(item, meta, 0, dayN, now, false) +
-        factsHtml(meta.stats, 'p-stats') + proseHtml(meta) + '</div></div>';
+    /* ---- Fit pass: nothing on the card scrolls, so measure each block and
+       clip only the ones the card could not fit. Clipped text gets a whole
+       number of lines; a clipped block becomes a tap target for its full view. */
+    function fitCard(cardIn) {
+      var blocks = cardIn.querySelectorAll('.dm-block');
+      Array.prototype.forEach.call(blocks, function (block) {
+        var text = block.querySelector('.dm-block-text');
+        block.classList.remove('clipped'); block.classList.remove('nofade'); block.classList.remove('rows');
+        block.style.flex = ''; block.style.height = '';
+        var pill = block.querySelector('.dm-morepill');
+        if (pill) pill.textContent = BLOCK_LABEL[block.getAttribute('data-kind')] + ' \u203a';
+        block.removeAttribute('role'); block.removeAttribute('tabindex'); block.removeAttribute('aria-label');
+        if (text) { text.classList.remove('clamp'); text.style.webkitLineClamp = ''; }
+        Array.prototype.forEach.call(block.querySelectorAll('.dm-fact'), function (f) { f.classList.remove('cut'); f.classList.remove('dm-hide'); });
+      });
+      // Walk the blocks in order. A clipped block is frozen at (or under) the
+      // height flex gave it, so clamping its text cannot reflow its neighbours,
+      // and anything it gives back flows to the blocks below it.
+      var PILL_H = 24;
+      Array.prototype.forEach.call(blocks, function (block) {
+        var kind = block.getAttribute('data-kind');
+        var text = block.querySelector('.dm-block-text');
+        var h = block.clientHeight;
+        var over = block.scrollHeight > h + 1;
+        var cutTiles = [];
+        if (kind === 'facts') {
+          Array.prototype.forEach.call(block.querySelectorAll('.dm-fact'), function (f) {
+            var v = f.querySelector('.ps-val');
+            if (v && v.scrollHeight > v.clientHeight + 1) cutTiles.push(f);
+          });
+        }
+        if (!over && !cutTiles.length) return;
+        cutTiles.forEach(function (f) { f.classList.add('cut'); });
+        block.classList.add('clipped');
+        block.setAttribute('role', 'button');
+        block.setAttribute('tabindex', '0');
+        block.setAttribute('aria-label', 'Open ' + (BLOCK_TITLE[kind] || 'details').toLowerCase());
+        if (!over) { block.classList.add('nofade'); return; }
+
+        if (kind === 'facts') {
+          // Show whole tile rows only, with a strip under them for the pill.
+          var tiles = block.querySelectorAll('.dm-fact');
+          var rowBottom = 0, hide = [];
+          Array.prototype.forEach.call(tiles, function (f) {
+            var bottom = f.offsetTop + f.offsetHeight;
+            if (bottom + PILL_H <= h + 1) rowBottom = Math.max(rowBottom, bottom);
+            else hide.push(f);
+          });
+          if (rowBottom > 0) {
+            h = rowBottom + PILL_H;
+            hide.forEach(function (f) { f.classList.add('dm-hide'); });
+            block.classList.add('rows');
+            var pill = block.querySelector('.dm-morepill');
+            if (pill) pill.textContent = 'All ' + tiles.length + ' facts \u203a';
+          }
+          block.style.flex = '0 0 ' + h + 'px';
+          block.style.height = h + 'px';
+          return;
+        }
+
+        block.style.flex = '0 0 ' + h + 'px';
+        block.style.height = h + 'px';
+        if (!text) return;
+        var cs = getComputedStyle(text);
+        var lh = parseFloat(cs.lineHeight);
+        if (!lh || isNaN(lh)) lh = parseFloat(cs.fontSize) * 1.45;
+        var padY = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
+        var borderY = (parseFloat(cs.borderTopWidth) || 0) + (parseFloat(cs.borderBottomWidth) || 0);
+        var lines = Math.max(1, Math.floor((h - padY - borderY) / lh));
+        text.classList.add('clamp');
+        text.style.webkitLineClamp = String(lines);
+      });
+    }
+    function fitAllCards() {
+      Array.prototype.forEach.call(ui.track.querySelectorAll('.dm-card-in'), fitCard);
     }
 
     function closeDetail() {
       if (!detailOpen) return;
       detailOpen = false;
+      var kind = ui.detail.getAttribute('data-kind');
       root.classList.remove('detail-open');
       ui.detail.classList.remove('open');
       ui.detail.hidden = true;
       ui.detail.setAttribute('aria-hidden', 'true');
+      ui.detail.removeAttribute('data-kind');
       ui.detailBody.innerHTML = '';
-      var btn = ui.track.querySelector('.dm-card[data-i="' + curIdx + '"] [data-dm-detail].dm-more');
-      if (btn) try { btn.focus({ preventScroll: true }); } catch (e) {}
+      var block = kind && ui.track.querySelector('.dm-card[data-i="' + curIdx + '"] .dm-block[data-kind="' + kind + '"]');
+      if (block) try { block.focus({ preventScroll: true }); } catch (e) {}
     }
 
-    function openDetail() {
+    function openDetail(kind) {
       var model = dayModel(curDay);
       var item = model.items[curIdx];
       if (!item || !ui.detail) return;
-      var now = romeNow();
       var meta = itemMeta(item);
-      ui.detailTitle.textContent = meta.title;
-      ui.detailBody.innerHTML = detailHtml(item, curDay, now);
+      var inner = textHtml(meta, kind, true);
+      if (!inner) return;
+      ui.detailTitle.innerHTML = '<small>' + escHtml(BLOCK_TITLE[kind] || 'Details') + '</small>' + escHtml(meta.title);
+      ui.detailBody.innerHTML = '<div class="dm-detail-card"><div class="dm-detail-body">' + inner + '</div></div>';
+      ui.detail.setAttribute('data-kind', kind);
       ui.detail.hidden = false;
       ui.detail.classList.add('open');
       ui.detail.setAttribute('aria-hidden', 'false');
       root.classList.add('detail-open');
       detailOpen = true;
-      if (ui.detailBody) ui.detailBody.scrollTop = 0;
+      ui.detailBody.scrollTop = 0;
       try { ui.detailBack.focus({ preventScroll: true }); } catch (e) {}
     }
 
@@ -6005,7 +6131,20 @@
       positionTrack();
       renderDots(now);
       renderClock(now);
+      fitAllCards();
+      // Fonts or the URL bar can still settle after first paint; measure once more.
+      requestAnimationFrame(fitAllCards);
     }
+
+    var fitTimer = null;
+    function scheduleFit() {
+      if (!isOpen) return;
+      clearTimeout(fitTimer);
+      fitTimer = setTimeout(fitAllCards, 80);
+    }
+    window.addEventListener('resize', scheduleFit);
+    window.addEventListener('orientationchange', scheduleFit);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleFit);
 
     function positionTrack() {
       ui.track.style.transform = 'translateY(' + (-curIdx * 100) + '%)';
@@ -6193,14 +6332,24 @@
     ui.prevDay.addEventListener('click', function () { changeDay(-1); });
     ui.nextDay.addEventListener('click', function () { changeDay(1); });
     ui.detailBack.addEventListener('click', closeDetail);
+    // A swipe that ends on a block must page, not open it: only a still tap opens.
+    var tapStart = null;
+    ui.track.addEventListener('pointerdown', function (e) {
+      tapStart = { x: e.clientX, y: e.clientY, t: Date.now() };
+    });
     ui.track.addEventListener('click', function (e) {
-      if (e.target.closest('[data-dm-detail]')) { e.preventDefault(); openDetail(); }
+      var block = e.target.closest('.dm-block.clipped');
+      if (!block) return;
+      if (tapStart && (Math.abs(e.clientX - tapStart.x) > 10 || Math.abs(e.clientY - tapStart.y) > 10)) return;
+      e.preventDefault();
+      openDetail(block.getAttribute('data-kind'));
     });
     ui.track.addEventListener('keydown', function (e) {
-      if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('[data-dm-detail]')) {
+      var block = (e.key === 'Enter' || e.key === ' ') && e.target.closest('.dm-block.clipped');
+      if (block) {
         e.preventDefault();
         e.stopPropagation();
-        openDetail();
+        openDetail(block.getAttribute('data-kind'));
       }
     });
 
@@ -6211,7 +6360,7 @@
         if (e.key === 'Escape') { e.preventDefault(); closeDetail(); }
         return;
       }
-      if ((e.key === ' ' || e.key === 'Enter') && e.target.closest('button, input, textarea, a, [data-dm-detail]')) return;
+      if ((e.key === ' ' || e.key === 'Enter') && e.target.closest('button, input, textarea, a, .dm-block')) return;
       switch (e.key) {
         case 'Escape': closeDayMode(); break;
         case 'ArrowDown': case 'PageDown': case ' ': e.preventDefault(); goTo(curIdx + 1); break;
@@ -6225,8 +6374,8 @@
 
     /* ---- Gestures ----
        Vertical drag pages one card per swipe (snap back under threshold).
-       The pager card does not scroll — notes live in Details — so a swipe
-       always turns the page. Horizontal needs a much longer pull. */
+       The pager card never scrolls — a clipped block opens its own view on
+       tap — so a swipe always turns the page. Horizontal needs a longer pull. */
     var touch = null;
     ui.stage.addEventListener('touchstart', function (e) {
       if (detailOpen) { touch = null; return; }
