@@ -1990,6 +1990,10 @@
   }
   .dm-simchip.on { display: inline-flex; }
 
+  .dm-main {
+    flex: 1; min-height: 0; position: relative;
+    display: flex; flex-direction: column;
+  }
   .dm-stage {
     flex: 1; position: relative; overflow: hidden;
     touch-action: none;
@@ -2011,25 +2015,33 @@
     border: 1px solid var(--line);
     border-radius: 18px;
     box-shadow: var(--shadow);
-    overflow-y: auto; -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    touch-action: pan-y;
+    overflow: hidden;
+    touch-action: none;
+    display: flex; flex-direction: column;
   }
-  .dm-card-in::-webkit-scrollbar { width: 0; height: 0; }
-  .dm-img-wrap { position: relative; aspect-ratio: 2 / 1; background: #e8e0d4; overflow: hidden; border-radius: 17px 17px 0 0; }
+  .dm-img-wrap {
+    position: relative; flex: 0 1 18vh; width: 100%;
+    aspect-ratio: 2 / 1; max-height: 18vh; min-height: 72px;
+    background: #e8e0d4; overflow: hidden; border-radius: 17px 17px 0 0;
+    cursor: pointer;
+  }
   .dm-img-wrap::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(26,22,18,.40) 0%, transparent 55%); pointer-events: none; }
-  .dm-img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .dm-img-wrap .dm-type { position: absolute; left: 14px; bottom: 12px; z-index: 1; }
+  .dm-img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+  .dm-img-wrap .dm-type { position: absolute; left: 12px; bottom: 10px; z-index: 1; }
   .dm-type {
     display: inline-block; font-size: 11px; font-weight: 800;
     letter-spacing: 0.1em; text-transform: uppercase;
     color: #fff; background: var(--muted);
     padding: 4px 10px; border-radius: 999px;
   }
-  .dm-body { padding: 14px 18px 24px; }
-  .dm-body .dm-type { margin-bottom: 10px; }
-  .dm-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
-  .dm-time { font-size: 14px; font-weight: 800; color: var(--ink); letter-spacing: -0.1px; }
+  .dm-body {
+    flex: 1 1 auto; min-height: 0; overflow: hidden;
+    display: flex; flex-direction: column;
+    padding: 10px 14px 12px;
+  }
+  .dm-body .dm-type { margin-bottom: 8px; align-self: flex-start; }
+  .dm-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; flex: 0 0 auto; }
+  .dm-time { font-size: 13px; font-weight: 800; color: var(--ink); letter-spacing: -0.1px; white-space: nowrap; }
   .dm-time small { font-weight: 600; color: var(--muted); margin-left: 6px; }
   .dm-status {
     display: inline-flex; align-items: center; gap: 6px;
@@ -2041,33 +2053,90 @@
   .dm-status.live::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #1f7a3d; animation: dmpulse 1.8s ease-out infinite; }
   .dm-status.upcoming { background: #fff8e1; color: #8a6d00; }
   .dm-status.past { background: #f4efe6; color: #8a7a55; }
-  .dm-title { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.2; }
-  .dm-sub { margin: 6px 0 0; font-size: 13px; color: var(--muted); font-weight: 600; }
-  .dm-mode { margin: 10px 0 0; display: flex; gap: 8px; align-items: flex-start; font-size: 13px; color: var(--ink); line-height: 1.45; }
+  .dm-title {
+    margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.2;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    flex: 0 0 auto;
+  }
+  .dm-sub {
+    margin: 4px 0 0; font-size: 13px; color: var(--muted); font-weight: 600;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    flex: 0 0 auto;
+  }
+  .dm-mode {
+    margin: 6px 0 0; display: flex; gap: 6px; align-items: center;
+    font-size: 12.5px; color: var(--ink); line-height: 1.3;
+    min-width: 0; flex: 0 0 auto;
+  }
   .dm-mode .ic { flex: 0 0 auto; }
-  .dm-res { margin-top: 10px; }
+  .dm-mode span:last-child { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dm-res { margin-top: 8px; flex: 0 0 auto; }
+  .dm-facts {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+    margin: 8px 0 0; min-height: 0; overflow: hidden; flex: 1 1 auto;
+  }
+  .dm-fact {
+    background: #f7f2ea; border: 1px solid var(--line); border-radius: 10px;
+    padding: 6px 8px; min-width: 0;
+  }
+  .dm-fact .ps-label { margin-bottom: 1px; }
+  .dm-fact .ps-val {
+    font-size: 12.5px; line-height: 1.25;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .dm-more {
+    flex: 0 0 auto; margin-top: 8px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    width: 100%; padding: 10px 12px;
+    border: 1px solid var(--line); border-radius: 12px;
+    background: #fff; color: var(--ink);
+    font: inherit; font-size: 14px; font-weight: 700;
+    cursor: pointer; text-align: left;
+  }
+  .dm-more .dm-more-go { color: var(--muted); font-weight: 600; font-size: 16px; line-height: 1; }
   .dm-lead { font-size: 15.5px; font-weight: 600; color: var(--ink); margin: 14px 0 8px; line-height: 1.45; }
   .dm-desc { font-size: 14.5px; line-height: 1.6; color: var(--ink); margin: 0; }
-  .dm-body .p-stats {
-    display: flex; flex-direction: column; gap: 0;
-    margin: 12px 0 0;
-    background: #f7f2ea;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 2px 12px;
+
+  .dm-detail {
+    display: none; position: absolute; inset: 0; z-index: 4;
+    background: var(--paper); flex-direction: column;
   }
-  .dm-body .p-stat {
-    display: flex; align-items: baseline; gap: 10px;
-    background: none; border: 0; border-radius: 0;
-    padding: 5px 0;
-    border-bottom: 1px solid var(--line);
+  .dm-detail.open { display: flex; }
+  .dm-detail-bar {
+    flex: 0 0 auto; display: flex; align-items: center; gap: 8px;
+    padding: 4px 12px 8px;
   }
-  .dm-body .p-stat:last-child { border-bottom: 0; }
-  .dm-body .p-stat .ps-label {
-    flex: 0 0 7.2em; margin-bottom: 0; line-height: 1.35;
+  .dm-detail-back {
+    flex: 0 0 auto;
+    display: inline-flex; align-items: center; gap: 4px;
+    height: 34px; padding: 0 12px 0 8px; border-radius: 999px;
+    border: 1px solid var(--line); background: #fff; color: var(--ink);
+    font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
   }
-  .dm-body .p-stat .ps-val { flex: 1; min-width: 0; }
-  .dm-body .p-tips { margin-top: 16px; }
+  .dm-detail-ttl {
+    flex: 1; min-width: 0;
+    font-size: 15px; font-weight: 800; letter-spacing: -0.2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .dm-detail-scroll {
+    flex: 1; min-height: 0; overflow-y: auto;
+    -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+    padding: 0 12px 18px;
+  }
+  .dm-detail-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+    box-shadow: var(--shadow); overflow: hidden;
+  }
+  .dm-detail-card .dm-img-wrap {
+    flex: none; max-height: none; min-height: 0; cursor: default; aspect-ratio: 16 / 9;
+  }
+  .dm-detail-body { padding: 14px 16px 22px; }
+  .dm-detail-body .dm-title { -webkit-line-clamp: unset; display: block; overflow: visible; }
+  .dm-detail-body .dm-sub, .dm-detail-body .dm-mode span:last-child {
+    white-space: normal; overflow: visible; text-overflow: unset;
+  }
+  .dm-detail-body .p-stats { margin: 12px 0 0; }
+  .dm-detail-body .p-tips { margin-top: 16px; }
   .dm-empty {
     height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
     text-align: center; padding: 30px; color: var(--muted); box-sizing: border-box;
@@ -2087,7 +2156,8 @@
   .dm-hint { text-align: center; font-size: 11px; color: var(--muted); padding: 0 14px 6px; }
   /* Hover only where a pointer can hover — taps must not leave buttons stuck filled. */
   @media (hover: hover) {
-    .dm-daynav:hover:not(:disabled), .dm-exit:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .dm-daynav:hover:not(:disabled), .dm-exit:hover, .dm-detail-back:hover, .dm-more:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .dm-more:hover .dm-more-go { color: #fff; }
   }
 
   /* Test-clock dialog (long-press the header, or ?daymode=1&simNow=…) */
@@ -2122,9 +2192,14 @@
   .dm-sim-note code { font-size: 11px; background: #f4efe6; padding: 1px 5px; border-radius: 5px; }
 
   @media (max-width: 480px) {
-    .dm-title { font-size: 20px; }
-    .dm-body { padding: 12px 16px 22px; }
+    .dm-title { font-size: 19px; }
+    .dm-body { padding: 8px 12px 10px; }
     .dm-card { padding: 4px 22px 6px 12px; }
+    .dm-img-wrap { max-height: 16vh; }
+  }
+  @media (max-height: 760px) {
+    .dm-img-wrap { max-height: 14vh; }
+    .dm-title { font-size: 18px; }
   }
   @media (min-width: 900px) {
     .dm-top { padding-top: 18px; }
@@ -2304,11 +2379,20 @@
         <span id="dmClock"></span>
         <button type="button" class="dm-simchip" id="dmSimChip" title="Change the test clock">Test clock</button>
       </div>
-      <div class="dm-stage" id="dmStage">
-        <div class="dm-track" id="dmTrack"></div>
-        <div class="dm-dots" id="dmDots" aria-hidden="true"></div>
+      <div class="dm-main">
+        <div class="dm-stage" id="dmStage">
+          <div class="dm-track" id="dmTrack"></div>
+          <div class="dm-dots" id="dmDots" aria-hidden="true"></div>
+        </div>
+        <div class="dm-hint">Swipe up or down for the next stop</div>
+        <div id="dmDetail" class="dm-detail" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="dmDetailTitle">
+          <div class="dm-detail-bar">
+            <button type="button" class="dm-detail-back" id="dmDetailBack">‹ Back</button>
+            <span class="dm-detail-ttl" id="dmDetailTitle"></span>
+          </div>
+          <div class="dm-detail-scroll" id="dmDetailBody"></div>
+        </div>
       </div>
-      <div class="dm-hint">Swipe up or down for the next stop</div>
     </div>
   </div>
 
@@ -5511,6 +5595,10 @@
       stage: document.getElementById('dmStage'),
       track: document.getElementById('dmTrack'),
       dots: document.getElementById('dmDots'),
+      detail: document.getElementById('dmDetail'),
+      detailBack: document.getElementById('dmDetailBack'),
+      detailTitle: document.getElementById('dmDetailTitle'),
+      detailBody: document.getElementById('dmDetailBody'),
       sim: document.getElementById('dmSim'),
       simInput: document.getElementById('dmSimInput'),
       simApply: document.getElementById('dmSimApply'),
@@ -5732,6 +5820,7 @@
 
     /* ---- Rendering ---- */
     var isOpen = false;
+    var detailOpen = false;
     var curDay = 1;
     var curIdx = 0;
     var scrollLockY = 0;
@@ -5783,48 +5872,117 @@
       return { date: date, sub: 'Day ' + n + (tail ? ' \u00b7 ' + tail : '') };
     }
 
-    function cardHtml(item, i, dayN, now) {
+    function itemMeta(item) {
       var d = DATA.DETAILS[item.k] || {};
       var enrich = DATA.SITE_ENRICH[item.k] || {};
       var type = d.type || item.act || 'Culture';
-      var color = DATA.TYPE_COLOR[type] || 'var(--muted)';
-      var photo = DATA.panelPhoto(enrich, item.loc, item.title);
-      var st = statusFor(item, dayN, now);
-      var res = DATA.rowStatus(item.row);
-      var stats = mergeResFacts(item.k, (enrich.stats || []).filter(function (s) { return s && s.l !== 'Dress'; }));
-
-      var html = '<div class="dm-card" style="top:' + (i * 100) + '%" data-i="' + i + '"><div class="dm-card-in">';
-      if (photo) {
-        html += '<div class="dm-img-wrap"><img class="dm-img" loading="lazy" src="' + escHtml(DATA.resolveImg(photo.img)) + '" alt="' + escHtml(photo.alt || item.title) + '">' +
-          '<span class="dm-type" style="background:' + color + '">' + escHtml(type) + '</span></div>';
-      }
-      html += '<div class="dm-body">';
-      if (!photo) html += '<span class="dm-type" style="background:' + color + '">' + escHtml(type) + '</span>';
-      html += '<div class="dm-head"><span class="dm-time">' +
-        (item.time ? escHtml(fmtRange(item.time)) : escHtml(item.rawTime || 'Time TBD')) + '</span>' +
-        '<span class="dm-status ' + st + '" data-i="' + i + '"' + (st ? '' : ' hidden') + '>' + (STATUS_TEXT[st] || '') + '</span></div>';
       var title = item.act || item.title;
       var sub = (item.loc && item.loc !== title ? item.loc : (item.title !== title ? item.title : '')) +
         (item.skip ? (item.loc || item.title ? ' \u00b7 ' : '') + 'Skip OK' : '');
-      html += '<h3 class="dm-title">' + escHtml(title) + '</h3>';
-      if (sub) html += '<p class="dm-sub">' + escHtml(sub) + '</p>';
+      return {
+        d: d,
+        enrich: enrich,
+        type: type,
+        color: DATA.TYPE_COLOR[type] || 'var(--muted)',
+        photo: DATA.panelPhoto(enrich, item.loc, item.title),
+        title: title,
+        sub: sub,
+        stats: mergeResFacts(item.k, (enrich.stats || []).filter(function (s) { return s && s.l !== 'Dress'; })),
+        lead: enrich.lead || '',
+        desc: enrich.desc || d.desc || '',
+        tips: d.tips || ''
+      };
+    }
+
+    function photoHtml(meta, openable) {
+      if (!meta.photo) return '';
+      return '<div class="dm-img-wrap"' + (openable ? ' data-dm-detail="1" role="button" tabindex="0" aria-label="Open details"' : '') + '>' +
+        '<img class="dm-img" loading="lazy" src="' + escHtml(DATA.resolveImg(meta.photo.img)) + '" alt="' + escHtml(meta.photo.alt || meta.title) + '">' +
+        '<span class="dm-type" style="background:' + meta.color + '">' + escHtml(meta.type) + '</span></div>';
+    }
+
+    function identityHtml(item, meta, i, dayN, now, badge) {
+      var st = statusFor(item, dayN, now);
+      var res = DATA.rowStatus(item.row);
+      var html = '';
+      if (!meta.photo) html += '<span class="dm-type" style="background:' + meta.color + '">' + escHtml(meta.type) + '</span>';
+      html += '<div class="dm-head"><span class="dm-time">' +
+        (item.time ? escHtml(fmtRange(item.time)) : escHtml(item.rawTime || 'Time TBD')) + '</span>' +
+        '<span class="dm-status ' + st + '"' + (badge ? ' data-i="' + i + '"' : '') + (st ? '' : ' hidden') + '>' + (STATUS_TEXT[st] || '') + '</span></div>';
+      html += '<h3 class="dm-title">' + escHtml(meta.title) + '</h3>';
+      if (meta.sub) html += '<p class="dm-sub">' + escHtml(meta.sub) + '</p>';
       if (item.mode) html += '<p class="dm-mode"><span class="ic" aria-hidden="true">\uD83D\uDEB6</span><span>' + escHtml(item.mode) + '</span></p>';
       if (res) html += '<div class="dm-res"><span class="p-status ' + res[1] + '">' + escHtml(res[0]) + '</span></div>';
-      if (stats.length) {
-        html += '<div class="p-stats">' + stats.map(function (s) {
-          return '<div class="p-stat"><div class="ps-label">' + escHtml(s.l) + '</div><div class="ps-val">' + escHtml(s.v) + '</div></div>';
-        }).join('') + '</div>';
-      }
-      if (enrich.lead) html += '<p class="dm-lead">' + escHtml(enrich.lead) + '</p>';
-      var desc = enrich.desc || d.desc || '';
-      if (desc) html += '<p class="dm-desc"' + (enrich.lead ? '' : ' style="margin-top:14px"') + '>' + escHtml(desc) + '</p>';
-      // Tips are authored as inline HTML for the detail panel — same treatment here.
-      if (d.tips) html += '<div class="p-tips"><b>Tip:</b> ' + d.tips + '</div>';
+      return html;
+    }
+
+    function factsHtml(stats, cls) {
+      if (!stats.length) return '';
+      var cell = cls === 'dm-facts' ? 'dm-fact' : 'p-stat';
+      return '<div class="' + cls + '">' + stats.map(function (s) {
+        return '<div class="' + cell + '"><div class="ps-label">' + escHtml(s.l) + '</div><div class="ps-val">' + escHtml(s.v) + '</div></div>';
+      }).join('') + '</div>';
+    }
+
+    // Lead, description, and tips stay verbatim — they only move into the details view.
+    function proseHtml(meta) {
+      var html = '';
+      if (meta.lead) html += '<p class="dm-lead">' + escHtml(meta.lead) + '</p>';
+      if (meta.desc) html += '<p class="dm-desc"' + (meta.lead ? '' : ' style="margin-top:14px"') + '>' + escHtml(meta.desc) + '</p>';
+      if (meta.tips) html += '<div class="p-tips"><b>Tip:</b> ' + meta.tips + '</div>';
+      return html;
+    }
+
+    function cardHtml(item, i, dayN, now) {
+      var meta = itemMeta(item);
+      var html = '<div class="dm-card" style="top:' + (i * 100) + '%" data-i="' + i + '"><div class="dm-card-in">';
+      html += photoHtml(meta, true);
+      html += '<div class="dm-body">';
+      html += identityHtml(item, meta, i, dayN, now, true);
+      html += factsHtml(meta.stats, 'dm-facts');
+      html += '<button type="button" class="dm-more" data-dm-detail="1"><span>Details</span><span class="dm-more-go" aria-hidden="true">›</span></button>';
       html += '</div></div></div>';
       return html;
     }
 
+    function detailHtml(item, dayN, now) {
+      var meta = itemMeta(item);
+      return '<div class="dm-detail-card">' + photoHtml(meta, false) +
+        '<div class="dm-detail-body">' + identityHtml(item, meta, 0, dayN, now, false) +
+        factsHtml(meta.stats, 'p-stats') + proseHtml(meta) + '</div></div>';
+    }
+
+    function closeDetail() {
+      if (!detailOpen) return;
+      detailOpen = false;
+      root.classList.remove('detail-open');
+      ui.detail.classList.remove('open');
+      ui.detail.hidden = true;
+      ui.detail.setAttribute('aria-hidden', 'true');
+      ui.detailBody.innerHTML = '';
+      var btn = ui.track.querySelector('.dm-card[data-i="' + curIdx + '"] [data-dm-detail].dm-more');
+      if (btn) try { btn.focus({ preventScroll: true }); } catch (e) {}
+    }
+
+    function openDetail() {
+      var model = dayModel(curDay);
+      var item = model.items[curIdx];
+      if (!item || !ui.detail) return;
+      var now = romeNow();
+      var meta = itemMeta(item);
+      ui.detailTitle.textContent = meta.title;
+      ui.detailBody.innerHTML = detailHtml(item, curDay, now);
+      ui.detail.hidden = false;
+      ui.detail.classList.add('open');
+      ui.detail.setAttribute('aria-hidden', 'false');
+      root.classList.add('detail-open');
+      detailOpen = true;
+      if (ui.detailBody) ui.detailBody.scrollTop = 0;
+      try { ui.detailBack.focus({ preventScroll: true }); } catch (e) {}
+    }
+
     function renderDay(n, idx) {
+      closeDetail();
       curDay = clampDay(n);
       var now = romeNow();
       var model = dayModel(curDay);
@@ -5921,6 +6079,7 @@
     }
     function closeDayMode() {
       if (!isOpen) return;
+      closeDetail();
       isOpen = false;
       root.classList.remove('open');
       root.setAttribute('aria-hidden', 'true');
@@ -6033,10 +6192,26 @@
     ui.exit.addEventListener('click', closeDayMode);
     ui.prevDay.addEventListener('click', function () { changeDay(-1); });
     ui.nextDay.addEventListener('click', function () { changeDay(1); });
+    ui.detailBack.addEventListener('click', closeDetail);
+    ui.track.addEventListener('click', function (e) {
+      if (e.target.closest('[data-dm-detail]')) { e.preventDefault(); openDetail(); }
+    });
+    ui.track.addEventListener('keydown', function (e) {
+      if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('[data-dm-detail]')) {
+        e.preventDefault();
+        e.stopPropagation();
+        openDetail();
+      }
+    });
 
     document.addEventListener('keydown', function (e) {
       if (!isOpen) return;
       if (ui.sim.classList.contains('open')) { if (e.key === 'Escape') closeSim(); return; }
+      if (detailOpen) {
+        if (e.key === 'Escape') { e.preventDefault(); closeDetail(); }
+        return;
+      }
+      if ((e.key === ' ' || e.key === 'Enter') && e.target.closest('button, input, textarea, a, [data-dm-detail]')) return;
       switch (e.key) {
         case 'Escape': closeDayMode(); break;
         case 'ArrowDown': case 'PageDown': case ' ': e.preventDefault(); goTo(curIdx + 1); break;
@@ -6050,33 +6225,20 @@
 
     /* ---- Gestures ----
        Vertical drag pages one card per swipe (snap back under threshold).
-       If the card's own text can still scroll in that direction, the swipe
-       scrolls the text instead. Horizontal needs a much longer pull. */
-    function activeBody() { return ui.track.querySelector('.dm-card[data-i="' + curIdx + '"] .dm-card-in'); }
-    function bodyCanScroll(body, dir) {
-      if (!body) return false;
-      if (dir < 0) return body.scrollTop > 1;                                          // wants to reveal content above
-      return body.scrollTop + body.clientHeight < body.scrollHeight - 1;              // wants to reveal content below
-    }
-
+       The pager card does not scroll — notes live in Details — so a swipe
+       always turns the page. Horizontal needs a much longer pull. */
     var touch = null;
     ui.stage.addEventListener('touchstart', function (e) {
+      if (detailOpen) { touch = null; return; }
       if (e.touches.length !== 1) { touch = null; return; }
-      touch = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now(), axis: null, mode: null, body: activeBody() };
+      touch = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now(), axis: null };
     }, { passive: true });
 
     ui.stage.addEventListener('touchmove', function (e) {
-      if (!touch || e.touches.length !== 1) return;
+      if (detailOpen || !touch || e.touches.length !== 1) return;
       var dx = e.touches[0].clientX - touch.x;
       var dy = e.touches[0].clientY - touch.y;
-      if (!touch.mode) {
-        // The very first move decides: browsers ignore preventDefault once a
-        // native scroll has begun. Finger moving up (dy<0) asks for content below.
-        if (dy !== 0 && bodyCanScroll(touch.body, dy < 0 ? 1 : -1)) { touch.mode = 'scroll'; return; }
-        if (dx === 0 && dy === 0) return;
-        touch.mode = 'ours';
-      }
-      if (touch.mode === 'scroll') return;
+      if (dx === 0 && dy === 0) return;
       e.preventDefault();
       if (!touch.axis) {
         if (Math.abs(dx) + Math.abs(dy) < 8) return;
@@ -6097,7 +6259,7 @@
     function endTouch(e) {
       if (!touch) return;
       var t = touch; touch = null;
-      if (t.mode === 'scroll' || !t.axis) return;
+      if (detailOpen || !t.axis) return;
       var pt = e.changedTouches && e.changedTouches[0];
       var dx = pt ? pt.clientX - t.x : 0;
       var dy = pt ? pt.clientY - t.y : 0;
@@ -6119,13 +6281,12 @@
 
     var wheelAcc = 0, wheelLast = 0, wheelLockUntil = 0, wheelArmed = true;
     ui.stage.addEventListener('wheel', function (e) {
+      if (detailOpen) return;
       var nowMs = Date.now();
       var fresh = nowMs - wheelLast > 160;   // a new physical gesture, not trackpad momentum
       wheelLast = nowMs;
       if (fresh) { wheelAcc = 0; wheelArmed = true; }
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-      var body = activeBody();
-      if (bodyCanScroll(body, e.deltaY > 0 ? 1 : -1)) { wheelArmed = false; return; }
       e.preventDefault();
       if (!wheelArmed || nowMs < wheelLockUntil) return;
       wheelAcc += e.deltaY;
