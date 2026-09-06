@@ -4158,8 +4158,45 @@
       openPanelShell();
     }
 
-    function paymentItemTitle(sec) {
-      var prefer = ['Hotel', 'Activity', 'Experience', 'Flight', 'Train', 'Service', 'Ticket', 'Venue', 'Route', 'Room'];
+    function paymentPlaceFromKey(k) {
+      var keys = [];
+      var seen = {};
+      function addKey(id) {
+        if (!id || seen[id]) return;
+        seen[id] = true;
+        keys.push(id);
+      }
+      addKey(k);
+      if (RESERVATION_ALIASES[k]) addKey(RESERVATION_ALIASES[k]);
+      Object.keys(RESERVATION_ALIASES).forEach(function (alias) {
+        if (RESERVATION_ALIASES[alias] === k) addKey(alias);
+        if (RESERVATION_ALIASES[k] && RESERVATION_ALIASES[alias] === RESERVATION_ALIASES[k]) addKey(alias);
+      });
+      var i;
+      for (i = 0; i < keys.length; i++) {
+        var row = document.querySelector('.row[data-k="' + keys[i] + '"]');
+        if (!row) continue;
+        var locEl = row.querySelector('.loc');
+        var actEl = row.querySelector('.act');
+        var loc = locEl ? locEl.textContent.replace(/[👔🥂]/g, '').replace(/\s+/g, ' ').trim() : '';
+        var act = '';
+        if (actEl) {
+          var skip = actEl.querySelector('.act-skip');
+          act = actEl.textContent.trim();
+          if (skip) act = act.replace(skip.textContent, '').trim();
+          act = act.replace(/\s+/g, ' ').trim();
+        }
+        if (loc || act) return { name: loc || act, act: act };
+      }
+      for (i = 0; i < keys.length; i++) {
+        var site = SITE_ENRICH[keys[i]];
+        if (site && site.alt) return { name: site.alt, act: '' };
+      }
+      return null;
+    }
+
+    function paymentItemTitle(sec, k) {
+      var prefer = ['Hotel', 'Activity', 'Experience', 'Flight', 'Train', 'Service', 'Ticket', 'Venue', 'Route', 'Room', 'Tour'];
       var lines = sec.lines || [];
       var i, j;
       for (i = 0; i < prefer.length; i++) {
@@ -4168,6 +4205,16 @@
         }
       }
       if (sec.subhd) return sec.subhd;
+      var place = paymentPlaceFromKey(k);
+      if (place && place.name) {
+        var act = (place.act || '').toLowerCase();
+        if (/museum|basilica|church|gallery|opera|palace|historic house|arena|gardens/.test(act)) {
+          return place.name + ' ticket';
+        }
+        if (/tour/.test(act)) return place.name + ' tour';
+        if (/class/.test(act)) return place.name + ' class';
+        return place.name;
+      }
       return 'Reservation';
     }
 
@@ -4262,7 +4309,7 @@
           for (var i = 0; i < lines.length; i++) {
             if (lines[i].l === 'Paid by') { paidLine = lines[i]; break; }
           }
-          var title = paymentItemTitle(sec);
+          var title = paymentItemTitle(sec, k);
           var amt = paymentAmount(sec);
           var day = paymentDayLabel(k);
           var conf = sec.confirmation || '';
