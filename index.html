@@ -1952,43 +1952,34 @@
     display: flex; flex-direction: column;
   }
   .dm-top {
-    display: flex; align-items: center; gap: 6px;
-    padding: 10px 12px 4px;
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 12px 8px;
   }
   .dm-daynav {
     flex: 0 0 auto;
-    width: 28px; height: 28px; border-radius: 50%;
-    border: 1px solid var(--line); background: #fff; color: var(--muted);
-    font: inherit; font-size: 15px; line-height: 1; cursor: pointer;
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid var(--line); background: #fff; color: var(--ink);
+    font: inherit; font-size: 20px; line-height: 1; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: all .12s ease;
   }
   .dm-daynav:disabled { opacity: 0.3; cursor: default; }
-  .dm-daylbl { flex: 1; min-width: 0; text-align: center; line-height: 1.25; }
-  .dm-daylbl b { display: block; font-size: 16px; font-weight: 800; letter-spacing: -0.2px; }
-  .dm-daylbl span { display: block; font-size: 12px; color: var(--muted); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dm-daylbl { flex: 1; min-width: 0; text-align: center; line-height: 1.2; }
+  .dm-daylbl b { display: block; font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+  .dm-daylbl span { display: block; margin-top: 3px; font-size: 15px; color: var(--muted); font-weight: 600; line-height: 1.3; }
+  .dm-foot { display: flex; justify-content: center; padding: 8px 12px 6px; }
   .dm-exit {
-    flex: 0 0 auto; margin-left: 6px;
-    width: 34px; height: 34px; border-radius: 50%;
-    border: 1px solid var(--line); background: #fff;
-    font-size: 19px; line-height: 1; color: var(--muted);
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: all .12s ease;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 18px 9px 14px; border-radius: 999px;
+    border: 1px solid var(--line); background: #fff; color: var(--ink);
+    font: inherit; font-size: 14px; font-weight: 700; letter-spacing: -0.1px;
+    box-shadow: 0 2px 10px rgba(43,33,24,.06);
+    cursor: pointer; transition: all .12s ease;
   }
-  .dm-clock {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    padding: 0 12px 6px;
-    font-size: 12px; color: var(--muted); font-weight: 600;
-  }
-  #dmClock { cursor: pointer; }
-  .dm-simchip {
-    display: none; align-items: center; gap: 5px;
-    padding: 2px 9px; border-radius: 999px;
-    border: 1px solid #e3c36a; background: #fff8e1; color: #8a6d00;
-    font: inherit; font-size: 10.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
-    cursor: pointer;
-  }
-  .dm-simchip.on { display: inline-flex; }
+  .dm-exit span { font-size: 18px; line-height: 1; color: var(--muted); }
+  /* The test-clock pill on the itinerary shows the pretend time and clears it.
+     Day Mode itself carries no clock or chip; the sim just colours the pill. */
+  #daymode.sim .dm-daylbl b { color: #8a6d00; }
 
   .dm-main {
     flex: 1; min-height: 0; position: relative;
@@ -2026,6 +2017,10 @@
     position: relative; flex: 0 0 auto; width: 96px; height: 96px;
     border-radius: 12px; overflow: hidden; background: #e8e0d4;
   }
+  .dm-card-in.grown .dm-thumb { width: var(--dm-thumb-h, 96px); height: var(--dm-thumb-h, 96px); }
+  .dm-card-in.roomy .dm-toprow { flex-direction: column; gap: 10px; }
+  .dm-card-in.roomy .dm-thumb { width: 100%; height: var(--dm-thumb-h, 160px); }
+  .dm-card-in.roomy .dm-thumb .dm-type { left: 10px; bottom: 10px; font-size: 10.5px; padding: 4px 10px; }
   .dm-thumb::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(26,22,18,.45) 0%, transparent 55%); pointer-events: none; }
   .dm-img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
   .dm-thumb .dm-type { position: absolute; left: 6px; bottom: 6px; z-index: 1; font-size: 9px; padding: 3px 7px; letter-spacing: .08em; }
@@ -2038,12 +2033,12 @@
   }
   .dm-body {
     flex: 1 1 auto; min-height: 0; overflow: hidden;
-    display: flex; flex-direction: column; gap: 8px;
-    padding: 8px 12px 10px;
+    display: flex; flex-direction: column; gap: calc(10px * var(--dms, 1));
+    padding: calc(10px * var(--dms, 1)) 12px 12px;
   }
   .dm-ident .dm-type { margin-bottom: 6px; align-self: flex-start; }
   .dm-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 2px; flex: 0 0 auto; }
-  .dm-time { font-size: 13px; font-weight: 800; color: var(--ink); letter-spacing: -0.1px; white-space: nowrap; }
+  .dm-time { font-size: 15px; font-weight: 800; color: var(--ink); letter-spacing: -0.1px; white-space: nowrap; }
   .dm-time small { font-weight: 600; color: var(--muted); margin-left: 6px; }
   .dm-status {
     display: inline-flex; align-items: center; gap: 6px;
@@ -2056,24 +2051,17 @@
   .dm-status.upcoming { background: #fff8e1; color: #8a6d00; }
   .dm-status.past { background: #f4efe6; color: #8a7a55; }
   .dm-title {
-    margin: 0; font-size: 19px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.15;
+    margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.15;
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
     flex: 0 0 auto;
   }
   .dm-sub {
-    margin: 2px 0 0; font-size: 12.5px; color: var(--muted); font-weight: 600;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin: 3px 0 0; font-size: 14px; color: var(--muted); font-weight: 600; line-height: 1.3;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
     flex: 0 0 auto;
   }
-  .dm-mode {
-    margin: 4px 0 0; display: flex; gap: 5px; align-items: center;
-    font-size: 12px; color: var(--ink); line-height: 1.3;
-    min-width: 0; flex: 0 0 auto;
-  }
-  .dm-mode .ic { flex: 0 0 auto; }
-  .dm-mode span:last-child { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .dm-res { margin-top: 6px; flex: 0 0 auto; }
-  .dm-res .p-status { font-size: 11px; padding: 3px 9px; }
+  .dm-res { margin-top: 8px; flex: 0 0 auto; }
+  .dm-res .p-status { font-size: 12px; padding: 4px 10px; }
 
   /* Every kind of information gets a block on the first screen. A block only
      shrinks (and becomes tappable) when the card runs out of room; the text is
@@ -2101,22 +2089,24 @@
   .dm-block-tip .dm-morepill { right: 8px; bottom: 5px; }
   .dm-block.clipped .dm-morepill { display: inline-block; }
   .dm-facts {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 6px; align-content: start;
+    display: grid; grid-template-columns: 1fr 1fr; gap: calc(6px * var(--dms, 1)); align-content: start;
     margin: 0;
   }
   .dm-fact {
     position: relative;
     background: #f7f2ea; border: 1px solid var(--line); border-radius: 10px;
-    padding: 5px 8px; min-width: 0;
+    padding: calc(6px * var(--dms, 1)) calc(9px * var(--dms, 1)); min-width: 0;
   }
   .dm-fact .ps-label {
-    font-size: 9.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+    font-size: calc(10px * var(--dms, 1)); font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
     color: var(--muted); margin-bottom: 1px; line-height: 1.3;
   }
   .dm-fact .ps-val {
-    font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.25;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    font-size: calc(14px * var(--dms, 1)); font-weight: 700; color: var(--ink); line-height: 1.25;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
   }
+  .dm-fact.wide, .dm-detail-body .p-stat.wide { grid-column: 1 / -1; }
+  .dm-fact.wide .ps-val { -webkit-line-clamp: 2; }
   /* A value that did not fit its tile: chevron on the tile, whole facts block taps open. */
   .dm-fact.cut { padding-right: 18px; }
   .dm-fact.cut::after {
@@ -2126,9 +2116,9 @@
   .dm-block.nofade::after, .dm-block.rows::after { display: none; }
   .dm-fact.dm-hide { display: none; }
   .dm-block.nofade .dm-morepill { display: none; }
-  .dm-lead { font-size: 15.5px; font-weight: 700; color: var(--ink); margin: 0; line-height: 1.4; }
-  .dm-desc { font-size: 15px; line-height: 1.5; color: var(--ink); margin: 0; }
-  .dm-body .p-tips { margin: 0; padding: 9px 12px; font-size: 13.5px; line-height: 1.5; }
+  .dm-lead { font-size: calc(16.5px * var(--dms, 1)); font-weight: 700; color: var(--ink); margin: 0; line-height: 1.4; }
+  .dm-desc { font-size: calc(16px * var(--dms, 1)); line-height: 1.5; color: var(--ink); margin: 0; }
+  .dm-body .p-tips { margin: 0; padding: calc(10px * var(--dms, 1)) 12px; font-size: calc(14.5px * var(--dms, 1)); line-height: 1.5; }
   .dm-block-text.clamp { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
   .dm-block-tip.clipped { background: #f7f1e7; border-left: 3px solid var(--gold); border-radius: 0 8px 8px 0; }
   /* Padding inside an overflow box still shows the next line through it, so the
@@ -2198,10 +2188,10 @@
   .dm-dot.on { height: 18px; background: var(--ink); }
   .dm-dot.on.live { background: #1f7a3d; }
 
-  .dm-hint { text-align: center; font-size: 11px; color: var(--muted); padding: 0 14px 6px; }
   /* Hover only where a pointer can hover — taps must not leave buttons stuck filled. */
   @media (hover: hover) {
     .dm-daynav:hover:not(:disabled), .dm-exit:hover, .dm-detail-back:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .dm-exit:hover span { color: #fff; }
     .dm-block.clipped:hover .dm-morepill { background: var(--ink); color: #fff; border-color: var(--ink); }
   }
 
@@ -2240,15 +2230,16 @@
     .dm-card { padding: 4px 22px 6px 12px; }
   }
   @media (min-width: 420px) {
-    .dm-thumb { width: 108px; height: 108px; }
+    .dm-thumb { width: 116px; height: 116px; }
   }
   @media (max-height: 700px) {
     .dm-thumb { width: 84px; height: 84px; }
-    .dm-title { font-size: 18px; }
+    .dm-title { font-size: 19px; }
+    .dm-daylbl b { font-size: 22px; }
+    .dm-daylbl span { font-size: 14px; }
   }
   @media (min-width: 900px) {
     .dm-top { padding-top: 18px; }
-    .dm-hint::after { content: ' · wheel or ↑ ↓ keys'; }
   }
 
   /* ---------- PASSWORD GATE ---------- */
@@ -2418,18 +2409,15 @@
         <button type="button" class="dm-daynav" id="dmPrevDay" aria-label="Previous day" title="Previous day">‹</button>
         <div class="dm-daylbl"><b id="dmDayDate">Tue, Sep 22</b><span id="dmDayNum">Day 1</span></div>
         <button type="button" class="dm-daynav" id="dmNextDay" aria-label="Next day" title="Next day">›</button>
-        <button type="button" class="dm-exit" id="dmExit" aria-label="Exit Day Mode" title="Back to itinerary">×</button>
-      </div>
-      <div class="dm-clock">
-        <span id="dmClock"></span>
-        <button type="button" class="dm-simchip" id="dmSimChip" title="Change the test clock">Test clock</button>
       </div>
       <div class="dm-main">
         <div class="dm-stage" id="dmStage">
           <div class="dm-track" id="dmTrack"></div>
           <div class="dm-dots" id="dmDots" aria-hidden="true"></div>
         </div>
-        <div class="dm-hint">Swipe up or down for the next stop</div>
+        <div class="dm-foot">
+          <button type="button" class="dm-exit" id="dmExit" title="Back to itinerary"><span aria-hidden="true">‹</span> Back to itinerary</button>
+        </div>
         <div id="dmDetail" class="dm-detail" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="dmDetailTitle">
           <div class="dm-detail-bar">
             <button type="button" class="dm-detail-back" id="dmDetailBack">‹ Back</button>
@@ -5635,8 +5623,6 @@
       dayDate: document.getElementById('dmDayDate'),
       dayNum: document.getElementById('dmDayNum'),
       exit: document.getElementById('dmExit'),
-      clock: document.getElementById('dmClock'),
-      simChip: document.getElementById('dmSimChip'),
       stage: document.getElementById('dmStage'),
       track: document.getElementById('dmTrack'),
       dots: document.getElementById('dmDots'),
@@ -5932,7 +5918,12 @@
         photo: DATA.panelPhoto(enrich, item.loc, item.title),
         title: title,
         sub: sub,
-        stats: mergeResFacts(item.k, (enrich.stats || []).filter(function (s) { return s && s.l !== 'Dress'; })),
+        // Transport is a fact tile like cuisine or address. The itinerary's own
+        // transport line is the fuller one, so it replaces any "Getting there" tile.
+        stats: (item.mode ? [{ l: 'Transport', v: item.mode, wide: item.mode.length > 26 }] : []).concat(
+          mergeResFacts(item.k, (enrich.stats || []).filter(function (s) {
+            return s && s.l !== 'Dress' && !(item.mode && s.l === 'Getting there');
+          }))),
         lead: enrich.lead || '',
         desc: enrich.desc || d.desc || '',
         tips: d.tips || ''
@@ -5956,8 +5947,7 @@
         '<span class="dm-status ' + st + '" data-i="' + i + '"' + (st ? '' : ' hidden') + '>' + (STATUS_TEXT[st] || '') + '</span></div>';
       html += '<h3 class="dm-title">' + escHtml(meta.title) + '</h3>';
       if (meta.sub) html += '<p class="dm-sub">' + escHtml(meta.sub) + '</p>';
-      if (item.mode) html += '<p class="dm-mode"><span class="ic" aria-hidden="true">\uD83D\uDEB6</span><span>' + escHtml(item.mode) + '</span></p>';
-      if (res) html += '<div class="dm-res"><span class="p-status ' + res[1] + '">' + escHtml(res[0]) + '</span></div>';
+      if (res) html += '<div class="dm-res"><span class="p-status ' + res[1] + '">' + escHtml(String(res[0]).replace(/^Res:/, 'Reservation:')) + '</span></div>';
       return html + '</div>';
     }
 
@@ -5965,7 +5955,7 @@
       if (!stats.length) return '';
       var cell = cls === 'dm-facts' ? 'dm-fact' : 'p-stat';
       return '<div class="' + cls + '">' + stats.map(function (s) {
-        return '<div class="' + cell + '"><div class="ps-label">' + escHtml(s.l) + '</div><div class="ps-val">' + escHtml(s.v) + '</div></div>';
+        return '<div class="' + cell + (s.wide ? ' wide' : '') + '"><div class="ps-label">' + escHtml(s.l) + '</div><div class="ps-val">' + escHtml(s.v) + '</div></div>';
       }).join('') + '</div>';
     }
 
@@ -6006,6 +5996,7 @@
        number of lines; a clipped block becomes a tap target for its full view. */
     function fitCard(cardIn) {
       var blocks = cardIn.querySelectorAll('.dm-block');
+      cardIn.style.setProperty('--dms', '1');
       Array.prototype.forEach.call(blocks, function (block) {
         var text = block.querySelector('.dm-block-text');
         block.classList.remove('clipped'); block.classList.remove('nofade'); block.classList.remove('rows');
@@ -6016,6 +6007,53 @@
         if (text) { text.classList.remove('clamp'); text.style.webkitLineClamp = ''; }
         Array.prototype.forEach.call(block.querySelectorAll('.dm-fact'), function (f) { f.classList.remove('cut'); f.classList.remove('dm-hide'); });
       });
+      // A short card should not sit over a blank half-screen: grow the body type
+      // (capped) until the content fills the card, then back off until it fits.
+      // Text is only ever enlarged here, never rewritten or reordered.
+      var body = cardIn.querySelector('.dm-body');
+      var top = cardIn.querySelector('.dm-toprow');
+      function need() {
+        var cs = getComputedStyle(body);
+        var gap = parseFloat(cs.rowGap || cs.gap) || 0;
+        var sum = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
+        Array.prototype.forEach.call(blocks, function (b, i) { sum += b.scrollHeight + (i ? gap : 0); });
+        return sum;
+      }
+      if (body && blocks.length) {
+        var avail = cardIn.clientHeight - (top ? top.offsetHeight : 0);
+        var base = need();
+        if (base > 0 && avail > base + 16) {
+          var s = Math.min(1.3, Math.sqrt(avail / base));
+          s = Math.floor(s * 100) / 100;
+          while (s > 1.02) {
+            cardIn.style.setProperty('--dms', String(s));
+            if (need() <= avail) break;
+            s = Math.round((s - 0.03) * 100) / 100;
+          }
+          if (s <= 1.02) cardIn.style.setProperty('--dms', '1');
+        }
+        // Still room after the type is at its cap (a short stop): let the photo
+        // become a banner and take what is left, rather than leaving it blank.
+        var thumb = cardIn.querySelector('.dm-thumb');
+        cardIn.classList.remove('roomy'); cardIn.classList.remove('grown'); cardIn.style.removeProperty('--dm-thumb-h');
+        var slack = function () { return cardIn.clientHeight - top.offsetHeight - need() - 8; };
+        if (thumb && top && slack() > 12) {
+          var baseH = thumb.offsetHeight;
+          if (slack() > 140) {
+            cardIn.classList.add('roomy');
+            cardIn.style.setProperty('--dm-thumb-h', baseH + 'px');
+            var extra = slack();
+            if (extra > 0) cardIn.style.setProperty('--dm-thumb-h', Math.min(380, baseH + extra) + 'px');
+            else { cardIn.classList.remove('roomy'); cardIn.style.removeProperty('--dm-thumb-h'); }
+          }
+          if (!cardIn.classList.contains('roomy')) {
+            // Modest room: the square photo simply grows beside the title.
+            cardIn.classList.add('grown');
+            cardIn.style.setProperty('--dm-thumb-h', Math.min(190, baseH + slack()) + 'px');
+            if (slack() < 0) { cardIn.classList.remove('grown'); cardIn.style.removeProperty('--dm-thumb-h'); }
+          }
+        }
+      }
       // Walk the blocks in order. A clipped block is frozen at (or under) the
       // height flex gave it, so clamping its text cannot reflow its neighbours,
       // and anything it gives back flows to the blocks below it.
@@ -6167,11 +6205,9 @@
       }).join('');
     }
 
+    // No clock line in Day Mode; the test clock only tints the date while it is on.
     function renderClock(now) {
-      var todayN = dayIndexFor(now);
-      var where = inTrip(todayN) ? 'Day ' + todayN : (todayN < 1 ? 'before the trip' : 'after the trip');
-      ui.clock.textContent = fmtMin(now.h * 60 + now.mi, true) + ' in Italy \u00b7 ' + where;
-      ui.simChip.classList.toggle('on', !!now.sim);
+      root.classList.toggle('sim', !!now.sim);
     }
 
     // Statuses drift as the clock moves; only the badges change, not the card you are reading.
@@ -6296,8 +6332,6 @@
       // Releasing a long-press synthesizes a click on the backdrop — don't let it close what it just opened.
       if (e.target === ui.sim && Date.now() - simOpenedAt > 500) closeSim();
     });
-    ui.simChip.addEventListener('click', openSim);
-    if (ui.clock) ui.clock.addEventListener('click', openSim);
     var heroBtn = document.getElementById('dmHero');
     if (heroBtn) {
       heroBtn.addEventListener('click', function (e) {
