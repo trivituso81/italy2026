@@ -2088,6 +2088,10 @@
   /* A short stop with room to spare: the photo becomes a banner above the title. */
   .dm-card-in.roomy .dmb-titlerow { flex-direction: column-reverse; }
   .dm-card-in.roomy .dmb-mini { width: 100%; height: var(--dm-thumb-h, 160px); }
+  .dm-card-in.grown .dmb-mini { width: var(--dm-mini, 52px); height: var(--dm-mini, 52px); }
+  .dm-block.dm-hide { display: none; }
+  .dm-block.more { cursor: pointer; padding-bottom: 26px; }
+  .dm-block.more .dm-morepill { display: inline-block; }
   .dmb-sec { font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
   .dmb-know { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: calc(6px * var(--dms, 1)); }
   .dmb-know li { position: relative; padding-left: 16px; font-size: calc(13.5px * var(--dms, 1)); line-height: 1.45; color: var(--ink); }
@@ -6185,7 +6189,11 @@
     // much is visible before the tap-to-open pill appears.
     function textHtml(meta, kind, full) {
       var cls = full ? '' : ' dm-block-text';
-      if (kind === 'lead') return meta.lead ? '<p class="dm-lead' + cls + '">' + escHtml(meta.lead) + '</p>' : '';
+      if (kind === 'lead') {
+        if (!meta.lead) return '';
+        return '<p class="dm-lead' + cls + '">' + escHtml(meta.lead) + '</p>' +
+          (full && meta.desc ? '<p class="dm-desc">' + escHtml(meta.desc) + '</p>' : '');
+      }
       if (kind === 'desc') return meta.desc ? '<p class="dm-desc' + cls + '">' + escHtml(meta.desc) + '</p>' : '';
       if (kind === 'tips') {
         if (!meta.tips.length) return '';
@@ -6236,20 +6244,38 @@
        clip only the ones the card could not fit. Clipped text gets a whole
        number of lines, clipped lists whole bullets; a clipped block becomes a
        tap target for its full view. */
-    function fitCard(cardIn) {
+    function fitCard(cardIn, noStory) {
       var blocks = cardIn.querySelectorAll('.dm-block');
       cardIn.style.setProperty('--dms', '1');
       cardIn.classList.remove('roomy'); cardIn.style.removeProperty('--dm-thumb-h');
+      cardIn.classList.remove('grown'); cardIn.style.removeProperty('--dm-mini');
+      var story = cardIn.querySelector('.dm-block-desc');
+      if (story) story.classList.toggle('dm-hide', !!noStory);
+      var lead = cardIn.querySelector('.dm-block-lead');
+      if (lead) { lead.classList.remove('more'); lead.removeAttribute('data-open'); }
+      if (noStory && story && lead) {
+        // The lead carries the "Full story" pill; its padding has to be in place before measuring.
+        lead.classList.add('more');
+        lead.setAttribute('data-open', 'desc');
+        lead.setAttribute('aria-label', 'Open story');
+      }
       Array.prototype.forEach.call(blocks, function (block) {
         var text = block.querySelector('.dm-block-text');
-        block.classList.remove('clipped'); block.classList.remove('nofade'); block.classList.remove('rows');
+        block.classList.remove('clipped'); block.classList.remove('nofade'); block.classList.remove('rows'); block.classList.remove('more');
         block.style.flex = ''; block.style.height = '';
         var pill = block.querySelector('.dm-morepill');
         if (pill) pill.textContent = BLOCK_LABEL[block.getAttribute('data-kind')] + ' \u203a';
-        block.removeAttribute('role'); block.removeAttribute('tabindex'); block.removeAttribute('aria-label');
+        block.removeAttribute('role'); block.removeAttribute('tabindex'); block.removeAttribute('aria-label'); block.removeAttribute('data-open');
         if (text) { text.classList.remove('clamp'); text.style.webkitLineClamp = ''; }
         Array.prototype.forEach.call(block.querySelectorAll('.dm-block-list > li'), function (li) { li.classList.remove('dm-hide'); });
       });
+      if (noStory && story && lead) {
+        lead.classList.add('more');
+        lead.setAttribute('role', 'button'); lead.setAttribute('tabindex', '0');
+        lead.setAttribute('aria-label', 'Open story'); lead.setAttribute('data-open', 'desc');
+        var mp = lead.querySelector('.dm-morepill');
+        if (mp) mp.textContent = 'Full story \u203a';
+      }
       // A short card should not sit over a blank half-screen: grow the body type
       // (capped) until the content fills the card, then back off until it fits.
       // Text is only ever enlarged here, never rewritten or reordered.
@@ -6268,24 +6294,45 @@
           s = Math.floor(s * 100) / 100;
           while (s > 1.02) {
             cardIn.style.setProperty('--dms', String(s));
-            if (need() <= body.clientHeight) break;
+            if (need() + 4 <= body.clientHeight) break;
             s = Math.round((s - 0.03) * 100) / 100;
           }
-          if (s <= 1.02) cardIn.style.setProperty('--dms', '1');
+          if (s <= 1.02) { s = 1; cardIn.style.setProperty('--dms', '1'); }
+          // The estimate ignores wrapping, so it usually lands low: nudge up while it still fits.
+          while (s < 1.3) {
+            var up = Math.min(1.3, Math.round((s + 0.03) * 100) / 100);
+            cardIn.style.setProperty('--dms', String(up));
+            if (need() + 4 > body.clientHeight) { cardIn.style.setProperty('--dms', String(s)); break; }
+            s = up;
+          }
         }
-        // Still room after the type is at its cap: the photo becomes a banner
-        // above the title and takes what is left, rather than leaving it blank.
+        // Still room after the type is at its cap: a lot of room and the photo
+        // becomes a banner above the title; a little and the square photo grows
+        // beside it. Either way the leftover goes to the picture, not to blank card.
         var mini = cardIn.querySelector('.dmb-mini');
         var slack = body.clientHeight - need();
-        if (mini && slack > 140) {
+        if (mini && slack > 90) {
           cardIn.classList.add('roomy');
-          var hgt = Math.min(320, slack - 24);
-          while (hgt >= 120) {
+          var hgt = Math.min(340, slack - 6);
+          while (hgt >= 80) {
             cardIn.style.setProperty('--dm-thumb-h', hgt + 'px');
-            if (body.clientHeight >= need()) break;
-            hgt -= 20;
+            if (body.clientHeight >= need() + 4) break;
+            hgt -= 4;
           }
-          if (hgt < 120) { cardIn.classList.remove('roomy'); cardIn.style.removeProperty('--dm-thumb-h'); }
+          if (hgt < 80) { cardIn.classList.remove('roomy'); cardIn.style.removeProperty('--dm-thumb-h'); }
+        }
+        if (mini && !cardIn.classList.contains('roomy')) {
+          slack = body.clientHeight - need();
+          if (slack > 12) {
+            cardIn.classList.add('grown');
+            var sz = Math.min(132, 52 + slack);
+            while (sz > 56) {
+              cardIn.style.setProperty('--dm-mini', sz + 'px');
+              if (body.clientHeight >= need() + 4) break;
+              sz -= 6;
+            }
+            if (sz <= 56) { cardIn.classList.remove('grown'); cardIn.style.removeProperty('--dm-mini'); }
+          }
         }
       }
       // Walk the blocks in order. A clipped block is frozen at (or under) the
@@ -6293,6 +6340,7 @@
       // and anything it gives back flows to the blocks below it.
       var PILL_H = 24;
       Array.prototype.forEach.call(blocks, function (block) {
+        if (block.classList.contains('dm-hide')) return;
         var kind = block.getAttribute('data-kind');
         var text = block.querySelector('.dm-block-text');
         var list = block.querySelector('.dm-block-list');
@@ -6338,10 +6386,13 @@
         text.classList.add('clamp');
         text.style.webkitLineClamp = String(lines);
       });
+      // Small screens: when the blocks cannot fit even at their minimums, fold
+      // the story into the lead's full view instead of letting the card overflow.
+      if (body && story && !noStory && body.scrollHeight > body.clientHeight + 6) fitCard(cardIn, true);
     }
 
     function fitAllCards() {
-      Array.prototype.forEach.call(ui.track.querySelectorAll('.dm-card-in'), fitCard);
+      Array.prototype.forEach.call(ui.track.querySelectorAll('.dm-card-in'), function (c) { fitCard(c); });
     }
 
     function closeDetail() {
@@ -6637,21 +6688,21 @@
         if (chip.hasAttribute('data-copy')) { e.preventDefault(); copyRef(chip); }
         return;
       }
-      var block = e.target.closest('.dm-block.clipped');
+      var block = e.target.closest('.dm-block.clipped, .dm-block.more');
       if (!block) return;
       if (moved) return;
       e.preventDefault();
-      openDetail(block.getAttribute('data-kind'));
+      openDetail(block.getAttribute('data-open') || block.getAttribute('data-kind'));
     });
     ui.track.addEventListener('keydown', function (e) {
       if (e.key !== 'Enter' && e.key !== ' ') return;
       var chip = e.target.closest('.dmb-act[data-copy]');
       if (chip) { e.preventDefault(); e.stopPropagation(); copyRef(chip); return; }
-      var block = e.target.closest('.dm-block.clipped');
+      var block = e.target.closest('.dm-block.clipped, .dm-block.more');
       if (block) {
         e.preventDefault();
         e.stopPropagation();
-        openDetail(block.getAttribute('data-kind'));
+        openDetail(block.getAttribute('data-open') || block.getAttribute('data-kind'));
       }
     });
 
