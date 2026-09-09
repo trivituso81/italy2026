@@ -5645,7 +5645,7 @@
     var DAY_MS = 86400000;
     var POINT_MINUTES = 90;     // how long a single-time event counts as "live"
     var PAGE_DRAG_PX = 60;      // vertical swipe → next/prev activity
-    var DAY_DRAG_PX = 150;      // horizontal swipe → next/prev day (rare, deliberately hard)
+    var DAY_DRAG_PX = 70;       // horizontal swipe → next/prev day (or a quick flick)
     var WHEEL_PX = 50;
     var LONG_PRESS_MS = 650;
 
@@ -6702,6 +6702,7 @@
       try { ui.detailBack.focus({ preventScroll: true }); } catch (e) {}
     }
 
+    var enterFromX = 0;   // px offset the freshly rendered track slides in from (swipe between days)
     function renderDay(n, idx) {
       closeDetail();
       closeTip();
@@ -6722,6 +6723,13 @@
       } else {
         ui.track.innerHTML = model.items.map(function (it, i) { return cardHtml(it, i, curDay, now, model); }).join('');
         curIdx = Math.min(model.items.length - 1, Math.max(0, idx == null ? pickIndex(model, now) : idx));
+      }
+      if (enterFromX) {
+        // Park the new day just off-screen without a transition, then let positionTrack animate it in.
+        ui.track.classList.add('dragging');
+        ui.track.style.transform = 'translateY(' + (-curIdx * 100) + '%) translateX(' + enterFromX + 'px)';
+        void ui.track.offsetWidth;
+        enterFromX = 0;
       }
       ui.track.classList.remove('dragging');
       positionTrack();
@@ -6802,11 +6810,24 @@
       curIdx = next;
       positionTrack();
     }
+    var daySliding = false;
     function changeDay(delta) {
       var n = curDay + delta;
-      if (!inTrip(n)) return;
+      if (daySliding) return;
+      if (!inTrip(n)) { positionTrack(); return; }
       // Coming from the previous day, start at its first stop; going back, at its last.
-      renderDay(n, delta > 0 ? 0 : Number.MAX_SAFE_INTEGER);
+      var idx = delta > 0 ? 0 : Number.MAX_SAFE_INTEGER;
+      var w = ui.stage.offsetWidth || window.innerWidth;
+      if (!w || !ui.track.firstChild) { renderDay(n, idx); return; }
+      // Slide the current day out the way we're heading, then bring the next one in from the other side.
+      daySliding = true;
+      ui.track.classList.remove('dragging');
+      ui.track.style.transform = 'translateY(' + (-curIdx * 100) + '%) translateX(' + (-delta * w) + 'px)';
+      setTimeout(function () {
+        enterFromX = delta * w;
+        renderDay(n, idx);
+        daySliding = false;
+      }, 300);
     }
     function jumpToNow() {
       var now = romeNow();
@@ -7075,7 +7096,8 @@
     /* ---- Gestures ----
        Vertical drag pages one card per swipe (snap back under threshold).
        The pager card never scrolls — a clipped block opens its own view on
-       tap — so a swipe always turns the page. Horizontal needs a longer pull. */
+       tap — so a swipe always turns the page. A horizontal swipe (or flick)
+       slides to the previous / next day. */
     var touch = null;
     ui.stage.addEventListener('touchstart', function (e) {
       if (detailOpen) { touch = null; return; }
@@ -7085,7 +7107,7 @@
     }, { passive: true });
 
     ui.stage.addEventListener('touchmove', function (e) {
-      if (detailOpen || !touch || e.touches.length !== 1) return;
+      if (detailOpen || daySliding || !touch || e.touches.length !== 1) return;
       var dx = e.touches[0].clientX - touch.x;
       var dy = e.touches[0].clientY - touch.y;
       if (dx === 0 && dy === 0) return;
@@ -7102,7 +7124,7 @@
         ui.track.style.transform = 'translateY(calc(' + (-curIdx * 100) + '% + ' + shift.toFixed(1) + 'px))';
       } else {
         var blocked = (dx > 0 && curDay <= 1) || (dx < 0 && curDay >= DAY_COUNT);
-        ui.track.style.transform = 'translateY(' + (-curIdx * 100) + '%) translateX(' + (dx * (blocked ? 0.08 : 0.25)).toFixed(1) + 'px)';
+        ui.track.style.transform = 'translateY(' + (-curIdx * 100) + '%) translateX(' + (dx * (blocked ? 0.25 : 1)).toFixed(1) + 'px)';
       }
     }, { passive: false });
 
@@ -7121,8 +7143,9 @@
         else if (dy >= PAGE_DRAG_PX || (fast && dy > 0)) goTo(curIdx - 1);
         else positionTrack();
       } else {
-        if (dx <= -DAY_DRAG_PX) changeDay(1);
-        else if (dx >= DAY_DRAG_PX) changeDay(-1);
+        var flick = Math.abs(dx) / dt > 0.5 && Math.abs(dx) > 30;
+        if (dx <= -DAY_DRAG_PX || (flick && dx < 0)) changeDay(1);
+        else if (dx >= DAY_DRAG_PX || (flick && dx > 0)) changeDay(-1);
         else positionTrack();
       }
     }
