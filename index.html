@@ -5903,7 +5903,8 @@
     var curDay = 1;
     var curIdx = 0;
     var scrollLockY = 0;
-    var STATUS_TEXT = { live: 'Live now', upcoming: 'Upcoming', past: 'Past' };
+    // Upcoming is the default state of a stop, so it gets no chip; only live and past are called out.
+    var STATUS_TEXT = { live: 'Live now', past: 'Past' };
 
     function mergeResFacts(k, stats) {
       // Money and stay-length lines live in the Payments and Booked tooltips now;
@@ -6494,7 +6495,7 @@
       var html = '<div class="dm-card" style="top:' + (i * 100) + '%" data-i="' + i + '"><div class="dm-card-in">';
       html += '<div class="dmb-head"><div class="dmb-tags">' +
         '<span class="dm-type" style="background:' + meta.color + '">' + escHtml(meta.kind) + '</span>' +
-        '<span class="dm-status ' + st + '" data-i="' + i + '"' + (st ? '' : ' hidden') + '>' + (STATUS_TEXT[st] || '') + '</span>' +
+        '<span class="dm-status ' + st + '" data-i="' + i + '"' + (STATUS_TEXT[st] ? '' : ' hidden') + '>' + (STATUS_TEXT[st] || '') + '</span>' +
         (item.skip ? '<span class="dmb-badge skip">Skip OK</span>' : '') +
         '</div><span class="dm-time">' + (item.time ? escHtml(fmtRange(item.time)) : escHtml(item.rawTime || 'Time TBD')) + '</span></div>';
       html += '<div class="dmb-titlerow"><div class="dmb-titles"><h3 class="dm-title">' + escHtml(meta.name) + '</h3>' +
@@ -6777,7 +6778,7 @@
           var st = statusFor(it, curDay, now);
           badge.className = 'dm-status ' + st;
           badge.textContent = STATUS_TEXT[st] || '';
-          badge.hidden = !st;
+          badge.hidden = !STATUS_TEXT[st];
         }
         var cd = ui.track.querySelector('.dmb-cd[data-i="' + i + '"]');
         if (cd && cd.getAttribute('data-leave') !== '') {
