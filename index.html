@@ -1939,10 +1939,14 @@
 
   #daymode {
     position: fixed; inset: 0; z-index: 100;
+    /* iOS Safari keeps a fixed overlay at the layout viewport, which stops short
+       of the screen while its toolbar is collapsed; size to the visible height
+       instead (the script keeps --dm-vh at window.innerHeight). */
+    height: 100dvh; height: var(--dm-vh, 100dvh);
     background: var(--paper);
     opacity: 0; visibility: hidden;
     transition: opacity .25s ease, visibility .25s ease;
-    padding-top: var(--safe-top); padding-bottom: var(--safe-bottom);
+    padding-top: var(--safe-top);
     box-sizing: border-box;
   }
   #daymode:not(.open) { pointer-events: none; }
@@ -1988,7 +1992,7 @@
   .dm-track.dragging { transition: none; }
   .dm-card {
     position: absolute; left: 0; right: 0; height: 100%;
-    padding: 6px 26px 10px 14px;
+    padding: 6px 26px max(14px, calc(var(--safe-bottom) - 14px)) 14px;
     box-sizing: border-box;
   }
   .dm-card-in {
@@ -2267,7 +2271,7 @@
   .dm-sim-note code { font-size: 11px; background: #f4efe6; padding: 1px 5px; border-radius: 5px; }
 
   @media (max-width: 480px) {
-    .dm-card { padding: 4px 22px 8px 12px; }
+    .dm-card { padding: 4px 22px max(12px, calc(var(--safe-bottom) - 14px)) 12px; }
   }
   @media (max-height: 700px) {
     .dm-title { font-size: 19px; }
@@ -6173,6 +6177,8 @@
       if (!from && prevName && !/\u2192/.test(meta.name) && meta.type !== 'Flight') from = prevName;
       var html = '', text = '';
       legs.forEach(function (leg, i) {
+        // "From Hotel Milu Milano 🚕 Taxi 10 min from hotel": the origin already says it.
+        if (leg.fromLc && from && from.toLowerCase().indexOf(leg.fromLc.replace(/^from\s+/, '').toLowerCase()) >= 0) leg.fromLc = '';
         var t = legText(leg) + (i && leg.from && leg.from !== from ? ' from ' + leg.from : '');
         if (leg.note) notes.push(leg.note.replace(/[()]/g, '').trim());
         if (i) { html += ' <span class="or">' + leg.rel + '</span> '; text += ' ' + leg.rel + ' '; }
@@ -6731,8 +6737,14 @@
       clearTimeout(fitTimer);
       fitTimer = setTimeout(fitAllCards, 80);
     }
-    window.addEventListener('resize', scheduleFit);
-    window.addEventListener('orientationchange', scheduleFit);
+    function sizeToViewport() {
+      var h = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+      if (h) root.style.setProperty('--dm-vh', Math.round(h) + 'px');
+    }
+    sizeToViewport();
+    window.addEventListener('resize', function () { sizeToViewport(); scheduleFit(); });
+    window.addEventListener('orientationchange', function () { sizeToViewport(); scheduleFit(); });
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', function () { sizeToViewport(); scheduleFit(); });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleFit);
 
     function positionTrack() {
@@ -6802,6 +6814,7 @@
 
     /* ---- Open / close ---- */
     function openDayMode(dayN, idx) {
+      sizeToViewport();
       if (!isOpen) {
         scrollLockY = window.scrollY;
         document.body.classList.add('dm-open');
