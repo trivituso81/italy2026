@@ -1,0 +1,321 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+:root{--ink:#2b2118;--muted:#7a6f63;--paper:#faf6ef;--card:#fff;--line:#e7ddcf;--gold:#b8873b;--tile:#f7f2ea;}
+*{box-sizing:border-box}
+body{margin:0;background:#e9e2d6;font-family:Inter,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+.sheet{padding:36px 40px 40px}
+.sheet h1{margin:0 0 4px;font-size:26px;letter-spacing:-.4px}
+.sheet .sub{margin:0 0 26px;color:var(--muted);font-size:15px;max-width:1100px;line-height:1.5}
+.row{display:flex;gap:28px;align-items:flex-start}
+.col{display:flex;flex-direction:column;gap:12px;align-items:center}
+.cap{font-size:13px;color:var(--muted);font-weight:600;text-align:center;max-width:390px}
+.cap b{color:var(--ink)}
+
+/* phone */
+.phone{width:390px;height:844px;background:var(--paper);border-radius:44px;overflow:hidden;position:relative;box-shadow:0 20px 50px rgba(43,33,24,.18);border:1px solid #d8cfbf;display:flex;flex-direction:column}
+.sb{height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-weight:700;font-size:16px}
+.sb .r{display:flex;gap:6px;align-items:center;font-size:12px}
+.sb .bat{width:26px;height:12px;border:1.5px solid var(--ink);border-radius:4px;position:relative}
+.sb .bat::after{content:'';position:absolute;left:1.5px;top:1.5px;bottom:1.5px;width:14px;background:var(--ink);border-radius:2px}
+.hdr{padding:6px 14px 10px;display:flex;align-items:center;gap:8px}
+.hdr .nav{width:30px;height:30px;border-radius:50%;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:15px;flex:0 0 auto}
+.hdr .nav.dim{opacity:.35}
+.hdr .mid{flex:1;text-align:center;min-width:0}
+.hdr .date{font-weight:800;font-size:17px;letter-spacing:-.2px}
+.hdr .dsub{font-size:12.5px;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card{margin:0 12px;flex:1 1 auto;min-height:0;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 30px rgba(43,33,24,.10);overflow:hidden;display:flex;flex-direction:column;padding:14px 14px 12px}
+.hint{text-align:center;font-size:12px;color:var(--muted);padding:12px 0 10px;font-weight:600}
+.dots{position:absolute;right:6px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:5px}
+.dots i{width:5px;height:5px;border-radius:3px;background:#d3c9b9;display:block}
+.dots i.on{height:18px;background:var(--ink)}
+
+/* shared atoms */
+.chip{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:3px 8px;border-radius:999px}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:#fff8e1;color:#8a6d00}
+.pill.live{background:#e7f6ea;color:#1f7a3d}
+.pill.done{background:#efeae0;color:#7a6f63}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:6px;border:1px solid var(--line);color:var(--muted);background:#fff}
+.badge.skip{border-color:#e3d7b5;background:#fdf8e6;color:#8a6d00}
+.badge.dress{border-color:#dcd3f5;background:#f3f0fc;color:#5a4bb8}
+.res{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px}
+.res.done{background:#e7f6ea;color:#1f7a3d}.res.flex{background:#fdf3e2;color:#9a5b12}.res.todo{background:#fbe6e2;color:#b0321f}
+.res::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.time{font-size:13px;font-weight:800}
+.thumb{position:relative;width:96px;height:96px;border-radius:12px;overflow:hidden;flex:0 0 auto;background:#e8e0d4}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(26,22,18,.45),transparent 55%)}
+.thumb .chip{position:absolute;left:6px;bottom:6px;z-index:1;font-size:9px;padding:3px 7px}
+.why{font-size:15px;font-weight:700;line-height:1.35;margin:0}
+.more{font-size:14px;line-height:1.5;color:var(--ink);margin:0}
+.more.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;color:#5c5248}
+.B .more.clamp{margin-top:6px}
+.B .morepill{margin-top:8px}
+.B .facts .lbl{font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.morepill{display:inline-flex;align-items:center;font-size:12px;font-weight:700;color:#7a6f63;background:var(--tile);border:1px solid var(--line);padding:4px 10px;border-radius:999px;align-self:flex-start}
+.know{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.know li{position:relative;padding-left:16px;font-size:13.5px;line-height:1.45;color:var(--ink)}
+.know li::before{content:'';position:absolute;left:2px;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.sec{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.dim{color:#b8ad9c}
+.mono{font-family:"JetBrains Mono","Cascadia Mono",monospace;font-size:.92em;letter-spacing:.02em}
+
+/* ===== OPTION A ===== */
+.A .top{display:flex;gap:12px;align-items:flex-start}
+.A .ident{flex:1;min-width:0;display:flex;flex-direction:column}
+.A .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.A .name{margin:0;font-size:19px;font-weight:800;letter-spacing:-.4px;line-height:1.15}
+.A .sub{margin:3px 0 0;font-size:12.5px;font-weight:600;color:var(--muted)}
+.A .flags{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}
+.A .grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px}
+.A .tile{background:var(--tile);border:1px solid var(--line);border-radius:10px;padding:6px 9px;min-height:50px}
+.A .tile .l{font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.A .tile .v{font-size:13px;font-weight:700;line-height:1.3}
+.A .tile .v small{display:block;font-weight:600;color:var(--muted);font-size:11.5px}
+.A .tile.empty .v{color:#c4b9a7;font-weight:600}
+.A .extras{margin-top:8px;display:flex;flex-wrap:wrap;gap:4px 10px;padding:7px 10px;border:1px dashed var(--line);border-radius:10px}
+.A .extras span{font-size:12px;font-weight:700}
+.A .extras span b{font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.A .body{margin-top:12px;display:flex;flex-direction:column;gap:9px;flex:1;min-height:0}
+.A .body .know{margin-top:1px}
+
+/* ===== OPTION B ===== */
+.B .head{display:flex;justify-content:space-between;align-items:center}
+.B .head .lft{display:flex;gap:6px;align-items:center}
+.B .titlerow{display:flex;gap:10px;align-items:flex-start;margin-top:8px}
+.B .name{margin:0;font-size:22px;font-weight:800;letter-spacing:-.5px;line-height:1.12;flex:1}
+.B .mini{width:52px;height:52px;border-radius:12px;overflow:hidden;flex:0 0 auto}
+.B .mini img{width:100%;height:100%;object-fit:cover;display:block}
+.B .area{margin:3px 0 0;font-size:13px;font-weight:600;color:var(--muted)}
+.B .flags{display:flex;gap:5px;margin-top:6px}
+.B .now{margin-top:12px;background:var(--tile);border:1px solid var(--line);border-radius:12px;padding:9px 11px;display:flex;flex-direction:column;gap:6px}
+.B .now .ln{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700}
+.B .now .ln .ic{width:18px;text-align:center;font-size:14px}
+.B .now .ln .cd{margin-left:auto;font-size:11px;font-weight:800;color:#1f7a3d;background:#e7f6ea;padding:2px 7px;border-radius:999px;white-space:nowrap}
+.B .now .ln .alt{color:var(--muted);font-weight:600}
+.B .acts{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.B .act{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:7px 11px;border-radius:999px;border:1px solid var(--line);background:#fff}
+.B .act.ok{border-color:#cfe8d5;background:#f1faf3;color:#1f7a3d}
+.B .act .ic{font-size:12px}
+.B .sec{margin-top:14px}
+.B .know{margin-top:6px}
+.B .facts{margin-top:12px;font-size:12.5px;font-weight:600;color:var(--muted);line-height:1.4}
+.B .facts b{color:var(--ink);font-weight:700}
+.B .why{margin-top:12px;font-weight:700;font-size:14.5px;color:var(--ink)}
+.B hr{border:0;border-top:1px solid var(--line);margin:12px 0 0}
+
+/* ===== OPTION C ===== */
+.C .top{display:flex;gap:12px;align-items:flex-start}
+.C .ident{flex:1;min-width:0}
+.C .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.C .name{margin:0;font-size:19px;font-weight:800;letter-spacing:-.4px;line-height:1.15}
+.C .area{margin:3px 0 0;font-size:12.5px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.C .go{margin:6px 0 0;font-size:12.5px;font-weight:700;display:flex;gap:6px;align-items:center;color:var(--ink)}
+.C .go .ic{font-size:13px}
+.C .go span.m{color:var(--muted);font-weight:600}
+.C .why{margin-top:12px}
+.C .seg{margin-top:12px;display:flex;background:var(--tile);border:1px solid var(--line);border-radius:10px;padding:3px}
+.C .seg span{flex:1;text-align:center;font-size:12.5px;font-weight:700;color:var(--muted);padding:6px 0;border-radius:8px}
+.C .seg span.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(43,33,24,.12)}
+.C .pane{margin-top:10px;flex:1;min-height:0;overflow:hidden}
+.C .kv{display:flex;flex-direction:column}
+.C .kv div{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line)}
+.C .kv div:last-child{border-bottom:0}
+.C .kv .l{flex:0 0 84px;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.C .kv .v{flex:1;min-width:0;font-size:13.5px;font-weight:700;line-height:1.35}
+.C .kv .v small{display:block;font-weight:600;color:var(--muted);font-size:12px}
+.C .pane .more{font-size:14.5px;line-height:1.55}
+.C .pane .know li{font-size:14px;line-height:1.5}
+.C .pane .know{gap:9px}
+.C .flags{display:inline-flex;gap:5px}
+</style></head>
+<body>
+<div id="root"></div>
+<script>
+const Q = new URLSearchParams(location.search);
+const OPT = (Q.get('opt') || 'A').toUpperCase();
+
+const STOPS = [
+ {
+  id:'flight', dayDate:'Tue, Sep 22', daySub:'Day 1 · Milan Icons – Duomo & Galleria', dotN:5, dotOn:0, clock:'9:37',
+  time:'12:05 PM', status:'Upcoming', type:'Flight', color:'#7a6f63', img:'img/delta-767.jpg',
+  name:'Delta DL184 to Malpensa', kind:'Flight · 9 hr', area:'Milan-Malpensa (MXP) · Terminal 1', flags:[],
+  getThere:{ic:'🚘', main:'Private transfer ~50 min to city', alt:'driver meets you in Arrivals'},
+  leave:{l:'Lands', v:'12:05 PM', note:'T1 · passport control, bags'},
+  where:'MXP Terminal 1 · Arrivals hall', cost:null, hours:null,
+  booking:{state:'done', text:'Complete', ref:'DL184', via:'Delta app'},
+  extras:[['Depart','9:55 PM JFK T4, Sep 21'],['Aircraft','Boeing 767-400'],['Cabin','Premium Select']],
+  why:'Overnight Delta nonstop from New York into Malpensa.',
+  know:['Sleep on the crossing: it is a wide-body and you go straight into the first afternoon.','Passport control, then bags, then the private transfer meets you in Arrivals.'],
+  more:'Touch down at Milan-Malpensa after the overnight crossing. Clear passport control and collect the bags, then the private transfer takes about 50 minutes into the city.',
+  actions:[{t:'Boarding pass',ic:'🎫'},{t:'Delta app',ic:'↗'},{t:'Transfer',ic:'🚘'}],
+  cSeg:'Facts', countdown:null
+ },
+ {
+  id:'guggenheim', dayDate:'Mon, Sep 28', daySub:'Day 7 · Art Masters, Hidden Churches & Rialto', dotN:8, dotOn:2, clock:'11:25',
+  time:'12:05–1:20 PM', status:'Upcoming', type:'Culture', color:'#6b5bd2', img:'img/vt05.jpg',
+  name:'Peggy Guggenheim Collection', kind:'Modern art', area:'Dorsoduro · Grand Canal', flags:['skip'],
+  getThere:{ic:'🚶', main:'Walk ~10 min from the Salute', alt:null},
+  leave:{l:'Leave Salute', v:'11:50 AM', note:'decide there, not before'},
+  where:'Dorsoduro 701', cost:'€17 · timed entry', hours:'75 min visit',
+  booking:{state:'flex', text:'Optional', ref:null, via:'guggenheim-venice.it'},
+  extras:[['Artists','Picasso, Pollock, Dalí'],['Book at','guggenheim-venice.it']],
+  why:'Modern masters in Peggy Guggenheim\u2019s home, only if energy allows.',
+  know:['Decide at the Salute, not the night before.','If the Accademia has used up everyone\u2019s museum energy, skip this and protect the Frari afternoon.'],
+  more:'Peggy Guggenheim\u2019s personal collection fills her former house on the Grand Canal in Dorsoduro, a who\u2019s who of the 20th century avant-garde. Her grave is in the sculpture garden beside her dogs. Venice Top 10 number 5.',
+  actions:[{t:'Map',ic:'📍'},{t:'Tickets · guggenheim-venice.it',ic:'↗'}],
+  cSeg:'Story', countdown:null
+ },
+ {
+  id:'dinner', dayDate:'Mon, Sep 28', daySub:'Day 7 · Art Masters, Hidden Churches & Rialto', dotN:8, dotOn:7, clock:'11:26',
+  time:'7:15–8:45 PM', status:'Upcoming', type:'Meal', color:'#c0562f', img:'img/acqua-pazza.jpg',
+  name:'Trattoria del Local', kind:'Dinner', area:'Castello · Salizzada dei Greci 3417', flags:[],
+  getThere:{ic:'⛴️', main:'Vaporetto → San Zaccaria · 25 min', alt:'or walk · 30 min'},
+  leave:{l:'Leave hotel', v:'6:40 PM', note:null},
+  where:'Salizzada dei Greci 3417', cost:'~€70–80 pp + €5 coperto', hours:'Thu–Mon',
+  booking:{state:'done', text:'Complete', ref:'BXPZ4RRX', via:null},
+  extras:[['Cuisine','Venetian · Neapolitan'],['Order','Bigoli in salsa, baccalà, liver']],
+  why:'The informal sister of a Michelin-starred kitchen, 75 steps down the street.',
+  know:['Open Thu–Mon, so this Monday is the only night it fits.','Tables sit close together and portions run small for the price.','Angelo: bigoli in salsa, baccalà mantecato, liver or tripe. Debi & Tom: sea bass all\u2019acqua pazza, paccheri alla Nerano, duck tagliatelle.'],
+  more:'Trattoria del Local opened in February 2025 as the à la carte sister of Ristorante Local, the one-star restaurant at number 3303 on the same street. Same owners and sourcing, but traditional cooking along a Venice to Naples line, wines by the quartino, and a room full of Venetians from the restaurant trade.',
+  actions:[{t:'Map',ic:'📍'},{t:'Booking BXPZ4RRX',ic:'✓',ok:true},{t:'Call',ic:'📞'}],
+  cSeg:'Tips', countdown:'in 1 h 20 m'
+ },
+ {
+  id:'juliet', dayDate:'Thu, Oct 1', daySub:'Day 10 · Roman Arena, Juliet\u2019s House & Il Desco', dotN:7, dotOn:4, clock:'11:27',
+  time:'2:45–4:00 PM', status:'Upcoming', type:'Culture', color:'#6b5bd2', img:'img/vr05.jpg',
+  name:'Casa di Giulietta', kind:'Historic house', area:'Verona · Via Cappello 23', flags:[],
+  getThere:{ic:'🚶', main:'Walk ~5 min · meet at Teatro Nuovo', alt:'Piazzetta Navona · collect tickets'},
+  leave:{l:'Meet at', v:'2:45 PM', note:'for the 3:00 slot'},
+  where:'Via Cappello 23 · exit Via Cappello', cost:'Included · Vox City', hours:'Slot 3:00 PM',
+  booking:{state:'done', text:'Complete', ref:'VOXT13U', via:'Vox City'},
+  extras:[['Guide','Vox City app · audio'],['After','Hotel break from 4:00 PM']],
+  why:'Confirmed with Vox City, fast-track entry plus audio guide.',
+  know:['Do the Vox City app check-in before you leave the hotel. It works offline once done.','Meet 2:45 PM at Teatro Nuovo on Piazzetta Navona to collect tickets for the 3:00 slot.','Exit onto Via Cappello; the hotel break follows from 4:00.'],
+  more:'The 13th-century Casa Cappello with its famous balcony (added in the 1930s), the bronze Juliet statue and a courtyard papered in love notes; the museum inside covers Veronese home life and the Shakespeare myth.',
+  actions:[{t:'Map',ic:'📍'},{t:'Vox City VOXT13U',ic:'✓',ok:true},{t:'Check in',ic:'📱'}],
+  cSeg:'Tips', countdown:'in 2 h 30 m'
+ }
+];
+
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const flagsHtml = f => f.map(x => x==='skip' ? '<span class="badge skip">Skip OK</span>' : '<span class="badge dress">Dress code</span>').join('');
+const resHtml = b => `<span class="res ${b.state}">${b.text}${b.ref?` · <span class="mono">${b.ref}</span>`:''}</span>`;
+
+function chrome(s, inner){
+  const dots = Array.from({length:s.dotN},(_,i)=>`<i class="${i===s.dotOn?'on':''}"></i>`).join('');
+  return `<div class="phone ${OPT}">
+    <div class="sb"><span>${s.clock}</span><span class="r">▪▪▪ 5G <span class="bat"></span></span></div>
+    <div class="hdr"><span class="nav dim">‹</span><div class="mid"><div class="date">${s.dayDate}</div><div class="dsub">${s.daySub}</div></div><span class="nav">›</span><span class="nav">×</span></div>
+    <div class="card">${inner}</div>
+    <div class="dots">${dots}</div>
+    <div class="hint">Swipe up or down for the next stop</div>
+  </div>`;
+}
+
+/* ---------- A: boarding pass ---------- */
+function tile(l, v, note){
+  if(!v) return `<div class="tile empty"><div class="l">${l}</div><div class="v">—</div></div>`;
+  return `<div class="tile"><div class="l">${l}</div><div class="v">${v}${note?`<small>${note}</small>`:''}</div></div>`;
+}
+function renderA(s){
+  const go = s.getThere;
+  const b = s.booking;
+  const inner = `
+   <div class="top">
+    <div class="thumb"><img src="${s.img}"><span class="chip" style="background:${s.color}">${s.type}</span></div>
+    <div class="ident">
+      <div class="head"><span class="time">${s.time}</span><span class="pill">${s.status}</span></div>
+      <h3 class="name">${esc(s.name)}</h3>
+      <p class="sub">${esc(s.kind)} · ${esc(s.area.split(' · ')[0])}</p>
+      <div class="flags">${resHtml({state:b.state,text:'Res: '+b.text})}${flagsHtml(s.flags)}</div>
+    </div>
+   </div>
+   <div class="grid">
+    ${tile('Get there', go.main, go.alt)}
+    ${tile(s.leave.l, s.leave.v, s.leave.note)}
+    ${tile('Where', s.where)}
+    ${tile('Cost', s.cost)}
+    ${tile('Booking', b.ref?`<span class="mono">${b.ref}</span>`:(b.state==='flex'?'Walk-in OK':null), b.via)}
+    ${tile('Hours', s.hours)}
+   </div>
+   <div class="extras">${s.extras.map(([l,v])=>`<span><b>${l}</b>${esc(v)}</span>`).join('')}</div>
+   <div class="body">
+    <p class="why">${esc(s.why)}</p>
+    <ul class="know">${s.know.slice(0,2).map(k=>`<li>${esc(k)}</li>`).join('')}</ul>
+    <p class="more clamp">${esc(s.more)}</p>
+    <span class="morepill">Full story ›</span>
+   </div>`;
+  return chrome(s, inner);
+}
+
+/* ---------- B: field card ---------- */
+function renderB(s){
+  const go = s.getThere, b = s.booking;
+  const factLine = [s.cost?['Cost',s.cost]:null, ...s.extras.filter(([l])=>l!=='Order'&&l!=='Artists'&&l!=='Book at'), s.hours?['Hours',s.hours]:null].filter(Boolean)
+    .map(([l,v])=>`<span class="lbl">${l}</span> <b>${esc(v)}</b>`);
+  const inner = `
+   <div class="head">
+     <div class="lft"><span class="chip" style="background:${s.color}">${s.type}</span><span class="pill">${s.status}</span>${flagsHtml(s.flags)}</div>
+     <span class="time">${s.time}</span>
+   </div>
+   <div class="titlerow"><div style="flex:1;min-width:0"><h2 class="name">${esc(s.name)}</h2><p class="area">${esc(s.area)}</p></div><div class="mini"><img src="${s.img}"></div></div>
+   <div class="now">
+     <div class="ln"><span class="ic">⏱</span><span>${s.leave.l} ${s.leave.v}${s.leave.note?` <span class="alt">· ${s.leave.note}</span>`:''}</span>${s.countdown?`<span class="cd">${s.countdown}</span>`:''}</div>
+     <div class="ln"><span class="ic">${go.ic}</span><span>${esc(go.main)}${go.alt?` <span class="alt">· ${esc(go.alt)}</span>`:''}</span></div>
+   </div>
+   <div class="acts">${s.actions.map(a=>`<span class="act ${a.ok?'ok':''}"><span class="ic">${a.ic}</span>${esc(a.t)}</span>`).join('')}</div>
+   <div class="sec">Know before you go</div>
+   <ul class="know">${s.know.map(k=>`<li>${esc(k)}</li>`).join('')}</ul>
+   <hr>
+   <div class="facts">${factLine.join(' <span class="dim">·</span> ')}${b.state==='flex'?' <span class="dim">·</span> <span class="lbl">Res</span> <b>Optional</b>':''}</div>
+   <p class="why">${esc(s.why)}</p>
+   <p class="more clamp">${esc(s.more)}</p>
+   <span class="morepill">Full story ›</span>`;
+  return chrome(s, inner);
+}
+
+/* ---------- C: glance + drawers ---------- */
+function renderC(s){
+  const go = s.getThere, b = s.booking;
+  const segs = ['Facts','Story','Tips'];
+  let pane = '';
+  if(s.cSeg==='Facts'){
+    const rows = [['Where',s.where],[s.leave.l,s.leave.v + (s.leave.note?` <small>${s.leave.note}</small>`:'')],['Cost',s.cost||'<span class="dim">—</span>'],['Booking',(b.ref?`<span class="mono">${b.ref}</span>`:b.text)+(b.via?` <small>${b.via}</small>`:'')],['Hours',s.hours||'<span class="dim">—</span>'],...s.extras];
+    pane = `<div class="kv">${rows.map(([l,v])=>`<div><span class="l">${l}</span><span class="v">${v}</span></div>`).join('')}</div>`;
+  } else if(s.cSeg==='Story'){
+    pane = `<p class="more">${esc(s.more)}</p>`;
+  } else {
+    pane = `<ul class="know">${s.know.map(k=>`<li>${esc(k)}</li>`).join('')}</ul>`;
+  }
+  const inner = `
+   <div class="top">
+    <div class="thumb"><img src="${s.img}"><span class="chip" style="background:${s.color}">${s.type}</span></div>
+    <div class="ident">
+      <div class="head"><span class="time">${s.time}</span><span class="pill">${s.status}</span></div>
+      <h3 class="name">${esc(s.name)}</h3>
+      <p class="area">${esc(s.area.split(' · ')[0])} · ${resHtml(b)}${s.flags.length?' '+flagsHtml(s.flags):''}</p>
+      <p class="go"><span class="ic">${go.ic}</span><span>${esc(go.main.replace(/ · .*$/,''))} <span class="m">· ${s.leave.l.toLowerCase()} ${s.leave.v}</span></span></p>
+    </div>
+   </div>
+   <p class="why">${esc(s.why)}</p>
+   <div class="seg">${segs.map(x=>`<span class="${x===s.cSeg?'on':''}">${x}</span>`).join('')}</div>
+   <div class="pane">${pane}</div>`;
+  return chrome(s, inner);
+}
+
+const META = {
+  A:{title:'Option A · Boarding pass', sub:'Fixed six-tile grid in the same six positions on every stop (Get there · Leave by · Where · Cost · Booking · Hours). Empty slots show a dash so positions never move. Type-specific extras sit in one dashed strip. Name is the title, category is the chip.'},
+  B:{title:'Option B · Field card', sub:'Action-first, stacked rows ordered by when you need them: Now strip (leave-by countdown + get-there), tappable action chips (map, booking ref, call), Know-before-you-go bullets promoted to ink, a one-line facts summary, and the story collapsed last.'},
+  C:{title:'Option C · Glance + drawers', sub:'A fixed-budget glance tier that is never clipped (time, name, booking, get-there, one-line lead) and a segmented pane below showing Facts, Story or Tips one at a time. Replaces the per-block "Full text" clipping pass.'}
+};
+const CAPS = {
+  A:['Flight · two empty slots read as dashes','Culture · Skip OK is a badge, not a tile','Meal · no orphan tile, story clamped to 3 lines','Culture · Slot / Meet at / Exit collapse into slots'],
+  B:['Flight · actions replace the transit line','Culture · the skip decision is the first bullet','Meal · tip content becomes the hero','Culture · Vox check-in leads, ref is one tap'],
+  C:['Flight · Facts segment','Culture · Story segment','Meal · Tips segment','Culture · Tips segment']
+};
+const render = {A:renderA,B:renderB,C:renderC}[OPT];
+document.getElementById('root').innerHTML = `<div class="sheet"><h1>${META[OPT].title}</h1><p class="sub">${META[OPT].sub}</p>
+ <div class="row">${STOPS.map((s,i)=>`<div class="col" data-shot="${s.id}">${render(s)}<div class="cap"><b>${s.dayDate}</b> · ${CAPS[OPT][i]}</div></div>`).join('')}</div></div>`;
+</script>
+</body></html>

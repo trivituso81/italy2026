@@ -2010,36 +2010,19 @@
     touch-action: none;
     display: flex; flex-direction: column;
   }
-  /* Square photo with the who/when/where beside it — the iPhone is tall, so
-     a banner photo wastes the width the identity block can use. */
-  .dm-toprow { display: flex; gap: 10px; padding: 10px 12px 0; flex: 0 0 auto; align-items: flex-start; }
-  .dm-thumb {
-    position: relative; flex: 0 0 auto; width: 96px; height: 96px;
-    border-radius: 12px; overflow: hidden; background: #e8e0d4;
-  }
-  .dm-card-in.grown .dm-thumb { width: var(--dm-thumb-h, 96px); height: var(--dm-thumb-h, 96px); }
-  .dm-card-in.roomy .dm-toprow { flex-direction: column; gap: 10px; }
-  .dm-card-in.roomy .dm-thumb { width: 100%; height: var(--dm-thumb-h, 160px); }
-  .dm-card-in.roomy .dm-thumb .dm-type { left: 10px; bottom: 10px; font-size: 10.5px; padding: 4px 10px; }
-  .dm-thumb::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(26,22,18,.45) 0%, transparent 55%); pointer-events: none; }
-  .dm-img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
-  .dm-thumb .dm-type { position: absolute; left: 6px; bottom: 6px; z-index: 1; font-size: 9px; padding: 3px 7px; letter-spacing: .08em; }
-  .dm-ident { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+  /* Field card: the name is the title, the category is the chip; a "now"
+     strip carries leave-by and the route; tappable chips for map, booking
+     reference, phone and site; then the tips, facts, lead and story blocks. */
+  .dmb-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; padding: 12px 14px 0; flex: 0 0 auto; }
+  .dmb-head .dm-time { padding-top: 2px; }
+  .dmb-tags { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; min-width: 0; }
   .dm-type {
-    display: inline-block; font-size: 11px; font-weight: 800;
+    display: inline-block; font-size: 10px; font-weight: 800;
     letter-spacing: 0.1em; text-transform: uppercase;
     color: #fff; background: var(--muted);
-    padding: 4px 10px; border-radius: 999px;
+    padding: 3px 8px; border-radius: 999px; white-space: nowrap;
   }
-  .dm-body {
-    flex: 1 1 auto; min-height: 0; overflow: hidden;
-    display: flex; flex-direction: column; gap: calc(10px * var(--dms, 1));
-    padding: calc(10px * var(--dms, 1)) 12px 12px;
-  }
-  .dm-ident .dm-type { margin-bottom: 6px; align-self: flex-start; }
-  .dm-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 2px; flex: 0 0 auto; }
-  .dm-time { font-size: 15px; font-weight: 800; color: var(--ink); letter-spacing: -0.1px; white-space: nowrap; }
-  .dm-time small { font-weight: 600; color: var(--muted); margin-left: 6px; }
+  .dm-time { font-size: 13px; font-weight: 800; color: var(--ink); letter-spacing: -0.1px; white-space: nowrap; flex: 0 0 auto; }
   .dm-status {
     display: inline-flex; align-items: center; gap: 6px;
     font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
@@ -2050,35 +2033,87 @@
   .dm-status.live::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #1f7a3d; animation: dmpulse 1.8s ease-out infinite; }
   .dm-status.upcoming { background: #fff8e1; color: #8a6d00; }
   .dm-status.past { background: #f4efe6; color: #8a7a55; }
+  .dmb-badge {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 6px; border: 1px solid var(--line); background: #fff; color: var(--muted);
+  }
+  .dmb-badge.skip { border-color: #e3d7b5; background: #fdf8e6; color: #8a6d00; }
+  .dmb-badge.dress { border-color: #dcd3f5; background: #f3f0fc; color: #5a4bb8; }
+  .dmb-titlerow { display: flex; gap: 10px; align-items: flex-start; padding: 8px 14px 0; flex: 0 0 auto; }
+  .dmb-titles { flex: 1 1 auto; min-width: 0; }
   .dm-title {
-    margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.15;
+    margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.12;
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    flex: 0 0 auto;
   }
-  .dm-sub {
-    margin: 3px 0 0; font-size: 14px; color: var(--muted); font-weight: 600; line-height: 1.3;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    flex: 0 0 auto;
+  .dmb-area { margin: 3px 0 0; font-size: 13px; color: var(--muted); font-weight: 600; line-height: 1.35; }
+  .dmb-mini { flex: 0 0 auto; width: 52px; height: 52px; border-radius: 12px; overflow: hidden; background: #e8e0d4; }
+  .dmb-mini img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+  .dmb-now {
+    margin: 12px 14px 0; flex: 0 0 auto;
+    background: #f7f2ea; border: 1px solid var(--line); border-radius: 12px;
+    padding: 9px 11px; display: flex; flex-direction: column; gap: 6px;
   }
-  .dm-res { margin-top: 8px; flex: 0 0 auto; }
-  .dm-res .p-status { font-size: 12px; padding: 4px 10px; }
+  .dmb-ln { display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; line-height: 1.35; min-width: 0; }
+  .dmb-ln .ic { flex: 0 0 18px; text-align: center; font-size: 14px; line-height: 1.3; }
+  .dmb-ln .tx { flex: 1 1 auto; min-width: 0; color: var(--ink); }
+  .dmb-ln .tx b { font-weight: 700; }
+  .dmb-ln .alt { color: var(--muted); font-weight: 600; }
+  .dmb-cd {
+    flex: 0 0 auto; margin-left: auto; align-self: center;
+    font-size: 11px; font-weight: 800; white-space: nowrap;
+    color: #1f7a3d; background: #e7f6ea; padding: 2px 7px; border-radius: 999px;
+  }
+  .dmb-cd.soon { color: #b0321f; background: #fbe6e2; }
+  .dmb-acts { display: flex; gap: 6px; flex-wrap: wrap; padding: 10px 14px 0; flex: 0 0 auto; }
+  .dmb-act {
+    display: inline-flex; align-items: center; gap: 6px;
+    font: inherit; font-size: 12px; font-weight: 700; line-height: 1;
+    padding: 8px 11px; border-radius: 999px;
+    border: 1px solid var(--line); background: #fff; color: var(--ink);
+    text-decoration: none; cursor: pointer; max-width: 100%; min-width: 0;
+  }
+  .dmb-act .ic { font-size: 12px; flex: 0 0 auto; }
+  .dmb-act .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; letter-spacing: .02em; }
+  .dmb-act.ok { border-color: #cfe8d5; background: #f1faf3; color: #1f7a3d; }
+  .dmb-act.todo { border-color: #f0c9c1; background: #fdf1ee; color: #b0321f; }
+  .dmb-act.wait { border-color: #ecd9a8; background: #fdf8e6; color: #8a6d00; }
+  .dmb-act.flat { cursor: default; }
+  .dmb-act:focus-visible { outline: 2px solid var(--venice); outline-offset: 2px; }
+  .dm-body {
+    flex: 1 1 auto; min-height: 0; overflow: hidden;
+    display: flex; flex-direction: column; gap: calc(10px * var(--dms, 1));
+    padding: calc(12px * var(--dms, 1)) 14px 12px;
+  }
+  /* A short stop with room to spare: the photo becomes a banner above the title. */
+  .dm-card-in.roomy .dmb-titlerow { flex-direction: column-reverse; }
+  .dm-card-in.roomy .dmb-mini { width: 100%; height: var(--dm-thumb-h, 160px); }
+  .dmb-sec { font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .dmb-know { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: calc(6px * var(--dms, 1)); }
+  .dmb-know li { position: relative; padding-left: 16px; font-size: calc(13.5px * var(--dms, 1)); line-height: 1.45; color: var(--ink); }
+  .dmb-know li::before { content: ''; position: absolute; left: 2px; top: .55em; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+  .dmb-know li.dm-hide { display: none; }
+  .dmb-facts { margin: 0; font-size: calc(12.5px * var(--dms, 1)); line-height: 1.45; color: var(--muted); font-weight: 600; padding-top: 10px; border-top: 1px solid var(--line); }
+  .dmb-facts .lbl { font-size: calc(9.5px * var(--dms, 1)); font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .dmb-facts b { color: var(--ink); font-weight: 700; }
+  .dmb-facts .sep { color: #c4b9a7; margin: 0 6px; }
 
   /* Every kind of information gets a block on the first screen. A block only
      shrinks (and becomes tappable) when the card runs out of room; the text is
      never rewritten, just clipped, and the tap opens that one block in full. */
   .dm-block { position: relative; min-height: 0; overflow: hidden; flex: 0 1 auto; }
-  .dm-block-facts { flex-shrink: 1; min-height: 34px; }
+  /* Shrink order when the card runs out of room: story first, then facts,
+     then tips (never below its heading plus one bullet); the lead never shrinks. */
+  .dm-block-tips { flex-shrink: 1; min-height: 58px; }
+  .dm-block-facts { flex-shrink: 2; min-height: 2.6em; }
   .dm-block-lead { flex-shrink: 0; }
-  .dm-block-desc { flex-shrink: 3; min-height: 2.9em; }
-  .dm-block-tip { flex-shrink: 2; min-height: 2.6em; }
+  .dm-block-desc { flex-shrink: 4; min-height: 2.9em; }
   .dm-block.clipped { cursor: pointer; }
   .dm-block.clipped::after {
     content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 26px;
     background: linear-gradient(to bottom, rgba(255,255,255,0), var(--card) 85%);
     pointer-events: none;
   }
-  .dm-block-tip.clipped::after { background: linear-gradient(to bottom, rgba(247,241,231,0), #f7f1e7 85%); }
-  .dm-block-facts.clipped::after { background: linear-gradient(to bottom, rgba(255,255,255,0), var(--card) 90%); }
   .dm-morepill {
     display: none; position: absolute; right: 0; bottom: 0; z-index: 1;
     font-size: 11px; font-weight: 800; letter-spacing: .04em;
@@ -2086,44 +2121,15 @@
     padding: 3px 9px; border-radius: 999px;
     box-shadow: 0 2px 8px rgba(43,33,24,.10);
   }
-  .dm-block-tip .dm-morepill { right: 8px; bottom: 5px; }
   .dm-block.clipped .dm-morepill { display: inline-block; }
-  .dm-facts {
-    display: grid; grid-template-columns: 1fr 1fr; gap: calc(6px * var(--dms, 1)); align-content: start;
-    margin: 0;
-  }
-  .dm-fact {
-    position: relative;
-    background: #f7f2ea; border: 1px solid var(--line); border-radius: 10px;
-    padding: calc(6px * var(--dms, 1)) calc(9px * var(--dms, 1)); min-width: 0;
-  }
-  .dm-fact .ps-label {
-    font-size: calc(10px * var(--dms, 1)); font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 1px; line-height: 1.3;
-  }
-  .dm-fact .ps-val {
-    font-size: calc(14px * var(--dms, 1)); font-weight: 700; color: var(--ink); line-height: 1.25;
-    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-  }
-  .dm-fact.wide, .dm-detail-body .p-stat.wide { grid-column: 1 / -1; }
-  .dm-fact.wide .ps-val { -webkit-line-clamp: 2; }
-  /* A value that did not fit its tile: chevron on the tile, whole facts block taps open. */
-  .dm-fact.cut { padding-right: 18px; }
-  .dm-fact.cut::after {
-    content: '\203a'; position: absolute; right: 7px; bottom: 3px;
-    font-size: 15px; font-weight: 700; color: var(--muted); line-height: 1;
-  }
   .dm-block.nofade::after, .dm-block.rows::after { display: none; }
-  .dm-fact.dm-hide { display: none; }
   .dm-block.nofade .dm-morepill { display: none; }
-  .dm-lead { font-size: calc(16.5px * var(--dms, 1)); font-weight: 700; color: var(--ink); margin: 0; line-height: 1.4; }
-  .dm-desc { font-size: calc(16px * var(--dms, 1)); line-height: 1.5; color: var(--ink); margin: 0; }
-  .dm-body .p-tips { margin: 0; padding: calc(10px * var(--dms, 1)) 12px; font-size: calc(14.5px * var(--dms, 1)); line-height: 1.5; }
+  .dm-lead { font-size: calc(14.5px * var(--dms, 1)); font-weight: 700; color: var(--ink); margin: 0; line-height: 1.4; }
+  .dm-desc { font-size: calc(14px * var(--dms, 1)); line-height: 1.5; color: #5c5248; margin: 0; }
   .dm-block-text.clamp { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
-  .dm-block-tip.clipped { background: #f7f1e7; border-left: 3px solid var(--gold); border-radius: 0 8px 8px 0; }
-  /* Padding inside an overflow box still shows the next line through it, so the
-     clamped tip keeps only its top padding and the block supplies the bottom. */
-  .dm-block-tip.clipped .p-tips { background: transparent; border-left: 0; border-radius: 0; padding-bottom: 0; }
+  .dm-detail-body .dmb-know.full { gap: 12px; }
+  .dm-detail-body .dmb-know.full li { font-size: 15.5px; line-height: 1.55; padding-left: 20px; }
+  .dm-detail-body .dmb-know.full li::before { left: 4px; top: .6em; width: 7px; height: 7px; }
 
   .dm-detail {
     display: none; position: absolute; inset: 0; z-index: 4;
@@ -2159,7 +2165,6 @@
   .dm-detail-body { padding: 16px 16px 20px; }
   .dm-detail-body .dm-lead { font-size: 17px; line-height: 1.4; }
   .dm-detail-body .dm-desc { font-size: 16px; line-height: 1.6; }
-  .dm-detail-body .p-tips { margin: 0; font-size: 15px; line-height: 1.6; padding: 14px 16px; }
   .dm-detail-body .p-stats {
     display: flex; flex-direction: column; gap: 0; margin: 0;
     background: #f7f2ea; border: 1px solid var(--line); border-radius: 12px; padding: 2px 12px;
@@ -2229,11 +2234,7 @@
   @media (max-width: 480px) {
     .dm-card { padding: 4px 22px 6px 12px; }
   }
-  @media (min-width: 420px) {
-    .dm-thumb { width: 116px; height: 116px; }
-  }
   @media (max-height: 700px) {
-    .dm-thumb { width: 84px; height: 84px; }
     .dm-title { font-size: 19px; }
     .dm-daylbl b { font-size: 22px; }
     .dm-daylbl span { font-size: 14px; }
@@ -5903,87 +5904,327 @@
       return { date: date, sub: 'Day ' + n + (tail ? ' \u00b7 ' + tail : '') };
     }
 
-    function itemMeta(item) {
+    /* ---- Canonical facts ----
+       The fact tiles are hand-written per stop, so the same idea shows up under
+       many labels (Where / Address / Venue, Cost / Price / Entry, Conf # / PNR /
+       Booking ref ...). Fold them into fixed slots so every card puts the same
+       kind of fact in the same place; anything else stays a labelled extra. */
+    var DROP_LABEL = /^(on( your)? trip|rank|party|date|time|skip ok|status|next|paid by|traveler|applies to|photos)$/;
+    var SLOT_RULES = [
+      ['where',   /^(address|where|venue|location|near|area)$/],
+      ['leave',   /^(leave( hotel| by| at| orto by)?|out by|pick-?up|depart( hotel)?|departs|departure)$/],
+      ['arrive',  /^(arrive|arrives|arrival)$/],
+      ['meet',    /^(meet( at)?|meeting point)$/],
+      ['cost',    /^(cost|price|fare|bar cost|entry|ticket)$/],
+      ['ref',     /^(conf ?#?|confirmation|booking( ref| name)?|reference( 2)?|ref|pnrs?|ticket nos|voucher pin|pin|vox ref|booked (as|under)|palazzo code|correr code)$/],
+      ['phone',   /^(phone|tel|telephone)$/],
+      ['email',   /^(email|e-mail)$/],
+      ['site',    /^(website|web|site|book at|url)$/],
+      ['hours',   /^(hours|open|opens|opening hours|last entry|sun hours|thu hours|closed|slot|runs until|best window)$/],
+      ['contact', /^(contact|contacts)$/],
+      ['dress',   /^(dress|wear|footwear|shoes)$/]
+    ];
+    var MONEY_RE = /[€$£]|\bfree\b|à la carte|included|\bpass\b|\bpay|prepaid|walk-up|donation|not recorded/i;
+    var CLOCK_RE = /\b\d{1,2}(:\d{2})?\s*(am|pm)\b/i;
+    var STREET_RE = /^(via|viale|piazza|piazzetta|piazzale|corso|vicolo|fondamenta|calle|campo|salizzada|largo|riva|strada|sestiere)\b/i;
+
+    function slotFor(label, value) {
+      var key = String(label || '').trim().toLowerCase().replace(/\s+/g, ' ');
+      if (!key || DROP_LABEL.test(key)) return 'drop';
+      if (key === 'activity' && /^skip ok$/i.test(value)) return 'drop';   // already a badge
+      var slot = 'extra';
+      for (var i = 0; i < SLOT_RULES.length; i++) {
+        if (SLOT_RULES[i][1].test(key)) { slot = SLOT_RULES[i][0]; break; }
+      }
+      if (slot === 'cost' && !MONEY_RE.test(value)) slot = CLOCK_RE.test(value) ? 'hours' : 'extra';
+      if (slot === 'contact') slot = value.indexOf('@') >= 0 ? 'email' : (/\d{6,}/.test(value.replace(/[\s.()-]/g, '')) ? 'phone' : 'extra');
+      return slot;
+    }
+
+    function titleCase(s) { s = String(s || '').trim(); return s.charAt(0).toUpperCase() + s.slice(1); }
+
+    function canonFacts(item, stats) {
+      var c = { where: null, leave: null, arrive: null, meet: null, cost: null, refs: [], via: null, phone: null, email: null, site: null,
+                hours: [], dress: [], extras: [], go: [] };
+      (stats || []).forEach(function (s) {
+        var l = String(s.l || '').trim(), v = String(s.v || '').trim();
+        if (!l || !v || /^(to be added|tbd|tba)\b/i.test(v)) return;
+        switch (slotFor(l, v)) {
+          case 'drop': return;
+          case 'where': if (!c.where) { c.where = v; return; } break;
+          case 'leave': if (!c.leave) { c.leave = { l: titleCase(l), v: v }; return; } break;
+          case 'arrive': if (!c.arrive) { c.arrive = v; return; } break;
+          case 'meet':  if (!c.meet) { c.meet = v; return; } break;
+          case 'cost':  if (!c.cost) { c.cost = v; return; } break;
+          case 'ref':   c.refs.push(v); return;
+          case 'phone': if (!c.phone) { c.phone = v; return; } break;
+          case 'email': if (!c.email) { c.email = v; return; } break;
+          case 'site':  if (!c.site) { c.site = v; return; } break;
+          case 'hours': c.hours.push({ l: titleCase(l), v: v }); return;
+          case 'dress': c.dress.push(v); return;
+        }
+        c.extras.push({ l: titleCase(l), v: v });
+      });
+      // The transit cell is one free-text line carrying transport, timing,
+      // references and cross-links. Pull the structured bits into their slots
+      // and keep the rest as the route, so nothing has to truncate.
+      String(item.mode || '').split(/\s\u00b7\s/).forEach(function (seg) {
+        seg = seg.trim();
+        if (!seg) return;
+        var m;
+        if ((m = /^(leave(?:\s+(?:hotel|by|at|orto by))?|out by|pick-?up|depart hotel)\s+(?:by\s+)?(.+)$/i.exec(seg))) {
+          var lbl = titleCase(m[1]);
+          if (/^leave$/i.test(m[1])) lbl = 'Leave by';
+          if (!c.leave) c.leave = { l: lbl, v: m[2] }; else c.extras.push({ l: lbl, v: m[2] });
+          return;
+        }
+        if ((m = /^(?:ref|pnr|conf(?:irmation)?|booking ref)\s*#?:?\s*([A-Za-z0-9-]+)\b\s*(.*)$/i.exec(seg)) && (/\d/.test(m[1]) || m[1] === m[1].toUpperCase())) {
+          c.refs.push(m[1]);
+          // "PNR TFN365 (~2 hr 37 min)": the tail is still part of the route.
+          if (m[2]) { if (c.go.length) c.go[c.go.length - 1] += ' ' + m[2]; else c.go.push(m[2]); }
+          return;
+        }
+        if ((m = /^([A-Za-z][A-Za-z .]*?)\s+([A-Z0-9-]{5,})$/.exec(seg)) && /\d/.test(m[2]) && /[A-Z]/.test(m[2])) {
+          c.refs.push(m[2]); if (!c.via) c.via = m[1]; return;
+        }
+        if ((m = /^meet(?:\s+at)?\s+(.+)$/i.exec(seg))) { if (!c.meet) c.meet = m[1]; return; }
+        if (STREET_RE.test(seg) && !c.where) { c.where = seg; return; }
+        if (/^(top-?10|wishlist|wl\d)/i.test(seg) || /\b(wl|vr|vt|ml|lc|lg)\d\d\b/.test(seg)) return;
+        c.go.push(seg);
+      });
+      return c;
+    }
+
+    function goIcon(text) {
+      var t = String(text || '').toLowerCase();
+      if (/vaporetto|boat|ferry|traghetto|gondola|line \d|water/.test(t)) return '\u26F4\uFE0F';
+      if (/taxi|car\b|transfer|pickup|pick-up|shuttle|driver/.test(t)) return '\uD83D\uDE95';
+      if (/train|metro|frecciarossa|eurocity|italo|tram|regionale/.test(t)) return '\uD83D\uDE86';
+      if (/flight|fly|boarding/.test(t)) return '\u2708\uFE0F';
+      if (/funicular|cable/.test(t)) return '\uD83D\uDEA1';
+      return '\uD83D\uDEB6';
+    }
+
+    // "6:40", "~5:15 PM · taxi ~10 min", "8:00 AM sharp" → minutes since midnight.
+    // A bare hour is read as the reading that lands before the stop starts.
+    function leaveMinutes(text, item) {
+      text = String(text || '');
+      if (/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\b/i.test(text)) return null;   // another day, no countdown
+      var m = /(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)?/i.exec(text);
+      if (!m) return null;
+      var c = { h: +m[1], mi: m[2] ? +m[2] : 0 };
+      if (c.h > 23 || c.mi > 59) return null;
+      var ap = m[3] ? m[3].charAt(0).toLowerCase() + 'm' : null;
+      if (c.h > 12) return c.h * 60 + c.mi;
+      if (ap) return clockMin(c, ap);
+      var start = item.time ? item.time.start : null;
+      var am = clockMin(c, 'am'), pm = clockMin(c, 'pm');
+      var def = (c.h >= 7 && c.h <= 11) ? am : pm;
+      if (start == null) return def;
+      if (pm <= start) return pm;
+      if (am <= start) return am;
+      return def;
+    }
+
+    function countdownText(leaveMin, item, dayN, now) {
+      if (leaveMin == null || dayN !== dayIndexFor(now)) return '';
+      var diff = leaveMin - (now.h * 60 + now.mi);
+      if (diff > 12 * 60) return '';
+      if (diff <= 0) return diff > -10 ? 'now' : '';
+      if (diff < 60) return 'in ' + diff + ' min';
+      return 'in ' + Math.floor(diff / 60) + ' h' + (diff % 60 ? ' ' + (diff % 60) + ' m' : '');
+    }
+
+    var EMOJI_TAIL = /\s*(?:\uD83D[\uDC00-\uDFFF]|\uD83E[\uDC00-\uDFFF]|[\u2600-\u27BF]\uFE0F?)+\s*$/;
+    var ABBREV = /\b(st|mr|mrs|ms|dr|mt|no|vs|approx|ca|e\.g|i\.e|etc)\.$/i;
+
+    // Tips are written as a paragraph; the card wants one bullet per point.
+    function splitTips(text) {
+      var s = String(text || '').replace(/\s+/g, ' ').trim();
+      if (!s) return [];
+      var out = [], start = 0, re = /[.!?]+\s+(?=[A-Z\u201C"(\d])/g, m;
+      while ((m = re.exec(s))) {
+        var cut = m.index + m[0].length;
+        var head = s.slice(start, m.index + 1);
+        if (ABBREV.test(head)) continue;
+        out.push(s.slice(start, cut).trim());
+        start = cut;
+      }
+      if (start < s.length) out.push(s.slice(start).trim());
+      // Very short fragments read better attached to their neighbour.
+      var merged = [];
+      out.forEach(function (p) {
+        if (merged.length && (p.length < 28 || merged[merged.length - 1].length < 28)) merged[merged.length - 1] += ' ' + p;
+        else merged.push(p);
+      });
+      return merged;
+    }
+
+    function itemMeta(item, dayN) {
       var d = DATA.DETAILS[item.k] || {};
       var enrich = DATA.SITE_ENRICH[item.k] || {};
       var type = d.type || item.act || 'Culture';
-      var title = item.act || item.title;
-      var sub = (item.loc && item.loc !== title ? item.loc : (item.title !== title ? item.title : '')) +
-        (item.skip ? (item.loc || item.title ? ' \u00b7 ' : '') + 'Skip OK' : '');
+      var loc = String(item.loc || '');
+      var dressUp = /\uD83E\uDD42/.test(loc), dressCode = /\uD83D\uDC54/.test(loc);
+      loc = loc.replace(EMOJI_TAIL, '').trim();
+      var locParts = loc.split(/\s\u00b7\s/);
+      var name = locParts[0] || item.act || item.title;
+      var canon = canonFacts(item, mergeResFacts(item.k, enrich.stats || []));
+      var dayLabel = (DATA.DAY_LABEL['d' + dayN] || '').split('\u00b7').map(function (s) { return s.trim(); });
+      var city = dayLabel[2] && !/\u2192|departure/i.test(dayLabel[2]) ? dayLabel[2] : '';
       return {
         d: d,
-        enrich: enrich,
         type: type,
+        kind: item.act || type,
         color: DATA.TYPE_COLOR[type] || 'var(--muted)',
         photo: DATA.panelPhoto(enrich, item.loc, item.title),
-        title: title,
-        sub: sub,
-        // Transport is a fact tile like cuisine or address. The itinerary's own
-        // transport line is the fuller one, so it replaces any "Getting there" tile.
-        stats: (item.mode ? [{ l: 'Transport', v: item.mode, wide: item.mode.length > 26 }] : []).concat(
-          mergeResFacts(item.k, (enrich.stats || []).filter(function (s) {
-            return s && s.l !== 'Dress' && !(item.mode && s.l === 'Getting there');
-          }))),
+        name: name,
+        title: name,
+        area: locParts.slice(1).concat(canon.where ? [canon.where] : []).join(' \u00b7 '),
+        city: city,
+        dressUp: dressUp,
+        dressCode: dressCode || canon.dress.length > 0,
+        canon: canon,
         lead: enrich.lead || '',
         desc: enrich.desc || d.desc || '',
-        tips: d.tips || ''
+        tips: splitTips(d.tips || '')
       };
     }
 
-    function thumbHtml(meta) {
-      if (!meta.photo) return '';
-      return '<div class="dm-thumb">' +
-        '<img class="dm-img" loading="lazy" src="' + escHtml(DATA.resolveImg(meta.photo.img)) + '" alt="' + escHtml(meta.photo.alt || meta.title) + '">' +
-        '<span class="dm-type" style="background:' + meta.color + '">' + escHtml(meta.type) + '</span></div>';
+    function mapUrl(meta) {
+      var q = [meta.name, meta.canon.where, meta.city].filter(Boolean).join(', ');
+      return 'https://maps.apple.com/?q=' + encodeURIComponent(q);
+    }
+    function siteUrl(s) { return /^https?:\/\//i.test(s) ? s : 'https://' + s; }
+    function siteLabel(s) { return String(s).replace(/^https?:\/\//i, '').replace(/^www\./i, '').replace(/\/.*$/, ''); }
+    function telHref(s) { return 'tel:' + String(s).replace(/[^\d+]/g, ''); }
+
+    var RES_CHIP = {
+      'ps-done':    { cls: 'ok',   text: 'Booked' },
+      'ps-todo':    { cls: 'todo', text: 'Booking needed' },
+      'ps-pending': { cls: 'wait', text: 'Booking pending' },
+      'ps-flex':    { cls: '',     text: 'Walk-in OK' }
+    };
+
+    function actionsHtml(item, meta) {
+      var c = meta.canon, res = DATA.rowStatus(item.row), out = [];
+      if (meta.type !== 'Flight' && (c.where || meta.name)) {
+        out.push('<a class="dmb-act" href="' + escHtml(mapUrl(meta)) + '" target="_blank" rel="noopener"><span class="ic">\uD83D\uDCCD</span>Map</a>');
+      }
+      if (res && RES_CHIP[res[1]]) {
+        var chip = RES_CHIP[res[1]], ref = c.refs[0] || '';
+        if (ref) {
+          out.push('<span class="dmb-act ' + chip.cls + '" role="button" tabindex="0" data-copy="' + escHtml(ref) + '" title="Copy reference">' +
+            '<span class="ic">' + (chip.cls === 'ok' ? '\u2713' : '\u2022') + '</span>' + chip.text + ' <span class="mono">' + escHtml(ref) + '</span></span>');
+        } else if (chip.cls === 'todo' && c.site) {
+          out.push('<a class="dmb-act todo" href="' + escHtml(siteUrl(c.site)) + '" target="_blank" rel="noopener"><span class="ic">\u2197</span>Book at ' + escHtml(siteLabel(c.site)) + '</a>');
+        } else {
+          out.push('<span class="dmb-act ' + chip.cls + ' flat"><span class="ic">' + (chip.cls === 'ok' ? '\u2713' : '\u2022') + '</span>' + chip.text + '</span>');
+        }
+      }
+      if (c.phone) out.push('<a class="dmb-act" href="' + escHtml(telHref(c.phone)) + '"><span class="ic">\uD83D\uDCDE</span>Call</a>');
+      if (c.site && !(res && res[1] === 'ps-todo' && !c.refs[0])) {
+        out.push('<a class="dmb-act" href="' + escHtml(siteUrl(c.site)) + '" target="_blank" rel="noopener"><span class="ic">\u2197</span>' + escHtml(siteLabel(c.site)) + '</a>');
+      }
+      if (c.email && out.length < 4) out.push('<a class="dmb-act" href="mailto:' + escHtml(c.email) + '"><span class="ic">\u2709</span>Email</a>');
+      return out.length ? '<div class="dmb-acts">' + out.slice(0, 4).join('') + '</div>' : '';
     }
 
-    function identityHtml(item, meta, i, dayN, now) {
-      var st = statusFor(item, dayN, now);
-      var res = DATA.rowStatus(item.row);
-      var html = '<div class="dm-ident">';
-      if (!meta.photo) html += '<span class="dm-type" style="background:' + meta.color + '">' + escHtml(meta.type) + '</span>';
-      html += '<div class="dm-head"><span class="dm-time">' +
-        (item.time ? escHtml(fmtRange(item.time)) : escHtml(item.rawTime || 'Time TBD')) + '</span>' +
-        '<span class="dm-status ' + st + '" data-i="' + i + '"' + (st ? '' : ' hidden') + '>' + (STATUS_TEXT[st] || '') + '</span></div>';
-      html += '<h3 class="dm-title">' + escHtml(meta.title) + '</h3>';
-      if (meta.sub) html += '<p class="dm-sub">' + escHtml(meta.sub) + '</p>';
-      if (res) html += '<div class="dm-res"><span class="p-status ' + res[1] + '">' + escHtml(String(res[0]).replace(/^Res:/, 'Reservation:')) + '</span></div>';
-      return html + '</div>';
+    function nowStripHtml(item, meta, i, dayN, now) {
+      var c = meta.canon, lines = [];
+      if (c.leave) {
+        var lm = leaveMinutes(c.leave.v, item);
+        var cd = countdownText(lm, item, dayN, now);
+        var soon = cd && lm - (now.h * 60 + now.mi) <= 15;
+        lines.push('<div class="dmb-ln"><span class="ic">\u23F1</span><span class="tx"><b>' + escHtml(c.leave.l) + ' ' + escHtml(c.leave.v) + '</b>' +
+          (c.meet ? ' <span class="alt">\u00b7 meet ' + escHtml(c.meet) + '</span>' : '') + '</span>' +
+          '<span class="dmb-cd' + (soon ? ' soon' : '') + '" data-i="' + i + '" data-leave="' + (lm == null ? '' : lm) + '"' + (cd ? '' : ' hidden') + '>' + cd + '</span></div>');
+      } else if (c.meet) {
+        lines.push('<div class="dmb-ln"><span class="ic">\uD83D\uDCCD</span><span class="tx"><b>Meet ' + escHtml(c.meet) + '</b></span></div>');
+      }
+      var alts = c.go.slice(1);
+      if (c.arrive) alts.push('arrive ' + c.arrive);
+      if (c.go.length) {
+        lines.push('<div class="dmb-ln"><span class="ic">' + goIcon(c.go[0]) + '</span><span class="tx"><b>' + escHtml(c.go[0]) + '</b>' +
+          (alts.length ? ' <span class="alt">\u00b7 ' + escHtml(alts.join(' \u00b7 ')) + '</span>' : '') + '</span></div>');
+      } else if (c.arrive) {
+        lines.push('<div class="dmb-ln"><span class="ic">' + goIcon(meta.type) + '</span><span class="tx"><b>Arrive ' + escHtml(c.arrive) + '</b></span></div>');
+      }
+      return lines.length ? '<div class="dmb-now">' + lines.join('') + '</div>' : '';
     }
 
-    function factsHtml(stats, cls) {
-      if (!stats.length) return '';
-      var cell = cls === 'dm-facts' ? 'dm-fact' : 'p-stat';
-      return '<div class="' + cls + '">' + stats.map(function (s) {
-        return '<div class="' + cell + (s.wide ? ' wide' : '') + '"><div class="ps-label">' + escHtml(s.l) + '</div><div class="ps-val">' + escHtml(s.v) + '</div></div>';
-      }).join('') + '</div>';
+    // Everything that is not in a slot, as one labelled line.
+    function factList(meta, full) {
+      var c = meta.canon, rows = [];
+      if (full) {
+        if (c.where) rows.push({ l: 'Where', v: c.where });
+        if (c.leave) rows.push(c.leave);
+        if (c.arrive) rows.push({ l: 'Arrive', v: c.arrive });
+        if (c.meet) rows.push({ l: 'Meet', v: c.meet });
+        if (c.go.length) rows.push({ l: 'Get there', v: c.go.join(' \u00b7 ') });
+      }
+      if (c.cost) rows.push({ l: 'Cost', v: c.cost });
+      c.hours.forEach(function (h) { rows.push(h); });
+      (full ? c.refs : c.refs.slice(1)).forEach(function (r) { rows.push({ l: full && c.via ? c.via : 'Ref', v: r }); });
+      if (full && c.phone) rows.push({ l: 'Phone', v: c.phone });
+      if (full && c.site) rows.push({ l: 'Website', v: c.site });
+      if (full && c.email) rows.push({ l: 'Email', v: c.email });
+      c.dress.forEach(function (v) { rows.push({ l: 'Dress', v: v }); });
+      return rows.concat(c.extras);
     }
 
-    var BLOCK_LABEL = { facts: 'All facts', lead: 'Full text', desc: 'Full text', tip: 'Full tip' };
-    var BLOCK_TITLE = { facts: 'Facts', lead: 'Summary', desc: 'Description', tip: 'Tip' };
+    var BLOCK_LABEL = { tips: 'All tips', facts: 'All facts', lead: 'Full text', desc: 'Full story' };
+    var BLOCK_TITLE = { tips: 'Know before you go', facts: 'Facts', lead: 'Summary', desc: 'Story' };
 
     function blockHtml(kind, inner) {
       return '<div class="dm-block dm-block-' + kind + '" data-kind="' + kind + '">' + inner +
         '<span class="dm-morepill" aria-hidden="true">' + BLOCK_LABEL[kind] + ' \u203a</span></div>';
     }
 
-    // Lead, description, and tip text are rendered verbatim; the fit pass only
-    // decides how many lines are visible before the tap-to-open pill appears.
+    // Lead, story and tips are rendered verbatim; the fit pass only decides how
+    // much is visible before the tap-to-open pill appears.
     function textHtml(meta, kind, full) {
       var cls = full ? '' : ' dm-block-text';
       if (kind === 'lead') return meta.lead ? '<p class="dm-lead' + cls + '">' + escHtml(meta.lead) + '</p>' : '';
       if (kind === 'desc') return meta.desc ? '<p class="dm-desc' + cls + '">' + escHtml(meta.desc) + '</p>' : '';
-      if (kind === 'tip') return meta.tips ? '<div class="p-tips' + cls + '"><b>Tip:</b> ' + meta.tips + '</div>' : '';
-      if (kind === 'facts') return factsHtml(meta.stats, full ? 'p-stats' : 'dm-facts');
+      if (kind === 'tips') {
+        if (!meta.tips.length) return '';
+        var lis = meta.tips.map(function (t) { return '<li>' + escHtml(t) + '</li>'; }).join('');
+        return (full ? '' : '<div class="dmb-sec">Know before you go</div>') + '<ul class="dmb-know' + (full ? ' full' : ' dm-block-list') + '">' + lis + '</ul>';
+      }
+      if (kind === 'facts') {
+        var rows = factList(meta, full);
+        if (!rows.length) return '';
+        if (full) {
+          return '<div class="p-stats">' + rows.map(function (s) {
+            return '<div class="p-stat"><div class="ps-label">' + escHtml(s.l) + '</div><div class="ps-val">' + escHtml(s.v) + '</div></div>';
+          }).join('') + '</div>';
+        }
+        return '<p class="dmb-facts dm-block-text">' + rows.map(function (s) {
+          return '<span class="dmb-f"><span class="lbl">' + escHtml(s.l) + '</span> <b>' + escHtml(s.v) + '</b></span>';
+        }).join('<span class="sep">\u00b7</span>') + '</p>';
+      }
       return '';
     }
 
     function cardHtml(item, i, dayN, now) {
-      var meta = itemMeta(item);
+      var meta = itemMeta(item, dayN);
+      var st = statusFor(item, dayN, now);
       var html = '<div class="dm-card" style="top:' + (i * 100) + '%" data-i="' + i + '"><div class="dm-card-in">';
-      html += '<div class="dm-toprow">' + thumbHtml(meta) + identityHtml(item, meta, i, dayN, now) + '</div>';
+      html += '<div class="dmb-head"><div class="dmb-tags">' +
+        '<span class="dm-type" style="background:' + meta.color + '">' + escHtml(meta.kind) + '</span>' +
+        '<span class="dm-status ' + st + '" data-i="' + i + '"' + (st ? '' : ' hidden') + '>' + (STATUS_TEXT[st] || '') + '</span>' +
+        (item.skip ? '<span class="dmb-badge skip">Skip OK</span>' : '') +
+        (meta.dressUp ? '<span class="dmb-badge dress">\uD83E\uDD42 Dress up</span>' : (meta.dressCode ? '<span class="dmb-badge dress">\uD83D\uDC54 Dress code</span>' : '')) +
+        '</div><span class="dm-time">' + (item.time ? escHtml(fmtRange(item.time)) : escHtml(item.rawTime || 'Time TBD')) + '</span></div>';
+      html += '<div class="dmb-titlerow"><div class="dmb-titles"><h3 class="dm-title">' + escHtml(meta.name) + '</h3>' +
+        (meta.area ? '<p class="dmb-area">' + escHtml(meta.area) + '</p>' : '') + '</div>' +
+        (meta.photo ? '<div class="dmb-mini"><img loading="lazy" src="' + escHtml(DATA.resolveImg(meta.photo.img)) + '" alt="' + escHtml(meta.photo.alt || meta.name) + '"></div>' : '') +
+        '</div>';
+      html += nowStripHtml(item, meta, i, dayN, now);
+      html += actionsHtml(item, meta);
       html += '<div class="dm-body">';
-      ['facts', 'lead', 'desc', 'tip'].forEach(function (kind) {
+      ['tips', 'facts', 'lead', 'desc'].forEach(function (kind) {
         var inner = textHtml(meta, kind, false);
         if (inner) html += blockHtml(kind, inner);
       });
@@ -5993,10 +6234,12 @@
 
     /* ---- Fit pass: nothing on the card scrolls, so measure each block and
        clip only the ones the card could not fit. Clipped text gets a whole
-       number of lines; a clipped block becomes a tap target for its full view. */
+       number of lines, clipped lists whole bullets; a clipped block becomes a
+       tap target for its full view. */
     function fitCard(cardIn) {
       var blocks = cardIn.querySelectorAll('.dm-block');
       cardIn.style.setProperty('--dms', '1');
+      cardIn.classList.remove('roomy'); cardIn.style.removeProperty('--dm-thumb-h');
       Array.prototype.forEach.call(blocks, function (block) {
         var text = block.querySelector('.dm-block-text');
         block.classList.remove('clipped'); block.classList.remove('nofade'); block.classList.remove('rows');
@@ -6005,13 +6248,12 @@
         if (pill) pill.textContent = BLOCK_LABEL[block.getAttribute('data-kind')] + ' \u203a';
         block.removeAttribute('role'); block.removeAttribute('tabindex'); block.removeAttribute('aria-label');
         if (text) { text.classList.remove('clamp'); text.style.webkitLineClamp = ''; }
-        Array.prototype.forEach.call(block.querySelectorAll('.dm-fact'), function (f) { f.classList.remove('cut'); f.classList.remove('dm-hide'); });
+        Array.prototype.forEach.call(block.querySelectorAll('.dm-block-list > li'), function (li) { li.classList.remove('dm-hide'); });
       });
       // A short card should not sit over a blank half-screen: grow the body type
       // (capped) until the content fills the card, then back off until it fits.
       // Text is only ever enlarged here, never rewritten or reordered.
       var body = cardIn.querySelector('.dm-body');
-      var top = cardIn.querySelector('.dm-toprow');
       function need() {
         var cs = getComputedStyle(body);
         var gap = parseFloat(cs.rowGap || cs.gap) || 0;
@@ -6020,38 +6262,30 @@
         return sum;
       }
       if (body && blocks.length) {
-        var avail = cardIn.clientHeight - (top ? top.offsetHeight : 0);
         var base = need();
-        if (base > 0 && avail > base + 16) {
-          var s = Math.min(1.3, Math.sqrt(avail / base));
+        if (base > 0 && body.clientHeight > base + 16) {
+          var s = Math.min(1.3, Math.sqrt(body.clientHeight / base));
           s = Math.floor(s * 100) / 100;
           while (s > 1.02) {
             cardIn.style.setProperty('--dms', String(s));
-            if (need() <= avail) break;
+            if (need() <= body.clientHeight) break;
             s = Math.round((s - 0.03) * 100) / 100;
           }
           if (s <= 1.02) cardIn.style.setProperty('--dms', '1');
         }
-        // Still room after the type is at its cap (a short stop): let the photo
-        // become a banner and take what is left, rather than leaving it blank.
-        var thumb = cardIn.querySelector('.dm-thumb');
-        cardIn.classList.remove('roomy'); cardIn.classList.remove('grown'); cardIn.style.removeProperty('--dm-thumb-h');
-        var slack = function () { return cardIn.clientHeight - top.offsetHeight - need() - 8; };
-        if (thumb && top && slack() > 12) {
-          var baseH = thumb.offsetHeight;
-          if (slack() > 140) {
-            cardIn.classList.add('roomy');
-            cardIn.style.setProperty('--dm-thumb-h', baseH + 'px');
-            var extra = slack();
-            if (extra > 0) cardIn.style.setProperty('--dm-thumb-h', Math.min(380, baseH + extra) + 'px');
-            else { cardIn.classList.remove('roomy'); cardIn.style.removeProperty('--dm-thumb-h'); }
+        // Still room after the type is at its cap: the photo becomes a banner
+        // above the title and takes what is left, rather than leaving it blank.
+        var mini = cardIn.querySelector('.dmb-mini');
+        var slack = body.clientHeight - need();
+        if (mini && slack > 140) {
+          cardIn.classList.add('roomy');
+          var hgt = Math.min(320, slack - 24);
+          while (hgt >= 120) {
+            cardIn.style.setProperty('--dm-thumb-h', hgt + 'px');
+            if (body.clientHeight >= need()) break;
+            hgt -= 20;
           }
-          if (!cardIn.classList.contains('roomy')) {
-            // Modest room: the square photo simply grows beside the title.
-            cardIn.classList.add('grown');
-            cardIn.style.setProperty('--dm-thumb-h', Math.min(190, baseH + slack()) + 'px');
-            if (slack() < 0) { cardIn.classList.remove('grown'); cardIn.style.removeProperty('--dm-thumb-h'); }
-          }
+          if (hgt < 120) { cardIn.classList.remove('roomy'); cardIn.style.removeProperty('--dm-thumb-h'); }
         }
       }
       // Walk the blocks in order. A clipped block is frozen at (or under) the
@@ -6061,39 +6295,29 @@
       Array.prototype.forEach.call(blocks, function (block) {
         var kind = block.getAttribute('data-kind');
         var text = block.querySelector('.dm-block-text');
+        var list = block.querySelector('.dm-block-list');
         var h = block.clientHeight;
         var over = block.scrollHeight > h + 1;
-        var cutTiles = [];
-        if (kind === 'facts') {
-          Array.prototype.forEach.call(block.querySelectorAll('.dm-fact'), function (f) {
-            var v = f.querySelector('.ps-val');
-            if (v && v.scrollHeight > v.clientHeight + 1) cutTiles.push(f);
-          });
-        }
-        if (!over && !cutTiles.length) return;
-        cutTiles.forEach(function (f) { f.classList.add('cut'); });
+        if (!over) return;
         block.classList.add('clipped');
         block.setAttribute('role', 'button');
         block.setAttribute('tabindex', '0');
         block.setAttribute('aria-label', 'Open ' + (BLOCK_TITLE[kind] || 'details').toLowerCase());
-        if (!over) { block.classList.add('nofade'); return; }
 
-        if (kind === 'facts') {
-          // Show whole tile rows only, with a strip under them for the pill.
-          var tiles = block.querySelectorAll('.dm-fact');
+        if (list) {
+          // Whole bullets only, with a strip under them for the pill.
+          var items = list.querySelectorAll('li');
           var rowBottom = 0, hide = [];
-          Array.prototype.forEach.call(tiles, function (f) {
-            var bottom = f.offsetTop + f.offsetHeight;
-            if (bottom + PILL_H <= h + 1) rowBottom = Math.max(rowBottom, bottom);
-            else hide.push(f);
+          Array.prototype.forEach.call(items, function (li, idx) {
+            var bottom = li.offsetTop + li.offsetHeight;
+            if (idx === 0 || bottom + PILL_H <= h + 1) rowBottom = Math.max(rowBottom, bottom);
+            else hide.push(li);
           });
-          if (rowBottom > 0) {
-            h = rowBottom + PILL_H;
-            hide.forEach(function (f) { f.classList.add('dm-hide'); });
-            block.classList.add('rows');
-            var pill = block.querySelector('.dm-morepill');
-            if (pill) pill.textContent = 'All ' + tiles.length + ' facts \u203a';
-          }
+          hide.forEach(function (li) { li.classList.add('dm-hide'); });
+          block.classList.add('rows');
+          var lp = block.querySelector('.dm-morepill');
+          if (lp) lp.textContent = 'All ' + items.length + ' tips \u203a';
+          h = Math.max(h, rowBottom + PILL_H);
           block.style.flex = '0 0 ' + h + 'px';
           block.style.height = h + 'px';
           return;
@@ -6115,6 +6339,7 @@
         text.style.webkitLineClamp = String(lines);
       });
     }
+
     function fitAllCards() {
       Array.prototype.forEach.call(ui.track.querySelectorAll('.dm-card-in'), fitCard);
     }
@@ -6137,10 +6362,10 @@
       var model = dayModel(curDay);
       var item = model.items[curIdx];
       if (!item || !ui.detail) return;
-      var meta = itemMeta(item);
+      var meta = itemMeta(item, curDay);
       var inner = textHtml(meta, kind, true);
       if (!inner) return;
-      ui.detailTitle.innerHTML = '<small>' + escHtml(BLOCK_TITLE[kind] || 'Details') + '</small>' + escHtml(meta.title);
+      ui.detailTitle.innerHTML = '<small>' + escHtml(BLOCK_TITLE[kind] || 'Details') + '</small>' + escHtml(meta.name);
       ui.detailBody.innerHTML = '<div class="dm-detail-card"><div class="dm-detail-body">' + inner + '</div></div>';
       ui.detail.setAttribute('data-kind', kind);
       ui.detail.hidden = false;
@@ -6217,11 +6442,20 @@
       var model = dayModel(curDay);
       model.items.forEach(function (it, i) {
         var badge = ui.track.querySelector('.dm-status[data-i="' + i + '"]');
-        if (!badge) return;
-        var st = statusFor(it, curDay, now);
-        badge.className = 'dm-status ' + st;
-        badge.textContent = STATUS_TEXT[st] || '';
-        badge.hidden = !st;
+        if (badge) {
+          var st = statusFor(it, curDay, now);
+          badge.className = 'dm-status ' + st;
+          badge.textContent = STATUS_TEXT[st] || '';
+          badge.hidden = !st;
+        }
+        var cd = ui.track.querySelector('.dmb-cd[data-i="' + i + '"]');
+        if (cd && cd.getAttribute('data-leave') !== '') {
+          var lm = parseInt(cd.getAttribute('data-leave'), 10);
+          var txt = countdownText(lm, it, curDay, now);
+          cd.textContent = txt;
+          cd.hidden = !txt;
+          cd.classList.toggle('soon', !!txt && lm - (now.h * 60 + now.mi) <= 15);
+        }
       });
       renderDots(now);
       renderClock(now);
@@ -6378,15 +6612,42 @@
     ui.track.addEventListener('pointerdown', function (e) {
       tapStart = { x: e.clientX, y: e.clientY, t: Date.now() };
     });
+    // Booking chips copy their reference; a short "Copied" confirms it in place.
+    function copyRef(chip) {
+      var ref = chip.getAttribute('data-copy');
+      if (!ref) return;
+      var done = function () {
+        if (chip.getAttribute('data-copied')) return;
+        var label = chip.innerHTML;
+        chip.setAttribute('data-copied', '1');
+        chip.innerHTML = '<span class="ic">\u2713</span>Copied <span class="mono">' + escHtml(ref) + '</span>';
+        setTimeout(function () { chip.innerHTML = label; chip.removeAttribute('data-copied'); }, 1400);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(ref).then(done, function () { window.prompt('Reference', ref); });
+      } else {
+        window.prompt('Reference', ref);
+      }
+    }
     ui.track.addEventListener('click', function (e) {
+      var moved = tapStart && (Math.abs(e.clientX - tapStart.x) > 10 || Math.abs(e.clientY - tapStart.y) > 10);
+      var chip = e.target.closest('.dmb-act');
+      if (chip) {
+        if (moved) { e.preventDefault(); return; }   // a swipe that ended on a chip pages, it does not act
+        if (chip.hasAttribute('data-copy')) { e.preventDefault(); copyRef(chip); }
+        return;
+      }
       var block = e.target.closest('.dm-block.clipped');
       if (!block) return;
-      if (tapStart && (Math.abs(e.clientX - tapStart.x) > 10 || Math.abs(e.clientY - tapStart.y) > 10)) return;
+      if (moved) return;
       e.preventDefault();
       openDetail(block.getAttribute('data-kind'));
     });
     ui.track.addEventListener('keydown', function (e) {
-      var block = (e.key === 'Enter' || e.key === ' ') && e.target.closest('.dm-block.clipped');
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      var chip = e.target.closest('.dmb-act[data-copy]');
+      if (chip) { e.preventDefault(); e.stopPropagation(); copyRef(chip); return; }
+      var block = e.target.closest('.dm-block.clipped');
       if (block) {
         e.preventDefault();
         e.stopPropagation();
@@ -6401,7 +6662,7 @@
         if (e.key === 'Escape') { e.preventDefault(); closeDetail(); }
         return;
       }
-      if ((e.key === ' ' || e.key === 'Enter') && e.target.closest('button, input, textarea, a, .dm-block')) return;
+      if ((e.key === ' ' || e.key === 'Enter') && e.target.closest('button, input, textarea, a, .dm-block, .dmb-act')) return;
       switch (e.key) {
         case 'Escape': closeDayMode(); break;
         case 'ArrowDown': case 'PageDown': case ' ': e.preventDefault(); goTo(curIdx + 1); break;
