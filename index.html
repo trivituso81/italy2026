@@ -1952,43 +1952,34 @@
     display: flex; flex-direction: column;
   }
   .dm-top {
-    display: flex; align-items: center; gap: 6px;
-    padding: 10px 12px 4px;
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 12px 8px;
   }
   .dm-daynav {
     flex: 0 0 auto;
-    width: 28px; height: 28px; border-radius: 50%;
-    border: 1px solid var(--line); background: #fff; color: var(--muted);
-    font: inherit; font-size: 15px; line-height: 1; cursor: pointer;
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid var(--line); background: #fff; color: var(--ink);
+    font: inherit; font-size: 20px; line-height: 1; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: all .12s ease;
   }
   .dm-daynav:disabled { opacity: 0.3; cursor: default; }
-  .dm-daylbl { flex: 1; min-width: 0; text-align: center; line-height: 1.25; }
-  .dm-daylbl b { display: block; font-size: 16px; font-weight: 800; letter-spacing: -0.2px; }
-  .dm-daylbl span { display: block; font-size: 12px; color: var(--muted); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dm-daylbl { flex: 1; min-width: 0; text-align: center; line-height: 1.2; }
+  .dm-daylbl b { display: block; font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+  .dm-daylbl span { display: block; margin-top: 3px; font-size: 15px; color: var(--muted); font-weight: 600; line-height: 1.3; }
+  .dm-foot { display: flex; justify-content: center; padding: 8px 12px 6px; }
   .dm-exit {
-    flex: 0 0 auto; margin-left: 6px;
-    width: 34px; height: 34px; border-radius: 50%;
-    border: 1px solid var(--line); background: #fff;
-    font-size: 19px; line-height: 1; color: var(--muted);
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: all .12s ease;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 18px 9px 14px; border-radius: 999px;
+    border: 1px solid var(--line); background: #fff; color: var(--ink);
+    font: inherit; font-size: 14px; font-weight: 700; letter-spacing: -0.1px;
+    box-shadow: 0 2px 10px rgba(43,33,24,.06);
+    cursor: pointer; transition: all .12s ease;
   }
-  .dm-clock {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    padding: 0 12px 6px;
-    font-size: 12px; color: var(--muted); font-weight: 600;
-  }
-  #dmClock { cursor: pointer; }
-  .dm-simchip {
-    display: none; align-items: center; gap: 5px;
-    padding: 2px 9px; border-radius: 999px;
-    border: 1px solid #e3c36a; background: #fff8e1; color: #8a6d00;
-    font: inherit; font-size: 10.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
-    cursor: pointer;
-  }
-  .dm-simchip.on { display: inline-flex; }
+  .dm-exit span { font-size: 18px; line-height: 1; color: var(--muted); }
+  /* The test-clock pill on the itinerary shows the pretend time and clears it.
+     Day Mode itself carries no clock or chip; the sim just colours the pill. */
+  #daymode.sim .dm-daylbl b { color: #8a6d00; }
 
   .dm-main {
     flex: 1; min-height: 0; position: relative;
@@ -2091,16 +2082,19 @@
   .dmb-act:focus-visible { outline: 2px solid var(--venice); outline-offset: 2px; }
   .dm-body {
     flex: 1 1 auto; min-height: 0; overflow: hidden;
-    display: flex; flex-direction: column; gap: 10px;
-    padding: 12px 14px 12px;
+    display: flex; flex-direction: column; gap: calc(10px * var(--dms, 1));
+    padding: calc(12px * var(--dms, 1)) 14px 12px;
   }
+  /* A short stop with room to spare: the photo becomes a banner above the title. */
+  .dm-card-in.roomy .dmb-titlerow { flex-direction: column-reverse; }
+  .dm-card-in.roomy .dmb-mini { width: 100%; height: var(--dm-thumb-h, 160px); }
   .dmb-sec { font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-  .dmb-know { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
-  .dmb-know li { position: relative; padding-left: 16px; font-size: 13.5px; line-height: 1.45; color: var(--ink); }
+  .dmb-know { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: calc(6px * var(--dms, 1)); }
+  .dmb-know li { position: relative; padding-left: 16px; font-size: calc(13.5px * var(--dms, 1)); line-height: 1.45; color: var(--ink); }
   .dmb-know li::before { content: ''; position: absolute; left: 2px; top: .55em; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
   .dmb-know li.dm-hide { display: none; }
-  .dmb-facts { margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--muted); font-weight: 600; padding-top: 10px; border-top: 1px solid var(--line); }
-  .dmb-facts .lbl { font-size: 9.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .dmb-facts { margin: 0; font-size: calc(12.5px * var(--dms, 1)); line-height: 1.45; color: var(--muted); font-weight: 600; padding-top: 10px; border-top: 1px solid var(--line); }
+  .dmb-facts .lbl { font-size: calc(9.5px * var(--dms, 1)); font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
   .dmb-facts b { color: var(--ink); font-weight: 700; }
   .dmb-facts .sep { color: #c4b9a7; margin: 0 6px; }
 
@@ -2130,8 +2124,8 @@
   .dm-block.clipped .dm-morepill { display: inline-block; }
   .dm-block.nofade::after, .dm-block.rows::after { display: none; }
   .dm-block.nofade .dm-morepill { display: none; }
-  .dm-lead { font-size: 14.5px; font-weight: 700; color: var(--ink); margin: 0; line-height: 1.4; }
-  .dm-desc { font-size: 14px; line-height: 1.5; color: #5c5248; margin: 0; }
+  .dm-lead { font-size: calc(14.5px * var(--dms, 1)); font-weight: 700; color: var(--ink); margin: 0; line-height: 1.4; }
+  .dm-desc { font-size: calc(14px * var(--dms, 1)); line-height: 1.5; color: #5c5248; margin: 0; }
   .dm-block-text.clamp { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
   .dm-detail-body .dmb-know.full { gap: 12px; }
   .dm-detail-body .dmb-know.full li { font-size: 15.5px; line-height: 1.55; padding-left: 20px; }
@@ -2199,10 +2193,10 @@
   .dm-dot.on { height: 18px; background: var(--ink); }
   .dm-dot.on.live { background: #1f7a3d; }
 
-  .dm-hint { text-align: center; font-size: 11px; color: var(--muted); padding: 0 14px 6px; }
   /* Hover only where a pointer can hover — taps must not leave buttons stuck filled. */
   @media (hover: hover) {
     .dm-daynav:hover:not(:disabled), .dm-exit:hover, .dm-detail-back:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .dm-exit:hover span { color: #fff; }
     .dm-block.clipped:hover .dm-morepill { background: var(--ink); color: #fff; border-color: var(--ink); }
   }
 
@@ -2240,14 +2234,13 @@
   @media (max-width: 480px) {
     .dm-card { padding: 4px 22px 6px 12px; }
   }
-  @media (min-width: 420px) {
-  }
   @media (max-height: 700px) {
-    .dm-title { font-size: 18px; }
+    .dm-title { font-size: 19px; }
+    .dm-daylbl b { font-size: 22px; }
+    .dm-daylbl span { font-size: 14px; }
   }
   @media (min-width: 900px) {
     .dm-top { padding-top: 18px; }
-    .dm-hint::after { content: ' · wheel or ↑ ↓ keys'; }
   }
 
   /* ---------- PASSWORD GATE ---------- */
@@ -2417,18 +2410,15 @@
         <button type="button" class="dm-daynav" id="dmPrevDay" aria-label="Previous day" title="Previous day">‹</button>
         <div class="dm-daylbl"><b id="dmDayDate">Tue, Sep 22</b><span id="dmDayNum">Day 1</span></div>
         <button type="button" class="dm-daynav" id="dmNextDay" aria-label="Next day" title="Next day">›</button>
-        <button type="button" class="dm-exit" id="dmExit" aria-label="Exit Day Mode" title="Back to itinerary">×</button>
-      </div>
-      <div class="dm-clock">
-        <span id="dmClock"></span>
-        <button type="button" class="dm-simchip" id="dmSimChip" title="Change the test clock">Test clock</button>
       </div>
       <div class="dm-main">
         <div class="dm-stage" id="dmStage">
           <div class="dm-track" id="dmTrack"></div>
           <div class="dm-dots" id="dmDots" aria-hidden="true"></div>
         </div>
-        <div class="dm-hint">Swipe up or down for the next stop</div>
+        <div class="dm-foot">
+          <button type="button" class="dm-exit" id="dmExit" title="Back to itinerary"><span aria-hidden="true">‹</span> Back to itinerary</button>
+        </div>
         <div id="dmDetail" class="dm-detail" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="dmDetailTitle">
           <div class="dm-detail-bar">
             <button type="button" class="dm-detail-back" id="dmDetailBack">‹ Back</button>
@@ -5634,8 +5624,6 @@
       dayDate: document.getElementById('dmDayDate'),
       dayNum: document.getElementById('dmDayNum'),
       exit: document.getElementById('dmExit'),
-      clock: document.getElementById('dmClock'),
-      simChip: document.getElementById('dmSimChip'),
       stage: document.getElementById('dmStage'),
       track: document.getElementById('dmTrack'),
       dots: document.getElementById('dmDots'),
@@ -6250,6 +6238,8 @@
        tap target for its full view. */
     function fitCard(cardIn) {
       var blocks = cardIn.querySelectorAll('.dm-block');
+      cardIn.style.setProperty('--dms', '1');
+      cardIn.classList.remove('roomy'); cardIn.style.removeProperty('--dm-thumb-h');
       Array.prototype.forEach.call(blocks, function (block) {
         var text = block.querySelector('.dm-block-text');
         block.classList.remove('clipped'); block.classList.remove('nofade'); block.classList.remove('rows');
@@ -6260,6 +6250,44 @@
         if (text) { text.classList.remove('clamp'); text.style.webkitLineClamp = ''; }
         Array.prototype.forEach.call(block.querySelectorAll('.dm-block-list > li'), function (li) { li.classList.remove('dm-hide'); });
       });
+      // A short card should not sit over a blank half-screen: grow the body type
+      // (capped) until the content fills the card, then back off until it fits.
+      // Text is only ever enlarged here, never rewritten or reordered.
+      var body = cardIn.querySelector('.dm-body');
+      function need() {
+        var cs = getComputedStyle(body);
+        var gap = parseFloat(cs.rowGap || cs.gap) || 0;
+        var sum = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
+        Array.prototype.forEach.call(blocks, function (b, i) { sum += b.scrollHeight + (i ? gap : 0); });
+        return sum;
+      }
+      if (body && blocks.length) {
+        var base = need();
+        if (base > 0 && body.clientHeight > base + 16) {
+          var s = Math.min(1.3, Math.sqrt(body.clientHeight / base));
+          s = Math.floor(s * 100) / 100;
+          while (s > 1.02) {
+            cardIn.style.setProperty('--dms', String(s));
+            if (need() <= body.clientHeight) break;
+            s = Math.round((s - 0.03) * 100) / 100;
+          }
+          if (s <= 1.02) cardIn.style.setProperty('--dms', '1');
+        }
+        // Still room after the type is at its cap: the photo becomes a banner
+        // above the title and takes what is left, rather than leaving it blank.
+        var mini = cardIn.querySelector('.dmb-mini');
+        var slack = body.clientHeight - need();
+        if (mini && slack > 140) {
+          cardIn.classList.add('roomy');
+          var hgt = Math.min(320, slack - 24);
+          while (hgt >= 120) {
+            cardIn.style.setProperty('--dm-thumb-h', hgt + 'px');
+            if (body.clientHeight >= need()) break;
+            hgt -= 20;
+          }
+          if (hgt < 120) { cardIn.classList.remove('roomy'); cardIn.style.removeProperty('--dm-thumb-h'); }
+        }
+      }
       // Walk the blocks in order. A clipped block is frozen at (or under) the
       // height flex gave it, so clamping its text cannot reflow its neighbours,
       // and anything it gives back flows to the blocks below it.
@@ -6402,11 +6430,9 @@
       }).join('');
     }
 
+    // No clock line in Day Mode; the test clock only tints the date while it is on.
     function renderClock(now) {
-      var todayN = dayIndexFor(now);
-      var where = inTrip(todayN) ? 'Day ' + todayN : (todayN < 1 ? 'before the trip' : 'after the trip');
-      ui.clock.textContent = fmtMin(now.h * 60 + now.mi, true) + ' in Italy \u00b7 ' + where;
-      ui.simChip.classList.toggle('on', !!now.sim);
+      root.classList.toggle('sim', !!now.sim);
     }
 
     // Statuses drift as the clock moves; only the badges change, not the card you are reading.
@@ -6540,8 +6566,6 @@
       // Releasing a long-press synthesizes a click on the backdrop — don't let it close what it just opened.
       if (e.target === ui.sim && Date.now() - simOpenedAt > 500) closeSim();
     });
-    ui.simChip.addEventListener('click', openSim);
-    if (ui.clock) ui.clock.addEventListener('click', openSim);
     var heroBtn = document.getElementById('dmHero');
     if (heroBtn) {
       heroBtn.addEventListener('click', function (e) {
