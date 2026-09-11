@@ -757,6 +757,96 @@
     color: var(--muted);
   }
 
+  /* ---------- PAYMENTS FULL SCREEN ----------
+     Own screen (not the side panel) so long balance-sheet scrolling never
+     fights panel swipe-to-dismiss / minimize. Body sibling of #daymode. */
+  body.pay-open { overflow: hidden; position: fixed; width: 100%; }
+  #payscreen {
+    position: fixed; inset: 0; z-index: 75;
+    height: 100dvh; height: var(--dm-vh, 100dvh);
+    background: var(--paper);
+    opacity: 0; visibility: hidden;
+    transition: opacity .25s ease, visibility .25s ease;
+    padding-top: var(--safe-top);
+    box-sizing: border-box;
+    display: flex; flex-direction: column;
+  }
+  #payscreen:not(.open) { pointer-events: none; }
+  #payscreen.open { opacity: 1; visibility: visible; }
+  .pay-col {
+    flex: 1; min-height: 0;
+    max-width: 560px; width: 100%; margin: 0 auto;
+    display: flex; flex-direction: column;
+  }
+  .pay-top {
+    flex: 0 0 auto;
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 12px 14px 10px;
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+  }
+  .pay-back {
+    flex: 0 0 auto;
+    margin-top: 2px;
+    height: 36px; padding: 0 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: #fff; color: var(--ink);
+    font: inherit; font-size: 14px; font-weight: 700;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .pay-back:hover { border-color: rgba(43,33,24,.28); }
+  .pay-hd { flex: 1; min-width: 0; }
+  .pay-hd .pay-kicker {
+    display: block;
+    font-size: 11px; font-weight: 800;
+    letter-spacing: .06em; text-transform: uppercase;
+    color: var(--gold);
+  }
+  .pay-hd h2 {
+    margin: 2px 0 0;
+    font-size: 26px; font-weight: 800;
+    letter-spacing: -0.4px; line-height: 1.15;
+    color: var(--ink);
+  }
+  .pay-hd .pay-sub {
+    margin: 4px 0 0;
+    font-size: 13px; color: var(--muted); line-height: 1.35;
+  }
+  .pay-scroll {
+    flex: 1; min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    padding: 14px 14px max(24px, calc(var(--safe-bottom) + 12px));
+  }
+  .pay-scroll .pay-sheet { margin-bottom: 0; }
+  .pay-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0 0 14px;
+  }
+  .pay-summary .pay-chip {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 11px;
+  }
+  .pay-summary .pay-chip .ps-label {
+    display: block;
+    font-size: 10px; font-weight: 800;
+    letter-spacing: .04em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .pay-summary .pay-chip .ps-val {
+    display: block;
+    margin-top: 3px;
+    font-size: 16px; font-weight: 800;
+    color: var(--ink); letter-spacing: -0.2px;
+  }
+
   /* ---------- SIDE PANEL ---------- */
   #overlay {
     position: fixed; inset: 0;
@@ -2483,6 +2573,21 @@
     </div>
   </div>
 
+  <!-- Payments is its own full screen (body sibling of Day Mode), not the side panel. -->
+  <div id="payscreen" role="dialog" aria-modal="true" aria-label="Payments" aria-hidden="true">
+    <div class="pay-col">
+      <div class="pay-top">
+        <button type="button" class="pay-back" id="payBack" aria-label="Back to itinerary" title="Back to itinerary">‹ Itinerary</button>
+        <div class="pay-hd">
+          <span class="pay-kicker">Money</span>
+          <h2>Payments</h2>
+          <p class="pay-sub">Who paid for what · Tom ⅓ · parents ⅔</p>
+        </div>
+      </div>
+      <div class="pay-scroll" id="payScroll"></div>
+    </div>
+  </div>
+
   <div id="app-content">
 
   <header class="hero">
@@ -2505,7 +2610,7 @@
         <span class="hl-text">Trip Notes</span>
         <span class="hl-arrow" aria-hidden="true">›</span>
       </button>
-      <button type="button" class="hero-link" data-k="payments" aria-label="Open payment tracker">
+      <button type="button" class="hero-link" data-k="payments" aria-label="Open payments screen">
         <span class="hl-icon" aria-hidden="true">€</span>
         <span class="hl-text">Payments</span>
         <span class="hl-arrow" aria-hidden="true">›</span>
@@ -4597,17 +4702,6 @@
 
     function openPayments() {
       currentTop10Guide = null;
-      showListMode(true);
-      el.listView.dataset.theme = 'wishlist';
-      el.accent.style.background = 'var(--gold)';
-      el.type.textContent = 'Money';
-      el.type.style.background = 'var(--gold)';
-      el.title.textContent = 'Payments';
-      el.day.textContent = 'Who paid for what · ⅓ / ⅔ split';
-      el.back.style.color = 'var(--gold)';
-      el.photoWrap.hidden = true;
-      el.photo.removeAttribute('src');
-      el.tips.style.display = 'none';
 
       var rows = collectPaymentRows();
       var tom = rows.paid.filter(function (r) { return r.bucket === 'tom'; });
@@ -4616,19 +4710,66 @@
       var tomSum = sumMoney(tom);
       var parentSum = sumMoney(debi);
 
-      renderStats([
-        { l: 'Tom ≈', v: formatEur(tomSum.equiv) },
-        { l: 'Parents ≈', v: formatEur(parentSum.equiv) },
-        { l: 'Outstanding', v: String(out.length) },
-        { l: 'Split', v: '⅓ / ⅔' }
-      ], null, null);
-      renderReservation('payments', false);
-      renderLunchPicks({});
+      var summary =
+        '<div class="pay-summary">' +
+          '<div class="pay-chip"><span class="ps-label">Tom ≈</span><span class="ps-val">' + escHtml(formatEur(tomSum.equiv)) + '</span></div>' +
+          '<div class="pay-chip"><span class="ps-label">Parents ≈</span><span class="ps-val">' + escHtml(formatEur(parentSum.equiv)) + '</span></div>' +
+          '<div class="pay-chip"><span class="ps-label">Outstanding</span><span class="ps-val">' + escHtml(String(out.length)) + '</span></div>' +
+          '<div class="pay-chip"><span class="ps-label">Split</span><span class="ps-val">⅓ / ⅔</span></div>' +
+        '</div>';
 
-      el.listView.innerHTML = renderBalanceSheet(tom, debi);
-
-      openPanelShell();
+      payScroll.innerHTML = summary + renderBalanceSheet(tom, debi);
+      payScroll.scrollTop = 0;
+      openPayScreen();
     }
+
+    var payScreen = document.getElementById('payscreen');
+    var payScroll = document.getElementById('payScroll');
+    var payBack = document.getElementById('payBack');
+    var payOpen = false;
+    var payScrollY = 0;
+    var payHistPushed = false;
+
+    function openPayScreen() {
+      if (!payOpen) {
+        payScrollY = window.scrollY || window.pageYOffset || 0;
+        document.body.classList.add('pay-open');
+        document.body.style.top = '-' + payScrollY + 'px';
+        payScreen.classList.add('open');
+        payScreen.setAttribute('aria-hidden', 'false');
+        payOpen = true;
+      }
+      if (!payHistPushed && window.history && history.pushState) {
+        try { history.pushState({ pay: 1 }, ''); payHistPushed = true; } catch (e) { payHistPushed = false; }
+      }
+      try { payBack.focus({ preventScroll: true }); } catch (e) {}
+    }
+
+    function closePayScreen(fromHistory) {
+      if (!payOpen) return;
+      if (panel.classList.contains('open')) {
+        closePanel({ keepPay: true });
+      }
+      if (payHistPushed && !fromHistory) {
+        payHistPushed = false;
+        history.back();
+        return;
+      }
+      payHistPushed = false;
+      payScreen.classList.remove('open');
+      payScreen.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('pay-open');
+      document.body.style.top = '';
+      payOpen = false;
+      window.scrollTo(0, payScrollY || 0);
+    }
+
+    if (payBack) {
+      payBack.addEventListener('click', function () { closePayScreen(false); });
+    }
+    window.addEventListener('popstate', function () {
+      if (payOpen) { payHistPushed = false; closePayScreen(true); }
+    });
 
     var overlay = document.getElementById('overlay');
     var panel   = document.getElementById('panel');
@@ -5066,9 +5207,14 @@
       panel.classList.add('open');
       panel.setAttribute('aria-hidden', 'false');
       panelBody.scrollTop = 0;
-      scrollLockY = window.scrollY;
-      document.body.classList.add('panel-open');
-      document.body.style.top = '-' + scrollLockY + 'px';
+      if (!payOpen) {
+        scrollLockY = window.scrollY;
+        document.body.classList.add('panel-open');
+        document.body.style.top = '-' + scrollLockY + 'px';
+      } else {
+        /* Payments screen already locked the page; keep that lock. */
+        document.body.classList.add('panel-open');
+      }
     }
 
     function openGuideIndex(guideKey) {
@@ -5266,11 +5412,17 @@
       openPanelShell();
     }
 
-    function closePanel() {
+    function closePanel(opts) {
       overlay.classList.remove('open');
       panel.classList.remove('open');
       panel.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('panel-open');
+      if (payOpen) {
+        /* Stay on the payments screen — do not restore itinerary scroll. */
+        document.body.classList.add('pay-open');
+        document.body.style.top = '-' + payScrollY + 'px';
+        return;
+      }
       document.body.style.top = '';
       window.scrollTo(0, scrollLockY);
     }
@@ -5320,7 +5472,9 @@
     overlay.addEventListener('click', closePanel);
     document.getElementById('pClose').addEventListener('click', closePanel);
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closePanel();
+      if (e.key !== 'Escape') return;
+      if (panel.classList.contains('open')) { closePanel(); return; }
+      if (payOpen) { closePayScreen(false); }
     });
 
     /* ---------- DAY RESERVATION STATUS ----------
