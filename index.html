@@ -887,6 +887,16 @@
   }
   .panel-close:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
   .panel-body { padding: 20px 26px 46px; overflow-y: auto; }
+  /* Traveller toggle: one row holds two people's legs; the panel switches between them. */
+  .p-tabs { display: flex; gap: 3px; padding: 3px; margin: 0 0 16px; border-radius: 999px; background: #efe8dc; }
+  .p-tabs[hidden] { display: none; }
+  .p-tab {
+    flex: 1 1 0; min-width: 0; font: inherit; font-size: 13px; font-weight: 700; line-height: 1;
+    padding: 9px 10px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); cursor: pointer;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .p-tab[aria-selected="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(43,33,24,.14); }
+  .p-tab:focus-visible { outline: 2px solid var(--venice); outline-offset: 2px; }
   .p-meta { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
   .p-meta .p-line { display: flex; align-items: center; gap: 10px; font-size: 14px; }
   .p-meta .p-line .ic { width: 18px; text-align: center; }
@@ -2127,6 +2137,14 @@
   .dmb-badge.skip { border-color: #e3d7b5; background: #fdf8e6; color: #8a6d00; }
   /* The chip is one of a dozen fixed categories; the stop's own label sits beside it when it says more. */
   .dm-kind { font-size: 10.5px; font-weight: 700; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40vw; }
+  .dm-tabs { display: flex; gap: 3px; margin: 10px 14px 0; padding: 3px; border-radius: 999px; background: #efe8dc; flex: 0 0 auto; }
+  .dm-tab {
+    flex: 1 1 0; min-width: 0; font: inherit; font-size: 12.5px; font-weight: 700; line-height: 1;
+    padding: 8px 10px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); cursor: pointer;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .dm-tab[aria-selected="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(43,33,24,.14); }
+  .dm-tab:focus-visible { outline: 2px solid var(--venice); outline-offset: 2px; }
   .dmb-titlerow { display: flex; gap: 10px; align-items: flex-start; padding: 8px 14px 0; flex: 0 0 auto; }
   .dmb-titles { flex: 1 1 auto; min-width: 0; }
   .dm-title {
@@ -2798,8 +2816,7 @@
         <div class="day-body">
           <ul class="tl">
           <li class="tl-head" aria-hidden="true"><span>Time</span><span>Activity</span><span>Location</span><span>Transport <span class="mode-res" title="Book in advance">R</span></span><span>Reservation</span></li>
-            <li class="row" data-k="d1a"><span class="time">12:05pm</span><span class="act">Flight</span><span class="loc">Milan-Malpensa (MXP), T1 · Debi &amp; Angelo on DL184</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Flight (9 hr) · then wait in the T1 arrivals hall</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
-            <li class="row" data-k="d1t"><span class="time">12:20pm</span><span class="act">Flight</span><span class="loc">Milan-Malpensa (MXP), T2 · Tom on easyJet EJU8303 from London</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Flight (2 hr) · shuttle T2 → T1 (~15 min)</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
+            <li class="row" data-k="d1a"><span class="time">12:05–12:20pm</span><span class="act">Flights</span><span class="loc">Milan-Malpensa (MXP) · Debi &amp; Angelo on DL184 → T1 · Tom on easyJet EJU8303 → T2</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Two arrivals 15 min apart · everyone meets in the T1 arrivals hall</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
             <li class="row" data-k="d1m"><span class="time">1:00–1:30pm</span><span class="act">Meet Up</span><span class="loc">MXP Terminal 1 arrivals hall · outside the baggage-claim doors</span><span class="mode">Debi &amp; Angelo wait at T1 · Tom comes over from T2</span><span class="stat stat-empty"></span></li>
             <li class="row" data-k="d1b" data-transport-done="1"><span class="time">1:30–3pm</span><span class="act">Check-in</span><span class="loc">Hotel Milu Milano</span><span class="mode"><span class="mode-res" title="Book in advance">R</span>Private transfer, confirmed (50 min · €180)</span><span class="stat"><span class="stat-badge st-done">Res: Complete</span></span></li>
             <li class="row" data-k="d1d"><span class="time">3:45–4:45</span><span class="act">Church</span><span class="loc">Basilica di Sant'Ambrogio 👔</span><span class="mode">Taxi (15 min)</span><span class="stat stat-empty"></span></li>
@@ -3197,6 +3214,7 @@
       <div class="p-day" id="pDay"></div>
     </div>
     <div class="panel-body">
+      <div class="p-tabs" id="pTabs" role="tablist" aria-label="Traveller" hidden></div>
       <div class="p-photo-wrap" id="pPhotoWrap" hidden>
         <img class="p-photo" id="pPhoto" alt="" loading="lazy">
       </div>
@@ -3487,7 +3505,7 @@
 
     var DETAILS = {
       d1a:{type: 'Flight', desc: 'Debi & Angelo: this is your flight. The overnight Delta from JFK lands at Malpensa Terminal 1 at 12:05 PM. Tom is not on board; he is flying in from a work trip in London and lands at Terminal 2 fifteen minutes after you, then comes across to Terminal 1 to find you. Off the plane, follow the signs and the crowd to passport control (use the "All passports" / non-EU lanes), collect the bags in the hall beyond it, then walk out through the sliding doors into the public arrivals hall and stop there. That hall is the meeting point. Do not leave the terminal and do not go looking for Terminal 2.', tips: 'Before you land, switch the phones to Airplane Mode and turn Wi-Fi back on; without an international plan, cellular data abroad is expensive and will not work reliably anyway. Once inside the terminal, join the free "Milan Airports" Wi-Fi (open the browser and accept the terms), then message Tom on WhatsApp or iMessage to say you have landed. Turn on Wi-Fi Calling in the phone settings before leaving home so calls and texts also work over airport Wi-Fi. At passport control have both passports out and the hotel name ready if asked: Hotel Milu Milano, Piazza Oberdan 12, Milan. The EU now registers first-time visitors with fingerprints and a photo at entry; it is routine, follow the officer, and a queue of 30 to 60 minutes is normal, so do not worry about the time. The bags come off DL184 on the belt marked with the flight number; grab a luggage cart and keep everything together. After the exit doors, pick a seat or a spot with a clear view of the doors you came out of and stay there together; use the restrooms and grab a coffee nearby if you like, but keep the bags with you. Tom expects to reach you between about 1:00 and 1:30 PM. If someone approaches offering a taxi or a ride, say no thank you; the ride to the hotel is arranged for all three of you together, and Tom handles it. There is no need to change money at the airport kiosks; cards work everywhere and if cash is ever needed a bank ATM (Bancomat) gives a far better rate. It is about 6 AM on your body clock, so drink water and eat something small; the afternoon is deliberately light.'},
-      d1t:{type: 'Flight', desc: 'Tom: easyJet EJU8303 from London Gatwick North Terminal, departing 9:20 AM and landing at Malpensa Terminal 2 at 12:20 PM, seat 2D, one 23 kg hold bag plus a large cabin bag and an under-seat bag. Bag drop opens 6:50 AM and closes 8:20 AM; online check-in closes two hours before departure. It is a UK passport lane on arrival, so expect a queue at Terminal 2 too, then baggage claim. Terminal 2 is a separate building from Terminal 1: take the free shuttle bus (runs around the clock, every few minutes, about a 10-minute ride) or the Malpensa Express train one stop to Terminal 1, and go to the arrivals hall on the ground floor, just outside the baggage-claim exit doors, where Debi and Angelo are waiting.', tips: 'Add passport details and check in online the day before; easyJet is ticketless, so the passport is the ticket. Message Debi and Angelo as soon as the wheels touch down so they see it the moment they get on the airport Wi-Fi. Once the hotel confirms the car, give the driver a realistic pickup for all three of you, roughly 1:30 PM at Terminal 1 arrivals, rather than a pickup tracked to DL184.'},
+      d1t:{type: 'Flight', desc: 'Tom: easyJet EJU8303 from London Gatwick North Terminal, departing 9:20 AM and landing at Malpensa Terminal 2 at 12:20 PM, seat 2D, one 23 kg hold bag plus a large cabin bag and an under-seat bag. Bag drop opens 6:50 AM and closes 8:20 AM; online check-in closes two hours before departure. It is a UK passport lane on arrival, so expect a queue at Terminal 2 too, then baggage claim. Terminal 2 is a separate building from Terminal 1: take the free shuttle bus (runs around the clock, every few minutes, about a 10-minute ride) or the Malpensa Express train one stop to Terminal 1, and go to the arrivals hall on the ground floor, just outside the baggage-claim exit doors, where Debi and Angelo are waiting.', tips: 'Add passport details and check in online the day before; easyJet is ticketless, so the passport is the ticket. Message Debi and Angelo as soon as the wheels touch down so they see it the moment they get on the airport Wi-Fi. The hotel car is confirmed for all three of you at Terminal 1 arrivals around 1:30 PM rather than tracked to DL184, so a slow passport queue costs nothing.'},
       d1m:{type: 'Break', desc: 'The meeting point is the public arrivals hall of Terminal 1, just outside the sliding doors where passengers come out of baggage claim. Debi and Angelo get there first and wait; Tom lands at Terminal 2 at 12:20 PM, clears passport control, collects his bag and comes over on the shuttle, so the realistic window is about 1:00 to 1:30 PM. Nothing in this plan depends on phone service: the hall is one room, and Tom will walk it until he finds you. Once together, the private transfer takes all three of you and the bags to Hotel Milu Milano, about 50 minutes.', tips: 'Debi and Angelo: stay together in the arrivals hall, stay landside (do not go back through any doors marked passengers only), and keep the bags with you. If you have Wi-Fi, send Tom a photo of where you are sitting. If you do not, that is fine; just stay put. Tom: the T1–T2 shuttle stops are signposted from the Terminal 2 arrivals exit; if you are delayed, one message on Wi-Fi is enough, they know to wait.'},
       d1b:{type: 'Hotel', desc: 'Boutique hotel on Piazza Oberdan, the base for the Milan days. All three of you arrive together by private transfer from Terminal 1 around 2:30 PM, likely before the room is ready at 3:00, so ask the front desk to store the bags, then freshen up before Sant\'Ambrogio.'},
       d1d:{type: 'Culture', desc: 'Founded by St. Ambrose himself in the 4th century, this is one of Milan\'s oldest churches, in one of its oldest neighborhoods. Look for the brick Lombard-Romanesque front, the quiet arcaded atrium, and the gold mosaics in the apse.', tips: 'No ticket or booking, just walk in. The arcaded atrium out front is the calm place to pause for a few minutes before going inside.'},
@@ -3655,9 +3673,20 @@
 
     var RESERVATION_ALIASES = { mt01: 'd4b', mt02: 'd2g', mt06: 'd4e', mt07: 'd4d', wl01: 'd5d', wl02: 'd11g', wl03: 'd11t', wl04: 'd11t', wl05: 'd8d', wl06: 'd6c', wl07: 'd8a', d9u: 'd9e' };
 
+    /* One itinerary row, two travellers: the panel and the Day Mode card toggle
+       between these legs. Each tab points at its own DETAILS / SITE_ENRICH /
+       RESERVATIONS key and carries the row-level fields the shared row cannot. */
+    var VARIANTS = {
+      d1a: [
+        { k: 'd1a', label: 'Debi & Angelo', title: 'DL184 · JFK → Malpensa T1', time: '12:05pm', act: 'Flight', loc: 'Milan-Malpensa (MXP), T1 · Debi & Angelo on DL184', mode: 'Flight (9 hr) · then wait in the T1 arrivals hall' },
+        { k: 'd1t', label: 'Tom', title: 'EJU8303 · Gatwick → Malpensa T2', time: '12:20pm', act: 'Flight', loc: 'Milan-Malpensa (MXP), T2 · Tom on easyJet EJU8303 from London', mode: 'Flight (2 hr) · shuttle T2 → T1 (~15 min)' }
+      ]
+    };
+    var VARIANT_SEL = {};   // row key → selected tab, shared by the panel and Day Mode
+
     var RESERVATIONS = {
-      d1a: {sections: [{bookedVia: 'Delta.com / Fly Delta app', lines: [{l: 'Flight', v: 'DL184 · JFK T4 → Milan-Malpensa T1'}, {l: 'Passengers', v: 'Debi & Angelo · seats still to be assigned'}, {l: 'Cost', v: 'Not recorded'}, {l: 'Paid by', v: 'Tom'}], notes: 'Tom is not on this flight; he arrives from London on easyJet EJU8303 into Terminal 2 at 12:20 PM and meets you in the Terminal 1 arrivals hall. Add the Delta record locator (PNR) when handy.'}]},
-      d1t: {sections: [{bookedVia: 'easyJet.com', confirmation: 'KD8WWN4', lines: [{l: 'Flight', v: 'EJU8303 · London Gatwick (North Terminal) → Milan Malpensa T2'}, {l: 'Times', v: 'Tue Sep 22 · departs 9:20 AM · arrives 12:20 PM'}, {l: 'Passenger', v: 'Thomas Angelo Rivituso'}, {l: 'Seat', v: '2D'}, {l: 'Fare', v: 'Inclusive Plus'}, {l: 'Bags', v: '1 × 23 kg hold bag · 1 × large cabin bag (56 × 45 × 25) · 1 × under-seat bag (45 × 36 × 20)'}, {l: 'Bag drop', v: 'Opens 6:50 AM · closes 8:20 AM (check-in closes 60 min before departure)'}, {l: 'Cost', v: '£128.99 · Tom\'s own leg from the London work trip, not part of the trip split'}], notes: 'Paid to easyJet by American Express on Aug 31, 2026. Ticketless: a valid passport is the ticket. Add passport/ID details for the passenger and check in online (opens 30 days before, closes 2 hours before departure) to get the boarding pass in the easyJet app. The large cabin bag may go in the hold at the gate, free, if the lockers fill up.'}]},
+      d1a: {sections: [{bookedVia: 'Delta.com / Fly Delta app', lines: [{l: 'Flight', v: 'DL184 · JFK T4 → Milan-Malpensa T1'}, {l: 'Passengers', v: 'Debi & Angelo · seats still to be assigned'}, {l: 'Cost', v: 'Not recorded'}, {l: 'Paid by', v: 'Debi & Angelo · their own tickets, outside the trip split'}], notes: 'Tom is not on this flight; he arrives from London on easyJet EJU8303 into Terminal 2 at 12:20 PM and meets you in the Terminal 1 arrivals hall. Add the Delta record locator (PNR) when handy.'}]},
+      d1t: {sections: [{bookedVia: 'easyJet.com', confirmation: 'KD8WWN4', lines: [{l: 'Flight', v: 'EJU8303 · London Gatwick (North Terminal) → Milan Malpensa T2'}, {l: 'Times', v: 'Tue Sep 22 · departs 9:20 AM · arrives 12:20 PM'}, {l: 'Passenger', v: 'Thomas Angelo Rivituso'}, {l: 'Seat', v: '2D'}, {l: 'Fare', v: 'Inclusive Plus'}, {l: 'Bags', v: '1 × 23 kg hold bag · 1 × large cabin bag (56 × 45 × 25) · 1 × under-seat bag (45 × 36 × 20)'}, {l: 'Bag drop', v: 'Opens 6:50 AM · closes 8:20 AM (check-in closes 60 min before departure)'}, {l: 'Cost', v: '£128.99'}, {l: 'Paid by', v: 'McKinsey · part of the London work trip, outside the trip split'}], notes: 'Charged to American Express on Aug 31, 2026 and covered by McKinsey as part of the London work trip. Ticketless: a valid passport is the ticket. Add passport/ID details for the passenger and check in online (opens 30 days before, closes 2 hours before departure) to get the boarding pass in the easyJet app. The large cabin bag may go in the hold at the gate, free, if the lockers fill up.'}]},
       d1b: {sections: [{subhd: 'Hotel stay', bookedVia: 'Expedia.com', confirmation: '73349411928282', lines: [{l: 'Hotel', v: 'Hotel Milu Milano'}, {l: 'Room', v: 'Family Suite for 3 adults'}, {l: 'Perks', v: 'Breakfast buffet included'}, {l: 'Nights', v: 'Sep 22–26'}, {l: 'Cost', v: '€3,368.00 prepaid'}, {l: 'City tax', v: '€10 per person per night, due at hotel'}, {l: 'Deposit', v: '€300 damage deposit before check-in'}, {l: 'Paid by', v: 'Debi & Angelo'}], notes: 'Free cancellation until Sep 20, 6:00 PM property local time. Keep the Expedia itinerary handy at check-in. City tax and damage deposit are still due at the property.'}, {subhd: 'Airport transfer · MXP → hotel', bookedVia: 'Hotel Milu Milano (direct email)', lines: [{l: 'Date', v: 'Tue Sep 22'}, {l: 'Pickup', v: 'MXP Terminal 1 arrivals · ~1:30 PM (all three together)'}, {l: 'Party', v: '3 adults · 3 large bags (van required)'}, {l: 'Cost', v: '€180 (€150 base + €30 airport supplement)'}, {l: 'Paid by', v: 'Pay-by-link coming, not yet paid'}], notes: 'Confirmed by the driver Sep 6. Hotel will send a Stripe pay-by-link a few days before pickup, settle it as soon as it arrives. 15-min grace period, then €10 per extra 15 min late. Cancel 48+ hrs ahead for no penalty, 50% penalty 24–48 hrs before, 100% within 24 hrs. Contact: +39 02 81260138 / info@milumilano.com.'}]},
       d2b: {sections: [{bookedVia: 'GetYourGuide.com', lines: [{l: 'Reference', v: 'GYGBLHFA9QMQ'}, {l: 'Traveler', v: 'Tom Rivituso'}, {l: 'Party', v: '3 adults'}, {l: 'Voucher PIN', v: 't&=eYBVt'}, {l: 'Operator', v: '+39 02 4855 5558'}, {l: 'Cost', v: '$45.33'}, {l: 'Paid by', v: 'Tom'}], notes: 'Free cancellation before 10:00 AM on Sep 22.'}]},
       d2g: {sections: [{bookedVia: 'Viator.com', lines: [{l: 'Confirmation', v: '1808177411'}, {l: 'Booking ref', v: '1425940591'}, {l: 'Meet at', v: 'Fontanella, Via Fratelli Ruffini 1, by 3:00 PM'}, {l: 'Party', v: '3 adults'}, {l: 'Cost', v: '$345.45'}, {l: 'Paid by', v: 'Tom'}], notes: 'Mobile ticket in the Viator app. All sales final, no cancellation. Arrive about 15 minutes early. Operator +39 351 733 9025.'}]},
@@ -4482,6 +4511,8 @@
     function paymentBucket(paidBy) {
       var s = String(paidBy || '').toLowerCase();
       if (s.indexOf('outstanding') !== -1) return 'out';
+      /* Personal legs (own flights, an employer's ticket) sit outside the ⅓ / ⅔ pool. */
+      if (/outside the (trip )?split|\b(their|his|her) own\b|each their own|mckinsey/.test(s)) return 'own';
       if (s.indexOf('debi') !== -1 || s.indexOf('mom') !== -1 || s.indexOf('angelo') !== -1 || s.indexOf('parents') !== -1) return 'debi';
       if (s.indexOf('tom') !== -1) return 'tom';
       return 'other';
@@ -4511,8 +4542,6 @@
       var usd = 0;
       var m;
       /* Prefer explicit party totals: (€411 for 3) / (€33.00 total) */
-      /* Personal legs (own flights, an employer's ticket) sit outside the ⅓ / ⅔ pool. */
-      if (/outside the (trip )?split|\b(their|his|her) own\b|each their own|mckinsey/.test(s)) return 'own';
       m = t.match(/[€\u20ac]\s*([\d.,]+)\s*(?:for\s*\d+|total)/i);
       if (m) eur = parseMoneyNumber(m[1]);
       if (!eur) {
@@ -4736,6 +4765,7 @@
       var tom = rows.paid.filter(function (r) { return r.bucket === 'tom'; });
       var debi = rows.paid.filter(function (r) { return r.bucket === 'debi'; });
       var out = rows.paid.filter(function (r) { return r.bucket === 'out'; });
+      var own = rows.paid.filter(function (r) { return r.bucket === 'own'; });
       var tomSum = sumMoney(tom);
       var parentSum = sumMoney(debi);
 
@@ -4765,7 +4795,6 @@
         document.body.classList.add('pay-open');
         document.body.style.top = '-' + payScrollY + 'px';
         payScreen.classList.add('open');
-      var own = rows.paid.filter(function (r) { return r.bucket === 'own'; });
         payScreen.setAttribute('aria-hidden', 'false');
         payOpen = true;
       }
@@ -4838,6 +4867,7 @@
       mode:   document.getElementById('pMode'),
       status: document.getElementById('pStatus'),
       statusText: document.getElementById('pStatusText'),
+      tabs:   document.getElementById('pTabs'),
       photoWrap: document.getElementById('pPhotoWrap'),
       photo:  document.getElementById('pPhoto'),
       meta:   document.querySelector('.p-meta'),
@@ -5285,6 +5315,8 @@
     }
 
     function openPanelByKey(k, opts) {
+      panelRow = null;
+      renderPanelTabs(null, null, 0);
       var d = DETAILS[k] || {};
       var enrich = SITE_ENRICH[k] || {};
       var type = d.type || 'Culture';
@@ -5367,24 +5399,51 @@
       openPanelShell();
     }
 
-    function openPanel(row) {
-      var k = row.getAttribute('data-k');
+    var panelRow = null;
+    function renderPanelTabs(k, tabs, sel) {
+      if (!el.tabs) return;
+      if (!tabs) { el.tabs.hidden = true; el.tabs.innerHTML = ''; return; }
+      el.tabs.hidden = false;
+      el.tabs.innerHTML = tabs.map(function (t, i) {
+        return '<button type="button" class="p-tab" role="tab" data-i="' + i + '" aria-selected="' + (i === sel ? 'true' : 'false') + '">' + escHtml(t.label) + '</button>';
+      }).join('');
+    }
+    if (el.tabs) {
+      el.tabs.addEventListener('click', function (e) {
+        var b = e.target.closest('.p-tab');
+        if (!b || !panelRow) return;
+        var i = parseInt(b.getAttribute('data-i'), 10);
+        var keep = panelBody.scrollTop;
+        openPanel(panelRow, i, { rerender: true });
+        panelBody.scrollTop = keep;
+      });
+    }
+
+    function openPanel(row, tabIdx, opts) {
+      var rowKey = row.getAttribute('data-k');
+      var tabs = VARIANTS[rowKey] || null;
+      var sel = tabs ? (tabIdx == null ? (VARIANT_SEL[rowKey] || 0) : tabIdx) : 0;
+      if (tabs) VARIANT_SEL[rowKey] = sel;
+      var v = tabs ? tabs[sel] : null;
+      var k = v ? v.k : rowKey;
       var d = DETAILS[k] || {};
       var enrich = SITE_ENRICH[k] || {};
-      var time = row.querySelector('.time').textContent.trim();
-      var act = rowAct(row);
-      var loc = row.querySelector('.loc').textContent.trim();
-      var modeText = (row.querySelector('.mode') || {}).textContent || '';
+      var time = v ? v.time : row.querySelector('.time').textContent.trim();
+      var act = v ? v.act : rowAct(row);
+      var loc = v ? v.loc : row.querySelector('.loc').textContent.trim();
+      var modeText = v ? v.mode : ((row.querySelector('.mode') || {}).textContent || '');
       modeText = modeText.trim();
-      var title = rowTitle(row);
+      var title = v ? (v.title || v.loc.split(' \u00b7 ')[0]) : rowTitle(row);
       var st = rowStatus(row);
       var type = d.type || act || 'Culture';
       var color = TYPE_COLOR[type] || 'var(--muted)';
-      var pre = (k.match(/^d\d+/) || [''])[0];
+      var pre = (rowKey.match(/^d\d+/) || [''])[0];
 
+      panelRow = row;
       showListMode(false);
       el.back.hidden = true;
       currentTop10Guide = null;
+      renderPanelTabs(rowKey, tabs, sel);
 
       el.accent.style.background = color;
       el.type.textContent = type;
@@ -5439,10 +5498,12 @@
       }
 
       renderBookingPanel(k, st ? st[1] : null);
-      openPanelShell();
+      if (!(opts && opts.rerender)) openPanelShell();
     }
 
     function closePanel(opts) {
+      panelRow = null;
+      renderPanelTabs(null, null, 0);
       overlay.classList.remove('open');
       panel.classList.remove('open');
       panel.setAttribute('aria-hidden', 'true');
@@ -5756,6 +5817,8 @@
       DETAILS: DETAILS,
       SITE_ENRICH: SITE_ENRICH,
       RESERVATIONS: RESERVATIONS,
+      VARIANTS: VARIANTS,
+      VARIANT_SEL: VARIANT_SEL,
       TYPE_COLOR: TYPE_COLOR,
       DAY_LABEL: DAY_LABEL,
       TRIP_YEAR: TRIP_YEAR,
@@ -6681,7 +6744,28 @@
       return s;
     }
 
+    // A row with travellers' legs (VARIANTS) renders as the selected leg: same
+    // slot in the day, but that leg's key, time, place and transport.
+    function variantItem(item) {
+      var tabs = DATA.VARIANTS[item.k];
+      if (!tabs) return item;
+      var sel = DATA.VARIANT_SEL[item.k] || 0, v = tabs[sel];
+      if (!item._variants) item._variants = {};
+      if (item._variants[sel]) return item._variants[sel];
+      var t = parseTimeRange(v.time, null);
+      if (t && t.point && item.time) t.end = item.time.end;
+      var vi = {
+        k: v.k, row: item.row, time: t || item.time, rawTime: v.time, act: v.act, loc: v.loc,
+        title: v.title || String(v.loc).split(/\s\u00b7\s/)[0], mode: v.mode, skip: item.skip, base: item
+      };
+      item._variants[sel] = vi;
+      return vi;
+    }
+
     function itemMeta(item, dayN) {
+      var base = item.base || item;
+      var tabs = DATA.VARIANTS[base.k] || null;
+      item = variantItem(base);
       var d = DATA.DETAILS[item.k] || {};
       var enrich = DATA.SITE_ENRICH[item.k] || {};
       var type = d.type || item.act || 'Culture';
@@ -6691,7 +6775,7 @@
       loc = loc.replace(EMOJI_TAIL, '').trim();
       var locParts = loc.split(/\s\u00b7\s/);
       var name = locParts[0] || item.act || item.title;
-      var model = dayModel(dayN), idx = model.items.indexOf(item);
+      var model = dayModel(dayN), idx = model.items.indexOf(base);
       var laterStarts = [];
       model.items.forEach(function (it, i) { if (i > idx && it.time) laterStarts.push(it.time.start); });
       var areaParts = cleanArea(locParts.slice(1), name);
@@ -6699,13 +6783,15 @@
       if (canon.where) areaParts = cleanArea(areaParts.concat([canon.where]), name);
       var dayLabel = (DATA.DAY_LABEL['d' + dayN] || '').split('\u00b7').map(function (s) { return s.trim(); });
       var city = dayLabel[2] && !/\u2192|departure/i.test(dayLabel[2]) ? dayLabel[2] : '';
-      var res = DATA.rowStatus(item.row);
+      var res = DATA.rowStatus(base.row);
       var next = idx >= 0 && idx < model.items.length - 1 ? { item: model.items[idx + 1], day: dayN, idx: idx + 1 } : null;
       if (!next && idx >= 0 && inTrip(dayN + 1) && dayModel(dayN + 1).items.length) next = { item: dayModel(dayN + 1).items[0], day: dayN + 1, idx: 0 };
       var kind = String(item.act || '').trim();
       return {
         d: d,
         k: item.k,
+        item: item,
+        tabs: tabs ? { k: base.k, list: tabs, sel: DATA.VARIANT_SEL[base.k] || 0 } : null,
         res: res ? res[1] : '',
         rec: reservationFor(item.k),
         info: bookingInfoFor(item.k),
@@ -6972,6 +7058,7 @@
     function cardHtml(item, i, dayN, now, model) {
       var meta = itemMeta(item, dayN);
       var st = statusFor(item, dayN, now);
+      var vit = meta.item;   // the selected traveller's leg when the row has tabs
       var prevName = model ? prevStopName(model, i) : '';
       var html = '<div class="dm-card" style="top:' + (i * 100) + '%" data-i="' + i + '"><div class="dm-card-in">';
       html += '<div class="dmb-head"><div class="dmb-tags">' +
@@ -6979,7 +7066,13 @@
         (meta.kind ? '<span class="dm-kind">' + escHtml(meta.kind) + '</span>' : '') +
         '<span class="dm-status ' + st + '" data-i="' + i + '"' + (STATUS_TEXT[st] ? '' : ' hidden') + '>' + (STATUS_TEXT[st] || '') + '</span>' +
         (item.skip ? '<span class="dmb-badge skip">Skip OK</span>' : '') +
-        '</div><span class="dm-time">' + (item.time ? escHtml(fmtRange(item.time)) : escHtml(item.rawTime || 'Time TBD')) + '</span></div>';
+        '</div><span class="dm-time">' + (vit.time ? escHtml(fmtRange(vit.time)) : escHtml(vit.rawTime || 'Time TBD')) + '</span></div>';
+      if (meta.tabs) {
+        html += '<div class="dm-tabs" role="tablist" aria-label="Traveller">' + meta.tabs.list.map(function (t, j) {
+          return '<button type="button" class="dm-tab" role="tab" data-k="' + escHtml(meta.tabs.k) + '" data-v="' + j + '" data-i="' + i + '" aria-selected="' + (j === meta.tabs.sel ? 'true' : 'false') + '">' + escHtml(t.label) + '</button>';
+        }).join('') + '</div>';
+      }
+      item = vit;
       html += '<div class="dmb-titlerow"><div class="dmb-titles"><h3 class="dm-title">' + escHtml(meta.name) + '</h3>' +
         (meta.area ? '<p class="dmb-area">' + escHtml(meta.area) + '</p>' : '') + '</div>' +
         (meta.photo ? '<div class="dmb-mini"><img loading="lazy" src="' + escHtml(DATA.resolveImg(meta.photo.img)) + '" alt="' + escHtml(meta.photo.alt || meta.name) + '"></div>' : '') +
@@ -7163,6 +7256,25 @@
 
     function fitAllCards() {
       Array.prototype.forEach.call(ui.track.querySelectorAll('.dm-card-in'), function (c) { fitCard(c); });
+    }
+
+    // Traveller tabs: remember the choice for the row (the panel follows it too)
+    // and redraw just that card in place, keeping focus on the chosen tab.
+    function switchVariant(k, sel, i) {
+      if (!DATA.VARIANTS[k] || !DATA.VARIANTS[k][sel]) return;
+      if ((DATA.VARIANT_SEL[k] || 0) === sel) return;
+      DATA.VARIANT_SEL[k] = sel;
+      closeTip();
+      var model = dayModel(curDay), item = model.items[i];
+      var card = ui.track.querySelector('.dm-card[data-i="' + i + '"]');
+      if (!item || !card) return;
+      var tmp = document.createElement('div');
+      tmp.innerHTML = cardHtml(item, i, curDay, romeNow(), model);
+      var fresh = tmp.firstChild;
+      card.parentNode.replaceChild(fresh, card);
+      fitCard(fresh.querySelector('.dm-card-in'));
+      var btn = fresh.querySelector('.dm-tab[data-v="' + sel + '"]');
+      if (btn) try { btn.focus({ preventScroll: true }); } catch (e) {}
     }
 
     function closeDetail() {
@@ -7550,6 +7662,13 @@
         if (moved) { e.preventDefault(); return; }   // a swipe that ended on a chip pages, it does not act
         if (chip.hasAttribute('data-copy')) { e.preventDefault(); copyRef(chip); }
         else if (chip.hasAttribute('data-tip')) { e.preventDefault(); openTip(chip); }
+        return;
+      }
+      var tab = e.target.closest('.dm-tab');
+      if (tab) {
+        if (moved) return;
+        e.preventDefault();
+        switchVariant(tab.getAttribute('data-k'), parseInt(tab.getAttribute('data-v'), 10), parseInt(tab.getAttribute('data-i'), 10));
         return;
       }
       var nextBtn = e.target.closest('.dmb-next');
