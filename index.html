@@ -2124,6 +2124,8 @@
     padding: 2px 7px; border-radius: 6px; border: 1px solid var(--line); background: #fff; color: var(--muted);
   }
   .dmb-badge.skip { border-color: #e3d7b5; background: #fdf8e6; color: #8a6d00; }
+  /* The chip is one of a dozen fixed categories; the stop's own label sits beside it when it says more. */
+  .dm-kind { font-size: 10.5px; font-weight: 700; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40vw; }
   .dmb-titlerow { display: flex; gap: 10px; align-items: flex-start; padding: 8px 14px 0; flex: 0 0 auto; }
   .dmb-titles { flex: 1 1 auto; min-width: 0; }
   .dm-title {
@@ -2223,10 +2225,24 @@
   .dmb-know li { position: relative; padding-left: 16px; font-size: calc(12.5px * var(--dms, 1)); line-height: 1.45; color: var(--ink); }
   .dmb-know li::before { content: ''; position: absolute; left: 2px; top: .55em; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
   .dmb-know li.dm-hide { display: none; }
+  .dmb-know li.clamp { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
   .dmb-facts { margin: 0; font-size: calc(11.5px * var(--dms, 1)); line-height: 1.45; color: var(--muted); font-weight: 600; padding-top: 10px; border-top: 1px solid var(--line); }
   .dmb-facts .lbl { font-size: calc(9px * var(--dms, 1)); font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
   .dmb-facts b { color: var(--ink); font-weight: 700; }
   .dmb-facts .sep { color: #c4b9a7; margin: 0 6px; }
+  /* Generated from the next row, so no card has to say what follows it. */
+  .dmb-next {
+    display: flex; align-items: center; gap: 8px; flex: 0 0 auto;
+    margin: 0 14px; padding: 9px 0 11px; border-top: 1px solid var(--line);
+    font: inherit; font-size: 12.5px; line-height: 1.3; color: var(--ink); text-align: left;
+    background: none; border-left: 0; border-right: 0; border-bottom: 0; width: calc(100% - 28px); cursor: pointer;
+  }
+  .dmb-next .k { font-size: 9.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); flex: 0 0 auto; }
+  .dmb-next b { font-weight: 800; flex: 0 0 auto; }
+  .dmb-next .n { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+  .dmb-next .n .alt { color: var(--muted); font-weight: 600; }
+  .dmb-next .ar { flex: 0 0 auto; color: var(--muted); font-weight: 800; }
+  .dmb-next:focus-visible { outline: 2px solid var(--venice); outline-offset: -2px; border-radius: 6px; }
 
   /* Every kind of information gets a block on the first screen. A block only
      shrinks (and becomes tappable) when the card runs out of room; the text is
@@ -6108,24 +6124,114 @@
        many labels (Where / Address / Venue, Cost / Price / Entry, Conf # / PNR /
        Booking ref ...). Fold them into fixed slots so every card puts the same
        kind of fact in the same place; anything else stays a labelled extra. */
-    var DROP_LABEL = /^(on( your)? trip|rank|party|date|time|skip ok|status|next|paid by|traveler|applies to|photos|nights|due|due at hotel|city tax|deposit|payment|card on file)$/;
+    var DROP_LABEL = /^(on( your)? trip|rank|party|date|time|skip ok|status|next|paid by|traveler|applies to|photos|nights|due|due at hotel|city tax|deposit|payment|card on file|reserve|booking|reservation)$/;
     var SLOT_RULES = [
       ['where',   /^(address|where|venue|location|near|area)$/],
       ['leave',   /^(leave( hotel| by| at| orto by)?|out by|pick-?up|depart( hotel)?|departs|departure)$/],
-      ['arrive',  /^(arrive|arrives|arrival)$/],
+      ['arrive',  /^(arrive|arrives|arrival|check in)$/],
       ['meet',    /^(meet( at)?|meeting point)$/],
       ['cost',    /^(cost|price|fare|bar cost|entry|ticket)$/],
       ['ref',     /^(conf ?#?|confirmation|booking( ref| name)?|reference( 2)?|ref|pnrs?|ticket nos|voucher pin|pin|vox ref|booked (as|under)|palazzo code|correr code)$/],
       ['phone',   /^(phone|tel|telephone)$/],
       ['email',   /^(email|e-mail)$/],
       ['site',    /^(website|web|site|book at|url)$/],
-      ['hours',   /^(hours|open|opens|opening hours|last entry|sun hours|thu hours|closed|slot|runs until|best window)$/],
+      ['hours',   /^(hours|open|opens|opening hours|last entry|sun hours|thu hours|closed|slot|runs until|best window|window)$/],
       ['contact', /^(contact|contacts)$/],
-      ['dress',   /^(dress|wear|footwear|shoes)$/]
+      ['dress',   /^(dress|dress code|wear|footwear|shoes|men|women|avoid|attire)$/]
     ];
     var MONEY_RE = /[€$£]|\bfree\b|à la carte|included|\bpass\b|\bpay|prepaid|walk-up|donation|not recorded/i;
+    var MONEY_VALUE_RE = /[€$£]\s?\d|\bfree\b|at the (door|gate)/i;
     var CLOCK_RE = /\b\d{1,2}(:\d{2})?\s*(am|pm)\b/i;
     var STREET_RE = /^(via|viale|piazza|piazzetta|piazzale|corso|vicolo|fondamenta|calle|campo|salizzada|largo|riva|strada|sestiere)\b/i;
+    // Labels whose content the "getting there" strip already carries (transport,
+    // leave/arrive timing, what comes next). They never render as facts.
+    var TRANSPORT_LABEL = /^(walks?|taxis?|trains?|vaporetto|metro|bus|boat|ferry|traghetto|funicular|gondola|transfer|route|line|getting there|or walk|then|after|next|tomorrow|to|to (?!do\b)[a-z].*|at [a-z].*|get off|stop|pick-?up|bag drop|finish( by)?|back (at|by|to) .*|back by|why early|target .*|total trip|[a-z]+ check-in|leave .*|out by)$/;
+    var PREVIEW_LABEL = { dinner: 'meal', lunch: 'meal', breakfast: 'meal', table: 'meal', 'class': 'class', flight: 'flight' };
+    var HOURS_LABEL = /^(hours|open|opens|opening hours|last entry|sun hours|thu hours|closed|slot|runs until|best window|window|entry|stalls)$/;
+    var DRESS_VALUE_RE = /\b(clothes|shoes|jacket|no tie|dress code|sandals|attire|covered|closed[- ]toe|smart casual)\b/i;
+    var ACCESS_VALUE_RE = /\b(easy|flat|steep|scenic|uneven|stairs|steps|lift|handrail|km|gravel|cobbles?)\b/i;
+    var TIME_FILLER = /\b(from|by|at|until|to|sharp|window|about|around|approx|or|and|am|pm|a\.m\.|p\.m\.|mon|tue|wed|thu|fri|sat|sun|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|day|tomorrow|today)\b/gi;
+
+    /* ---- Categories ----
+       Sixty hand-written chips ("Tintoretto Cycle", "Square & Tombs") become
+       one of a dozen fixed categories, so the chip colour and the fact
+       vocabulary are the same for every stop of a kind. The original label
+       still shows beside the chip when it says more than the category. */
+    var CAT_RULES = [
+      ['Flight',     /flight|airport/i],
+      ['Transfer',   /private car|transfer|driver/i],
+      ['Train',      /train|return trip|bus & train|train & bus/i],
+      ['Boat',       /ferry|vaporetto|crossing|gondola ride/i],
+      ['Break',      /hotel break|rest & pack|rest/i],
+      ['Hotel',      /check-?in|checkout|check-out|bag drop|hotel/i],
+      ['Breakfast',  /breakfast/i],
+      ['Lunch',      /lunch/i],
+      ['Dinner',     /dinner|dining|supper/i],
+      ['Meet',       /meet ?up/i],
+      ['Church',     /church|basilica|cathedral|duomo|crypt/i],
+      ['Museum',     /museum|gallery|palace|opera house|modern art|art museum|tintoretto cycle|historic house|ruins & museum/i],
+      ['Experience', /tour|class|hunt|tasting|workshop|experience|show/i],
+      ['Walk',       /stroll|walk|quarter|shops|spritz|district|market/i],
+      ['Sight',      /./]
+    ];
+    var CAT_COLOR = {
+      Flight: '#7a6f63', Transfer: '#7a6f63', Train: '#5a6d7a', Boat: '#3f7d8c',
+      Break: '#b8873b', Hotel: '#9a7b4f', Breakfast: '#c0562f', Lunch: '#c0562f', Dinner: '#c0562f',
+      Meet: '#1f7a3d', Church: '#7b5ea7', Museum: '#6b5bd2', Experience: '#2f7d6d', Walk: '#5b8a3c', Sight: '#6b5bd2'
+    };
+    var MEAL_CATS = { Breakfast: 1, Lunch: 1, Dinner: 1 };
+    var TRANSIT_CATS = { Flight: 1, Transfer: 1, Train: 1, Boat: 1 };
+    function categoryFor(item, d) {
+      var act = String(item.act || '');
+      if (/ferry & lunch/i.test(act)) return 'Lunch';
+      for (var i = 0; i < CAT_RULES.length; i++) if (CAT_RULES[i][1].test(act)) return CAT_RULES[i][0];
+      return 'Sight';
+    }
+    // The order facts take on the compact card, per category; anything not
+    // listed follows in its written order, and the compact card shows four.
+    var CAT_FACTS = {
+      Church:     ['Hours', 'Last entry', 'Entry', 'Slot', 'Allow', 'Highlight', 'Closed', 'Access'],
+      Museum:     ['Hours', 'Last entry', 'Entry', 'Slot', 'Allow', 'Highlight', 'Closed', 'Access'],
+      Sight:      ['Hours', 'Last entry', 'Entry', 'Slot', 'Allow', 'Highlight', 'Closed', 'Access'],
+      Walk:       ['Hours', 'Last entry', 'Allow', 'Highlight', 'Access'],
+      Experience: ['Hours', 'Slot', 'Tour', 'Allow', 'Host', 'Guide', 'Includes', 'Highlight'],
+      Breakfast:  ['Cuisine', 'Order', 'Angelo', 'Debi & Tom', 'Debi', 'Tom', 'Table', 'Stars'],
+      Lunch:      ['Cuisine', 'Order', 'Angelo', 'Debi & Tom', 'Debi', 'Tom', 'Table', 'Stars'],
+      Dinner:     ['Cuisine', 'Order', 'Angelo', 'Debi & Tom', 'Debi', 'Tom', 'Table', 'Stars'],
+      Train:      ['Service', 'Class', 'Seats', 'Duration', 'Arrive'],
+      Boat:       ['Service', 'Line', 'Duration', 'Arrive'],
+      Transfer:   ['Service', 'Duration', 'Arrive'],
+      Flight:     ['Flight', 'Cabin', 'Aircraft', 'Duration', 'Check-in'],
+      Hotel:      ['Check-in', 'Check-out', 'Room', 'Allow'],
+      Break:      ['Allow', 'Room'],
+      Meet:       ['Where', 'Allow']
+    };
+    var COMPACT_FACTS = 4;
+    // Canonical labels: many spellings of the same idea become one word.
+    var LABEL_FOLD = [
+      ['Allow',     /^(duration|visit|keep to|length|allow|time needed)$/],
+      ['Highlight', /^(highlights?|focus|inside|works|artists|also|famous for|views?|see|look for)$/],
+      ['Order',     /^(order|menu|dishes?)$/],
+      ['Cuisine',   /^(cuisine|style|food)$/],
+      ['Debi & Tom',/^(debi & tom|for debi & tom)$/],
+      ['Debi',      /^(debi|for debi)$/],
+      ['Tom',       /^(tom|for tom)$/],
+      ['Angelo',    /^(angelo|for angelo)$/],
+      ['Access',    /^(access|terrain|paths?|ground level|surface)$/],
+      ['Check-in',  /^(check-?in)$/],
+      ['Check-out', /^(check-?out)$/],
+      ['Table',     /^(table|lunch|dinner|breakfast)$/],
+      ['Hours',     /^(hours|open|opening hours|sun hours|thu hours|best window|window)$/]
+    ];
+    function foldLabel(label, cat) {
+      var key = label.toLowerCase();
+      for (var i = 0; i < LABEL_FOLD.length; i++) if (LABEL_FOLD[i][1].test(key)) {
+        var to = LABEL_FOLD[i][0];
+        if (to === 'Allow' && TRANSIT_CATS[cat]) return 'Duration';
+        return to;
+      }
+      return titleCase(label);
+    }
 
     function slotFor(label, value) {
       var key = String(label || '').trim().toLowerCase().replace(/\s+/g, ' ');
@@ -6135,6 +6241,8 @@
       for (var i = 0; i < SLOT_RULES.length; i++) {
         if (SLOT_RULES[i][1].test(key)) { slot = SLOT_RULES[i][0]; break; }
       }
+      if (slot === 'extra' && MONEY_VALUE_RE.test(value)) slot = 'cost';
+      if (slot === 'extra' && DRESS_VALUE_RE.test(value)) slot = 'dress';
       if (slot === 'cost' && !MONEY_RE.test(value)) slot = CLOCK_RE.test(value) ? 'hours' : 'extra';
       if (slot === 'contact') slot = value.indexOf('@') >= 0 ? 'email' : (/\d{6,}/.test(value.replace(/[\s.()-]/g, '')) ? 'phone' : 'extra');
       return slot;
@@ -6142,39 +6250,100 @@
 
     function titleCase(s) { s = String(s || '').trim(); return s.charAt(0).toUpperCase() + s.slice(1); }
 
-    function canonFacts(item, stats) {
-      var c = { where: null, leave: null, arrive: null, meet: null, cost: null, refs: [], via: null, phone: null, email: null, site: null,
-                hours: [], dress: [], extras: [], go: [] };
-      (stats || []).forEach(function (s) {
-        var l = String(s.l || '').trim(), v = String(s.v || '').trim();
-        if (!l || !v || /^(to be added|tbd|tba)\b/i.test(v)) return;
-        switch (slotFor(l, v)) {
-          case 'drop': return;
-          case 'where': if (!c.where) { c.where = v; return; } break;
-          case 'leave': if (!c.leave) { c.leave = { l: titleCase(l), v: v }; return; } break;
-          case 'arrive': if (!c.arrive) { c.arrive = v; return; } break;
-          case 'meet':  if (!c.meet) { c.meet = v; return; } break;
-          case 'cost':  if (!c.cost) { c.cost = v; return; } break;
-          case 'ref':   c.refs.push(v); return;
-          case 'phone': if (!c.phone) { c.phone = v; return; } break;
-          case 'email': if (!c.email) { c.email = v; return; } break;
-          case 'site':  if (!c.site) { c.site = v; return; } break;
-          case 'hours': c.hours.push({ l: titleCase(l), v: v }); return;
-          case 'dress': c.dress.push(v); return;
+    // Every clock in a piece of text, as minutes; a bare "1:45" is read as the
+    // reading nearest the stop it is written on.
+    function clocksIn(text, item) {
+      var out = [], re = /\b(\d{1,2})(?::(\d{2}))?(?:\s*(am|pm|a\.m\.|p\.m\.)\b)?/gi, m;
+      text = String(text || '');
+      while ((m = re.exec(text))) {
+        if (!m[2] && !m[3]) continue;
+        var h = +m[1], mi = m[2] ? +m[2] : 0;
+        if (h > 23 || mi > 59) continue;
+        var c = { h: h, mi: mi };
+        if (h > 12) { out.push(h * 60 + mi); continue; }
+        if (m[3]) { out.push(clockMin(c, m[3].charAt(0).toLowerCase() + 'm')); continue; }
+        var am = clockMin(c, 'am'), pm = clockMin(c, 'pm');
+        var ref = item && item.time ? item.time.start : 12 * 60;
+        out.push(Math.abs(am - ref) <= Math.abs(pm - ref) ? am : pm);
+      }
+      return out;
+    }
+    function durationMin(text) {
+      var d = DUR_RE.exec(String(text || ''));
+      if (!d) return null;
+      function num(s) { var p = String(s).split(/[\u2013-]/); return { lo: +p[0], hi: +(p[1] || p[0]) }; }
+      if (d[3]) { var r = num(d[3]); return { lo: r.lo, hi: r.hi }; }
+      var h = num(d[1]), extra = d[2] ? +d[2] : 0;
+      return { lo: h.lo * 60 + extra, hi: h.hi * 60 + extra };
+    }
+    function spanMatches(text, minutes) {
+      var d = durationMin(text);
+      return !!d && minutes != null && minutes >= d.lo - 5 && minutes <= d.hi + 5;
+    }
+    function onlyTiming(v) {
+      return !/[a-z]/i.test(String(v).replace(/\d{1,2}(:\d{2})?/g, ' ').replace(TIME_FILLER, ' '));
+    }
+    function inText(hay, needle) {
+      hay = String(hay || '').toLowerCase(); needle = String(needle || '').toLowerCase().trim();
+      return !!needle && hay.indexOf(needle) >= 0;
+    }
+
+    /* ctx: { cat, laterStarts, title, area } — the day around the stop, so a
+       fact that only restates the header, the strip or the next row can go. */
+    function canonFacts(item, stats, ctx) {
+      ctx = ctx || {};
+      var cat = ctx.cat || 'Sight';
+      var c = { where: null, leave: null, arrive: null, meet: null, cost: null, costs: [], refs: [], via: null, phone: null, email: null, site: null,
+                hours: [], dress: [], extras: [], go: [], goNotes: [] };
+      var start = item.time ? item.time.start : null, end = item.time ? (item.time.point ? null : item.time.end) : null;
+      var span = start != null && end != null ? end - start : null;
+      var modeClocks = clocksIn(item.mode, item);
+      var modeDur = [];
+      String(item.mode || '').replace(new RegExp(DUR_RE.source, 'gi'), function (m0) { var d = durationMin(m0); if (d) modeDur.push(d); return m0; });
+      var later = ctx.laterStarts || [];
+      function headerOnly(v) {
+        var cl = clocksIn(v, item);
+        if (!cl.length || !onlyTiming(v)) return false;
+        return cl.every(function (t) { return t === start || t === end; });
+      }
+      function previewClock(v) {
+        return clocksIn(v, item).some(function (t) { return t !== start && t !== end && later.indexOf(t) >= 0; });
+      }
+      function onStrip(v) {
+        var cl = clocksIn(v, item);
+        return cl.length > 0 && cl.every(function (t) { return modeClocks.indexOf(t) >= 0; });
+      }
+      function addFact(l, v) {
+        var label = foldLabel(l, cat);
+        if (label === 'Allow' || label === 'Duration') {
+          if (spanMatches(v, span)) return;
+          if (modeDur.some(function (d) { var f = durationMin(v); return f && f.lo >= d.lo - 5 && f.hi <= d.hi + 5; })) return;
         }
-        c.extras.push({ l: titleCase(l), v: v });
-      });
+        if (v.length > 3 && (inText(ctx.area, v) || inText(c.where, v) || inText(modeStreet, v))) return;   // "Entry: Via San Vittore 21" under that address
+        c.extras.push({ l: label, v: v });
+      }
+      var modeStreet = null;
       // The transit cell is one free-text line carrying transport, timing,
       // references and cross-links. Pull the structured bits into their slots
-      // and keep the rest as the route, so nothing has to truncate.
+      // and keep the rest as the route, so nothing has to truncate. It is read
+      // first so its leave-by is the one the strip shows.
       String(item.mode || '').split(/\s\u00b7\s/).forEach(function (seg) {
         seg = seg.trim();
         if (!seg) return;
         var m;
+        // "Private transfer confirmed (€50)": the price belongs to the Payments chip.
+        if ((m = /\s*\(?([€$£]\s?\d[\d.,]*(?:\s*(?:each|pp|per person|each way|total))?)\)?/.exec(seg))) {
+          var mode = modeFor(seg);
+          c.costs.push({ l: /transfer/i.test(seg) ? 'Transfer' : (mode ? mode[2] : 'Cost'), v: m[1].trim(), generic: false });
+          seg = seg.replace(m[0], '').replace(/\s+/g, ' ').trim();
+          if (!seg) return;
+        }
         if ((m = /^(leave(?:\s+(?:hotel|by|at|orto by))?|out by|pick-?up|depart hotel)\s+(?:by\s+)?(.+)$/i.exec(seg))) {
+          if (!/\d/.test(m[2])) { c.go.push(seg); return; }   // "Leave after lunch" is a note, not a clock
           var lbl = titleCase(m[1]);
           if (/^leave$/i.test(m[1])) lbl = 'Leave by';
-          if (!c.leave) c.leave = { l: lbl, v: m[2] }; else c.extras.push({ l: lbl, v: m[2] });
+          if (!c.leave) c.leave = { l: lbl, v: m[2] };
+          else if (clocksIn(m[2], item)[0] !== clocksIn(c.leave.v, item)[0]) c.extras.push({ l: lbl, v: m[2] });
           return;
         }
         if ((m = /^(?:ref|pnr|conf(?:irmation)?|booking ref)\s*#?:?\s*([A-Za-z0-9-]+)\b\s*(.*)$/i.exec(seg)) && (/\d/.test(m[1]) || m[1] === m[1].toUpperCase())) {
@@ -6187,11 +6356,76 @@
           c.refs.push(m[2]); if (!c.via) c.via = m[1]; return;
         }
         if ((m = /^meet(?:\s+at)?\s+(.+)$/i.exec(seg))) { if (!c.meet) c.meet = m[1]; return; }
-        if (STREET_RE.test(seg) && !c.where) { c.where = seg; return; }
+        if (STREET_RE.test(seg)) { if (!modeStreet) modeStreet = seg; return; }
         if (/^(top-?10|wishlist|wl\d)/i.test(seg) || /\b(wl|vr|vt|ml|lc|lg)\d\d\b/.test(seg)) return;
         c.go.push(seg);
       });
+      (stats || []).forEach(function (s) {
+        var l = String(s.l || '').trim(), v = String(s.v || '').trim();
+        if (!l || !v || /^(to be added|tbd|tba)\b/i.test(v)) return;
+        var key = l.toLowerCase().replace(/\s+/g, ' ');
+        var slot = slotFor(l, v);
+        if (slot === 'drop') return;
+        if (slot === 'cost') { c.costs.push({ l: titleCase(l), v: v, generic: /^(cost|price|fare|entry|ticket|bar cost)$/.test(key) }); if (!c.cost) c.cost = v; return; }
+        if (slot === 'ref') { c.refs.push(v); return; }
+        if (slot === 'dress') { c.dress.push(/^(dress|dress code|wear)$/.test(key) ? v : titleCase(l) + ': ' + v); return; }
+        if (slot === 'where') { if (!c.where) c.where = v; return; }
+        if (slot === 'phone') { if (!c.phone) c.phone = v; return; }
+        if (slot === 'email') { if (!c.email) c.email = v; return; }
+        if (slot === 'site') { if (!c.site) c.site = v; return; }
+        if (slot === 'meet') { if (!c.meet) c.meet = v; return; }
+        if (slot === 'arrive') {
+          if (/^check in$/.test(key) && !CLOCK_RE.test(v)) { addFact(l, v); return; }
+          if (!c.arrive) c.arrive = v.replace(/^by\s+/i, 'by ');
+          return;
+        }
+        if (slot === 'leave') {
+          if (!c.leave) { c.leave = { l: titleCase(l), v: v }; return; }
+          var a = clocksIn(v, item)[0], b = clocksIn(c.leave.v, item)[0];
+          if (a != null && a === b) return;   // the strip already says it
+          c.extras.push({ l: titleCase(l), v: v }); return;
+        }
+        if (slot === 'hours') {
+          var hl = foldLabel(l, cat), hv = v;
+          if (/^opens$/.test(key)) { hl = 'Hours'; hv = 'Opens ' + v; }
+          if (/^runs until$/.test(key)) { hl = 'Hours'; hv = 'Until ' + v; }
+          if (/^(entry|ticket|slot)$/.test(key)) hl = titleCase(l);
+          c.hours.push({ l: hl, v: hv }); return;
+        }
+        // Transport and timing labels: the strip carries these.
+        if (TRANSPORT_LABEL.test(key)) {
+          if (/^(get off|stop|line)$/.test(key) && !inText(item.mode, v.split(/\s*\u00b7\s*/)[0])) { c.goNotes.push(/^line$/.test(key) ? 'Line ' + v : key + ' ' + v); return; }
+          if (CLOCK_RE.test(v) && !c.leave && !/^(after|then|next|tomorrow|finish|bag drop)/.test(key) && !previewClock(v) && !headerOnly(v) && !onStrip(v)) {
+            var am = /^aim for\s+(.+)$/i.exec(v);
+            c.leave = am ? { l: 'Aim for', v: am[1] + ' ' + key } : { l: titleCase(l), v: v };
+            return;
+          }
+          if (/^(walks?|paths?)$/.test(key) && !/\d/.test(v) && ACCESS_VALUE_RE.test(v)) { addFact('Access', v); return; }
+          return;
+        }
+        var pv = PREVIEW_LABEL[key];
+        if (pv === 'meal' && !MEAL_CATS[cat]) return;
+        if (pv === 'class' && cat !== 'Train' && cat !== 'Experience') return;
+        if (pv === 'flight' && cat !== 'Flight') return;
+        if (!HOURS_LABEL.test(key) && (headerOnly(v) || previewClock(v) || onStrip(v))) return;
+        addFact(l, v);
+      });
+      // A street in the transit cell is the address unless the facts already gave one; then it is a route note ("Strada Nova").
+      if (modeStreet) { if (!c.where) c.where = modeStreet; else c.goNotes.push(modeStreet); }
+      // Hours that only restate the header (Entry 10:00 AM on a 10:00 AM stop).
+      c.hours = c.hours.filter(function (h) { return !headerOnly(h.v); });
+      // "Pickup 8:00 AM at the hotel · meet driver at hotel by 8:00": one clock, one line.
+      if (c.meet && c.leave && clocksIn(c.meet, item).length && clocksIn(c.meet, item)[0] === clocksIn(c.leave.v, item)[0]) c.meet = null;
       return c;
+    }
+
+    // Facts in the order the category wants them: the fixed vocabulary first,
+    // then whatever else was written, in its own order.
+    function orderFacts(rows, cat) {
+      var pri = CAT_FACTS[cat] || [];
+      return rows.map(function (r, i) { var p = pri.indexOf(r.l); return { r: r, p: p < 0 ? pri.length + i : p, i: i }; })
+        .sort(function (a, b) { return a.p - b.p || a.i - b.i; })
+        .map(function (x) { return x.r; });
     }
 
     /* ---- Route line ----
@@ -6256,7 +6490,8 @@
       s = s.replace(/\(([^)]*)\)/g, function (_, inner) { inner = inner.replace(/^~\s*/, '').trim(); if (inner) leg.note = leg.note ? leg.note + ' \u00b7 ' + inner : inner; return ' '; });
       s = s.replace(/[()]/g, ' ').replace(/^\W+|\W+$/g, '').replace(/\s+/g, ' ').trim();
       var mode = modeFor(s);
-      if (mode && !leg.dur && /\d{1,2}:\d{2}/.test(leg.raw)) mode = null;   // "vaporetto to station by ~10:15" is timing, not a leg
+      // "vaporetto to station by ~10:15" is timing, not a leg; "Trenord regional (~4:35–5:35 PM)" is a leg with a window.
+      if (mode && !leg.dur && /\d{1,2}:\d{2}/.test(leg.raw) && !/\d{1,2}:\d{2}\s*(?:[ap]m)?\s*[\u2013-]\s*\d{1,2}:\d{2}/i.test(leg.raw)) mode = null;
       leg.mode = mode;
       leg.rest = s;
       return leg;
@@ -6398,19 +6633,62 @@
       return merged;
     }
 
+    function wordsOf(s) {
+      return String(s || '').toLowerCase().replace(/[^a-z0-9\u00e0-\u00ff ]+/g, ' ').split(/\s+/).filter(function (w) { return w.length > 1; });
+    }
+    // The place line under the title: never a route, never the title again.
+    function cleanArea(parts, title) {
+      var tw = wordsOf(title), out = [];
+      parts.forEach(function (p) {
+        p = String(p || '').replace(/\s*\([^)]*\b(min|walk|hr)\b[^)]*\)/gi, '').trim();
+        if (!p) return;
+        var address = STREET_RE.test(p) && /\d/.test(p);
+        if (!address && /\bwalks?\b|\bmin\b/i.test(p)) return;
+        if (!address) {
+          var i = p.toLowerCase().indexOf(title.toLowerCase());
+          if (i >= 0 && title) {
+            p = (p.slice(0, i) + p.slice(i + title.length)).replace(/^[\s\/,\u00b7&\u2013-]+|[\s\/,\u00b7&\u2013-]+$/g, '');
+            if (p.length < 3) return;
+          }
+          var pw = wordsOf(p);
+          if (pw.length && pw.filter(function (w) { return tw.indexOf(w) >= 0; }).length / pw.length >= 0.75) return;
+        }
+        if (out.indexOf(p) < 0) out.push(p);
+      });
+      return out;
+    }
+    // Status, references and ranking tokens live in the chips now; the prose
+    // is otherwise verbatim.
+    var TOKEN_SENTENCE = /\s*(?:Wishlist wl\d+(?: and Venice Top 10 number \d+)?|Venice Top 10 number \d+)\.\s*/g;
+    function cleanStory(s) { return String(s || '').replace(TOKEN_SENTENCE, ' ').replace(/\s+/g, ' ').trim(); }
+    function cleanLead(s, skip) {
+      s = String(s || '').trim();
+      if (skip) s = titleCase(s.replace(/^optional[.,:]\s*/i, '').replace(/,\s*optional\.$/i, '.'));
+      return s;
+    }
+
     function itemMeta(item, dayN) {
       var d = DATA.DETAILS[item.k] || {};
       var enrich = DATA.SITE_ENRICH[item.k] || {};
       var type = d.type || item.act || 'Culture';
+      var cat = categoryFor(item, d);
       var loc = String(item.loc || '');
       var dressUp = /\uD83E\uDD42/.test(loc), dressCode = /\uD83D\uDC54/.test(loc);
       loc = loc.replace(EMOJI_TAIL, '').trim();
       var locParts = loc.split(/\s\u00b7\s/);
       var name = locParts[0] || item.act || item.title;
-      var canon = canonFacts(item, mergeResFacts(item.k, enrich.stats || []));
+      var model = dayModel(dayN), idx = model.items.indexOf(item);
+      var laterStarts = [];
+      model.items.forEach(function (it, i) { if (i > idx && it.time) laterStarts.push(it.time.start); });
+      var areaParts = cleanArea(locParts.slice(1), name);
+      var canon = canonFacts(item, mergeResFacts(item.k, enrich.stats || []), { cat: cat, laterStarts: laterStarts, title: name, area: areaParts.join(' \u00b7 ') });
+      if (canon.where) areaParts = cleanArea(areaParts.concat([canon.where]), name);
       var dayLabel = (DATA.DAY_LABEL['d' + dayN] || '').split('\u00b7').map(function (s) { return s.trim(); });
       var city = dayLabel[2] && !/\u2192|departure/i.test(dayLabel[2]) ? dayLabel[2] : '';
       var res = DATA.rowStatus(item.row);
+      var next = idx >= 0 && idx < model.items.length - 1 ? { item: model.items[idx + 1], day: dayN, idx: idx + 1 } : null;
+      if (!next && idx >= 0 && inTrip(dayN + 1) && dayModel(dayN + 1).items.length) next = { item: dayModel(dayN + 1).items[0], day: dayN + 1, idx: 0 };
+      var kind = String(item.act || '').trim();
       return {
         d: d,
         k: item.k,
@@ -6418,18 +6696,21 @@
         rec: reservationFor(item.k),
         info: bookingInfoFor(item.k),
         type: type,
-        kind: item.act || type,
-        color: DATA.TYPE_COLOR[type] || 'var(--muted)',
+        cat: cat,
+        kind: kind && kind.toLowerCase() !== cat.toLowerCase() ? kind : '',
+        color: CAT_COLOR[cat] || DATA.TYPE_COLOR[type] || 'var(--muted)',
         photo: DATA.panelPhoto(enrich, item.loc, item.title),
         name: name,
         title: name,
-        area: locParts.slice(1).concat(canon.where ? [canon.where] : []).join(' \u00b7 '),
+        area: areaParts.join(' \u00b7 '),
         city: city,
+        next: next,
         dressUp: dressUp,
+        churchDress: dressCode,
         dressCode: dressCode || canon.dress.length > 0,
         canon: canon,
-        lead: enrich.lead || '',
-        desc: enrich.desc || d.desc || '',
+        lead: cleanLead(enrich.lead || '', item.skip),
+        desc: cleanStory(enrich.desc || d.desc || ''),
         tips: splitTips(d.tips || '')
       };
     }
@@ -6454,12 +6735,21 @@
       var rows = [], seen = {};
       function add(l, v) { var key = (l + '|' + v).toLowerCase(); if (seen[key]) return; seen[key] = 1; rows.push({ l: l, v: v }); }
       var secs = (meta.rec && meta.rec.sections) || [];
+      var resMoney = [];
       secs.forEach(function (sec) {
         (sec.lines || []).forEach(function (line) {
-          if (MONEY_LABEL.test(String(line.l).trim())) add((sec.subhd && secs.length > 1 ? sec.subhd + ' \u00b7 ' : '') + line.l, line.v);
+          if (MONEY_LABEL.test(String(line.l).trim())) { add((sec.subhd && secs.length > 1 ? sec.subhd + ' \u00b7 ' : '') + line.l, line.v); resMoney.push(String(line.v).toLowerCase()); }
         });
       });
-      if (meta.canon.cost) add('Cost', meta.canon.cost);
+      var hasResCost = rows.some(function (r) { return /^(.*\u00b7 )?(cost|fare|price)$/i.test(r.l); });
+      (meta.canon.costs || []).forEach(function (f) {
+        // A generic "Cost" on the card repeats the reservation's line; a named
+        // one (Campanile €6) only if its figure is not already there.
+        if (f.generic && hasResCost) return;
+        var fig = /[€$£]\s?[\d.,]+|\bfree\b/i.exec(f.v);
+        if (fig && resMoney.some(function (v) { return v.indexOf(fig[0].toLowerCase()) >= 0; })) return;
+        add(f.generic ? 'Cost' : f.l, f.v);
+      });
       return rows;
     }
 
@@ -6502,7 +6792,7 @@
         });
         if (!blocks.length && c.refs.length) html += c.refs.map(function (r) { return tipRow({ l: c.via || 'Reference', v: r, copy: true }); }).join('');
         if (info.howToBook) html += '<p class="dm-tip-p">' + escHtml(info.howToBook) + '</p>';
-        if (info.couldBook) html += '<div class="dm-tip-sub">If you want a table held</div><p class="dm-tip-p">' + escHtml(info.couldBook) + '</p>';
+        if (info.couldBook) html += '<div class="dm-tip-sub">' + (MEAL_CATS[meta.cat] ? 'If you want a table held' : 'If you want it guaranteed') + '</div><p class="dm-tip-p">' + escHtml(info.couldBook) + '</p>';
         if (meta.res === 'ps-todo' && c.site) html += '<a class="dm-tip-link" href="' + escHtml(siteUrl(c.site)) + '" target="_blank" rel="noopener">Book at ' + escHtml(siteLabel(c.site)) + ' \u2197</a>';
         if (!html) html = '<p class="dm-tip-p">No booking details recorded.</p>';
       } else if (kind === 'pay') {
@@ -6510,11 +6800,12 @@
         var rows = paymentRows(meta);
         html = rows.length ? rows.map(tipRow).join('') : '<p class="dm-tip-p">Nothing to pay recorded.</p>';
       } else if (kind === 'dress') {
-        title = meta.dressUp ? 'Dress up' : 'Dress code';
-        var lines = [];
-        if (meta.dressUp) lines.push('Smart evening dress: this is a dress-up dinner.');
-        else if (meta.dressCode) lines.push('Church dress code: shoulders and knees covered, hats off inside.');
-        c.dress.forEach(function (v) { lines.push(v); });
+        // 👔 on the row means a church; a plain dress note is just what to wear.
+        title = meta.dressUp ? 'Dress up' : (meta.churchDress ? 'Dress code' : 'What to wear');
+        var lines = [], seen = {};
+        if (meta.dressUp) lines.push('Smart evening dress: this is a dress-up occasion.');
+        else if (meta.churchDress) lines.push('Church dress code: shoulders and knees covered, hats off inside.');
+        c.dress.forEach(function (v) { var k = v.toLowerCase(); if (!seen[k]) { seen[k] = 1; lines.push(v); } });
         ((meta.rec && meta.rec.sections) || []).forEach(function (sec) {
           (sec.lines || []).forEach(function (line) { if (/^(dress|wear|footwear)$/i.test(String(line.l).trim())) lines.push(line.v); });
         });
@@ -6561,12 +6852,12 @@
       }
       var route = parseRoute(c.go, prevName, meta);
       if (route) {
-        var extra = route.notes.slice();
+        var extra = route.notes.concat(c.goNotes);
         if (c.arrive) extra.push('arrive ' + c.arrive);
         lines.push('<div class="dmb-ln dmb-route"><span class="tx">' + (route.from ? '<span class="from">From ' + escHtml(route.from) + '</span> ' : '') + route.html +
           (extra.length ? ' <span class="alt">\u00b7 ' + escHtml(extra.join(' \u00b7 ')) + '</span>' : '') + '</span></div>');
       } else if (c.go.length) {
-        var alts = c.go.slice(1);
+        var alts = c.go.slice(1).concat(c.goNotes);
         if (c.arrive) alts.push('arrive ' + c.arrive);
         lines.push('<div class="dmb-ln"><span class="ic">\u2022</span><span class="tx"><b>' + escHtml(c.go[0]) + '</b>' +
           (alts.length ? ' <span class="alt">\u00b7 ' + escHtml(alts.join(' \u00b7 ')) + '</span>' : '') + '</span></div>');
@@ -6575,6 +6866,8 @@
       }
       return lines.length ? '<div class="dmb-now">' + lines.join('') + '</div>' : '';
     }
+
+    function factRows(meta) { return orderFacts(meta.canon.hours.concat(meta.canon.extras), meta.cat); }
 
     // Everything that is not in a slot, as one labelled line. Money, references
     // and dress live in their chips' tooltips, so they stay off the card.
@@ -6587,21 +6880,23 @@
         if (c.meet) rows.push({ l: 'Meet', v: c.meet });
         if (c.go.length) { var r = parseRoute(c.go, prevName, meta); rows.push({ l: 'Get there', v: r ? r.text + (r.notes.length ? ' \u00b7 ' + r.notes.join(' \u00b7 ') : '') : c.go.join(' \u00b7 ') }); }
       }
-      c.hours.forEach(function (h) { rows.push(h); });
-      if (full) {
-        c.refs.forEach(function (r) { rows.push({ l: c.via || 'Ref', v: r }); });
-        if (c.phone) rows.push({ l: 'Phone', v: c.phone });
-        if (c.site) rows.push({ l: 'Website', v: c.site });
-        if (c.email) rows.push({ l: 'Email', v: c.email });
-      }
-      return rows.concat(c.extras);
+      var facts = factRows(meta);
+      if (!full) return facts.slice(0, COMPACT_FACTS);
+      rows = rows.concat(facts);
+      c.costs.forEach(function (f) { rows.push({ l: f.generic ? 'Cost' : f.l, v: f.v }); });
+      c.refs.forEach(function (r) { rows.push({ l: c.via || 'Ref', v: r }); });
+      c.dress.forEach(function (v) { rows.push({ l: 'Dress', v: v }); });
+      if (c.phone) rows.push({ l: 'Phone', v: c.phone });
+      if (c.site) rows.push({ l: 'Website', v: c.site });
+      if (c.email) rows.push({ l: 'Email', v: c.email });
+      return rows;
     }
 
     var BLOCK_LABEL = { tips: 'All tips', facts: 'All facts', lead: 'Full text', desc: 'Full story' };
     var BLOCK_TITLE = { tips: 'Know before you go', facts: 'Facts', lead: 'Summary', desc: 'Story' };
 
-    function blockHtml(kind, inner) {
-      return '<div class="dm-block dm-block-' + kind + '" data-kind="' + kind + '">' + inner +
+    function blockHtml(kind, inner, more) {
+      return '<div class="dm-block dm-block-' + kind + '" data-kind="' + kind + '"' + (more ? ' data-more="1"' : '') + '>' + inner +
         '<span class="dm-morepill" aria-hidden="true">' + BLOCK_LABEL[kind] + ' \u203a</span></div>';
     }
 
@@ -6634,11 +6929,29 @@
       }
       return '';
     }
+    // More facts than the compact card shows: the block opens the full list.
+    function hasMoreFacts(meta) { return factRows(meta).length > COMPACT_FACTS; }
+
+    function nextHtml(meta) {
+      var n = meta.next;
+      if (!n) return '';
+      var it = n.item;
+      var name = String(it.loc || '').replace(EMOJI_TAIL, '').trim().split(/\s\u00b7\s/)[0] || it.act || it.title || '';
+      var when = it.time ? fmtMin(it.time.start, true) : (it.rawTime || '');
+      var act = String(it.act || '').trim();
+      return '<button type="button" class="dmb-next" data-go-day="' + n.day + '" data-go-idx="' + n.idx + '">' +
+        '<span class="k">' + (n.day === curDay ? 'Next' : 'Tomorrow') + '</span>' +
+        (when ? '<b>' + escHtml(when) + '</b>' : '') +
+        '<span class="n">' + escHtml(name) + (act && act.toLowerCase() !== name.toLowerCase() ? ' <span class="alt">\u00b7 ' + escHtml(act) + '</span>' : '') + '</span>' +
+        '<span class="ar">\u203a</span></button>';
+    }
 
     function prevStopName(model, i) {
       var p = i > 0 ? model.items[i - 1] : null;
       if (!p) return '';
       var loc = String(p.loc || '').replace(EMOJI_TAIL, '').trim().split(/\s\u00b7\s/)[0];
+      // "Milano Centrale → Venezia Santa Lucia": you leave from where it arrived.
+      if (/\u2192/.test(loc)) loc = loc.split(/\s*\u2192\s*/).pop().trim();
       return loc || p.act || p.title || '';
     }
 
@@ -6648,7 +6961,8 @@
       var prevName = model ? prevStopName(model, i) : '';
       var html = '<div class="dm-card" style="top:' + (i * 100) + '%" data-i="' + i + '"><div class="dm-card-in">';
       html += '<div class="dmb-head"><div class="dmb-tags">' +
-        '<span class="dm-type" style="background:' + meta.color + '">' + escHtml(meta.kind) + '</span>' +
+        '<span class="dm-type" style="background:' + meta.color + '">' + escHtml(meta.cat) + '</span>' +
+        (meta.kind ? '<span class="dm-kind">' + escHtml(meta.kind) + '</span>' : '') +
         '<span class="dm-status ' + st + '" data-i="' + i + '"' + (STATUS_TEXT[st] ? '' : ' hidden') + '>' + (STATUS_TEXT[st] || '') + '</span>' +
         (item.skip ? '<span class="dmb-badge skip">Skip OK</span>' : '') +
         '</div><span class="dm-time">' + (item.time ? escHtml(fmtRange(item.time)) : escHtml(item.rawTime || 'Time TBD')) + '</span></div>';
@@ -6661,9 +6975,9 @@
       html += '<div class="dm-body">';
       ['tips', 'facts', 'lead', 'desc'].forEach(function (kind) {
         var inner = textHtml(meta, kind, false);
-        if (inner) html += blockHtml(kind, inner);
+        if (inner) html += blockHtml(kind, inner, kind === 'facts' && hasMoreFacts(meta));
       });
-      html += '</div></div></div>';
+      html += '</div>' + nextHtml(meta) + '</div></div>';
       return html;
     }
 
@@ -6694,7 +7008,13 @@
         if (pill) pill.textContent = BLOCK_LABEL[block.getAttribute('data-kind')] + ' \u203a';
         block.removeAttribute('role'); block.removeAttribute('tabindex'); block.removeAttribute('aria-label'); block.removeAttribute('data-open');
         if (text) { text.classList.remove('clamp'); text.style.webkitLineClamp = ''; }
-        Array.prototype.forEach.call(block.querySelectorAll('.dm-block-list > li'), function (li) { li.classList.remove('dm-hide'); });
+        Array.prototype.forEach.call(block.querySelectorAll('.dm-block-list > li'), function (li) { li.classList.remove('dm-hide'); li.classList.remove('clamp'); li.style.webkitLineClamp = ''; });
+        if (block.getAttribute('data-more')) {
+          // The compact card shows a fixed number of facts; the rest open from the pill.
+          block.classList.add('more');
+          block.setAttribute('role', 'button'); block.setAttribute('tabindex', '0');
+          block.setAttribute('aria-label', 'Open all facts');
+        }
       });
       if (noStory && story && lead) {
         lead.classList.add('more');
@@ -6789,6 +7109,15 @@
             else hide.push(li);
           });
           hide.forEach(function (li) { li.classList.add('dm-hide'); });
+          // Tiny screens: if the first bullet alone does not fit, clamp its lines
+          // so the block still ends in a legible line plus the pill.
+          if (items.length && rowBottom + PILL_H > h + 1) {
+            var li0 = items[0]; var cs0 = getComputedStyle(li0);
+            var lh0 = parseFloat(cs0.lineHeight); if (!lh0 || isNaN(lh0)) lh0 = parseFloat(cs0.fontSize) * 1.45;
+            var lines0 = Math.max(1, Math.floor((h - PILL_H - li0.offsetTop) / lh0));
+            li0.classList.add('clamp'); li0.style.webkitLineClamp = String(lines0);
+            rowBottom = li0.offsetTop + li0.offsetHeight;
+          }
           block.classList.add('rows');
           var lp = block.querySelector('.dm-morepill');
           if (lp) lp.textContent = 'All ' + items.length + ' tips \u203a';
@@ -7207,6 +7536,14 @@
         if (moved) { e.preventDefault(); return; }   // a swipe that ended on a chip pages, it does not act
         if (chip.hasAttribute('data-copy')) { e.preventDefault(); copyRef(chip); }
         else if (chip.hasAttribute('data-tip')) { e.preventDefault(); openTip(chip); }
+        return;
+      }
+      var nextBtn = e.target.closest('.dmb-next');
+      if (nextBtn) {
+        if (moved) return;
+        e.preventDefault();
+        var gd = parseInt(nextBtn.getAttribute('data-go-day'), 10), gi = parseInt(nextBtn.getAttribute('data-go-idx'), 10);
+        if (gd === curDay) goTo(gi); else changeDay(gd - curDay);
         return;
       }
       var block = e.target.closest('.dm-block.clipped, .dm-block.more');
