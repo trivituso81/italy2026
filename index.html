@@ -5601,14 +5601,19 @@
       return wrap;
     }
 
+    /* Rows whose single Reservation badge covers the transport as well. Plural
+       because one row can carry two legs (Day 1 arrives on two flights). */
+    var SELF_BOOKING_ACT = /^(flights?|trains?)$/i;
+
     function transportIsBooked(row) {
       if (row.getAttribute('data-transport-done') === '1') return true;
       // Hotel Complete does not mean the private transfer on the same row is booked.
-      // Only Flight/Train rows share one badge for both activity and transport.
+      // Only Flight/Train rows share one badge for both activity and transport,
+      // including rows that carry two legs and so read "Flights" / "Trains".
       var actEl = row.querySelector('.act');
       var act = actEl ? actEl.textContent.replace(/\s*Skip OK\s*/g, '').trim() : '';
       var stat = row.querySelector('.stat .stat-badge') || row.querySelector('.stat-badge');
-      return (act === 'Flight' || act === 'Train') && !!(stat && stat.classList.contains('st-done'));
+      return SELF_BOOKING_ACT.test(act) && !!(stat && stat.classList.contains('st-done'));
     }
 
     function dayResStatus(dayEl) {
@@ -5828,7 +5833,8 @@
       rowAct: rowAct,
       rowStatus: rowStatus,
       reservationKeyFor: reservationKeyFor,
-      bookingInfoFor: bookingInfoFor
+      bookingInfoFor: bookingInfoFor,
+      transportIsBooked: transportIsBooked
     };
   })();
   </script>
@@ -5836,14 +5842,11 @@
   <script>
   (function () {
     function syncModeResBooked() {
+      var isBooked = (window.ITALY_DATA || {}).transportIsBooked;
       document.querySelectorAll('li.row').forEach(function (row) {
         var badge = row.querySelector('.mode .mode-res');
         if (!badge) return;
-        var actEl = row.querySelector('.act');
-        var act = actEl ? actEl.textContent.replace(/\s*Skip OK\s*/g, '').trim() : '';
-        var stat = row.querySelector('.stat-badge');
-        var done = row.getAttribute('data-transport-done') === '1' ||
-          ((act === 'Flight' || act === 'Train') && stat && stat.classList.contains('st-done'));
+        var done = isBooked ? isBooked(row) : row.getAttribute('data-transport-done') === '1';
         if (done) {
           badge.classList.add('mode-res-done');
           badge.title = 'Booked';
