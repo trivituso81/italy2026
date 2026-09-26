@@ -384,6 +384,19 @@
   }
   .day-flash { animation: dayflash 1.5s ease; }
 
+  /* The stop that is live (or next up) on today's card */
+  li.row.row-now, li.row.row-next { background: #fbf4e6; box-shadow: inset 3px 0 0 var(--gold); }
+  li.row.row-now .time::after, li.row.row-next .time::after {
+    display: block; width: max-content; margin: 3px 0 0 auto; padding: 1px 6px;
+    border-radius: 999px; background: var(--gold); color: #fff;
+    font-size: 10px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase;
+  }
+  li.row.row-now .time::after { content: 'Now'; }
+  li.row.row-next .time::after { content: 'Up next'; background: #8a7a5f; }
+  @media (max-width: 900px), (max-width: 1024px) and (orientation: portrait) {
+    li.row.row-now .time::after, li.row.row-next .time::after { display: inline-block; margin: 0 0 0 8px; vertical-align: 1px; }
+  }
+
   /* ---------- ACTIVITY TABLE ROWS ----------
      Time + Activity + Reservation + Transport = fixed.
      Location = flexible (1fr). */
@@ -7865,10 +7878,64 @@
       if (key === lastMinuteKey) return;
       lastMinuteKey = key;
       refreshStatuses();
+      markListNow(now);
       if (!isOpen) renderPill();
     }
     setInterval(tick, 15000);
     document.addEventListener('visibilitychange', function () { if (!document.hidden) tick(); });
+
+    /* ---- Main itinerary: opens on today, at the stop that is live or up next ---- */
+    var listMarked = null;
+    function markListNow(now) {
+      if (listMarked) listMarked.classList.remove('row-now', 'row-next');
+      listMarked = null;
+      var n = dayIndexFor(now);
+      if (!inTrip(n)) return null;
+      var model = dayModel(n);
+      if (!model.items.length) return null;
+      var it = model.items[pickIndex(model, now)];
+      var st = statusFor(it, n, now);
+      if (st !== 'live' && st !== 'upcoming') return null;
+      it.row.classList.add(st === 'live' ? 'row-now' : 'row-next');
+      listMarked = it.row;
+      return it.row;
+    }
+
+    // Only a fresh open lands on today; a restored scroll position or a deep link wins.
+    function scrollListToNow() {
+      var now = romeNow();
+      var row = markListNow(now);
+      var n = dayIndexFor(now);
+      if (!inTrip(n) || isOpen || forceOpen || window.location.hash) return;
+      if ((window.scrollY || document.documentElement.scrollTop || 0) > 40) return;
+      var dayEl = days[n - 1];
+      var moved = false;
+      function stop() { moved = true; }
+      ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (ev) {
+        window.addEventListener(ev, stop, { once: true, passive: true });
+      });
+      function place() {
+        if (moved || isOpen) return;
+        // The page's CSS smooth scroll would animate the jump and the second pass would land mid-flight.
+        var html = document.documentElement;
+        var prev = html.style.scrollBehavior;
+        html.style.scrollBehavior = 'auto';
+        dayEl.scrollIntoView({ block: 'start' });
+        if (row) {
+          var r = row.getBoundingClientRect();
+          var vh = window.innerHeight || html.clientHeight;
+          if (r.bottom > vh - 24) window.scrollBy(0, Math.round(r.top - vh * 0.4));
+        }
+        html.style.scrollBehavior = prev;
+      }
+      place();
+      // The calendar collapses once the page scrolls, which shifts the layout; align again after it settles.
+      setTimeout(place, 450);
+    }
+    function bootList() {
+      if (document.readyState === 'complete') requestAnimationFrame(scrollListToNow);
+      else window.addEventListener('load', function () { requestAnimationFrame(scrollListToNow); }, { once: true });
+    }
 
     /* ---- Boot: URL override, then the real-clock entry point ---- */
     function readQuery() {
@@ -7888,6 +7955,8 @@
       else document.addEventListener('italy:unlocked', function () { openDayMode(null); }, { once: true });
     }
     bootFromUrl();
+    if (document.documentElement.classList.contains('unlocked')) bootList();
+    else document.addEventListener('italy:unlocked', bootList, { once: true });
     window.addEventListener('pageshow', function () {
       if (forceOpen && document.documentElement.classList.contains('unlocked') && !isOpen) openDayMode(null);
     });
