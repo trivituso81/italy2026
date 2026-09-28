@@ -81,7 +81,7 @@
   "vr09": "italy-itinerary-images/vr09.jpg",
   "vr10": "italy-itinerary-images/vr10.jpg",
   "d3h": "italy-itinerary-images/villa-melzi.jpg",
-  "d5h": "italy-itinerary-images/cicchetti.jpg",
+  "d5h": "italy-itinerary-images/bigoli.jpg",
   "d5t": "italy-itinerary-images/eurocity.jpg",
   "d6d": "italy-itinerary-images/sarde-in-saor.jpg",
   "d6f": "italy-itinerary-images/vini-da-gigio.jpg",
@@ -114,5 +114,6 @@
   "d3p": "italy-itinerary-images/bellagio.jpg",
   "d3q": "italy-itinerary-images/bellagio.jpg",
   "d7o": "italy-itinerary-images/ghetto-venezia.jpg",
-  "d7q": "italy-itinerary-images/madonna-orto.jpg"
+  "d7q": "italy-itinerary-images/madonna-orto.jpg",
+  "venice-food-note": "italy-itinerary-images/cicchetti-crostini.jpg"
 }
