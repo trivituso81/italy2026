@@ -7582,7 +7582,19 @@
       root.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('dm-open');
       document.body.style.top = '';
-      window.scrollTo(0, scrollLockY);
+      // history.back() lets the browser restore the scroll it saved while the body was fixed (0),
+      // so the itinerary position is re-applied once that has happened.
+      var y = scrollLockY;
+      function restore() {
+        var html = document.documentElement;
+        var prev = html.style.scrollBehavior;
+        html.style.scrollBehavior = 'auto';
+        window.scrollTo(0, y);
+        html.style.scrollBehavior = prev;
+      }
+      restore();
+      setTimeout(restore, 0);
+      setTimeout(restore, 120);
       renderPill();
     }
 
@@ -7963,10 +7975,29 @@
       // The calendar collapses once the page scrolls, which shifts the layout; align again after it settles.
       setTimeout(place, 450);
     }
-    function bootList() {
-      if (document.readyState === 'complete') requestAnimationFrame(scrollListToNow);
-      else window.addEventListener('load', function () { requestAnimationFrame(scrollListToNow); }, { once: true });
+    // Every visit during the trip lands in Day Mode on the live or next stop; the list stays on
+    // today underneath so closing Day Mode lands there too. A deep link or ?daymode=0 opts out.
+    function autoOpenNow() {
+      if (isOpen || noAutoOpen || window.location.hash) return;
+      if (!document.documentElement.classList.contains('unlocked')) return;
+      if (!inTrip(dayIndexFor(romeNow()))) return;
+      openDayMode(null);
     }
+    function bootList() {
+      function run() { scrollListToNow(); autoOpenNow(); }
+      if (document.readyState === 'complete') requestAnimationFrame(run);
+      else window.addEventListener('load', function () { requestAnimationFrame(run); }, { once: true });
+    }
+    // Coming back to the tab after a while counts as a new visit.
+    var AWAY_MS = 10 * 60 * 1000;
+    var hiddenAt = 0;
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { hiddenAt = Date.now(); return; }
+      if (!hiddenAt || Date.now() - hiddenAt < AWAY_MS) return;
+      hiddenAt = 0;
+      if (isOpen) { closeTip(); closeDetail(); jumpToNow(); }
+      else autoOpenNow();
+    });
 
     /* ---- Boot: URL override, then the real-clock entry point ---- */
     function readQuery() {
@@ -7978,6 +8009,7 @@
     var simParam = qs && (qs.get('simNow') || qs.get('simnow'));
     if (simParam && parseIsoLocal(simParam)) writeSim(simParam);
     var forceOpen = !!(qs && (qs.get('daymode') === '1' || qs.get('daymode') === 'true' || qs.get('daymode') === ''));
+    var noAutoOpen = !!(qs && (qs.get('daymode') === '0' || qs.get('daymode') === 'false'));
 
     renderPill();
     function bootFromUrl() {
@@ -7988,8 +8020,9 @@
     bootFromUrl();
     if (document.documentElement.classList.contains('unlocked')) bootList();
     else document.addEventListener('italy:unlocked', bootList, { once: true });
-    window.addEventListener('pageshow', function () {
+    window.addEventListener('pageshow', function (e) {
       if (forceOpen && document.documentElement.classList.contains('unlocked') && !isOpen) openDayMode(null);
+      else if (e.persisted) autoOpenNow();
     });
   })();
   </script>
