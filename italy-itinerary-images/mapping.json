@@ -36,7 +36,6 @@
   "d12a": "italy-itinerary-images/rocca-scaligera.jpg",
   "d12b": "italy-itinerary-images/grotte-catullo.jpg",
   "d12c": "italy-itinerary-images/d12c.jpg",
-  "d13b": "italy-itinerary-images/vr09.jpg",
   "d13c": "italy-itinerary-images/il-desco.jpg",
   "d14b": "italy-itinerary-images/delta-767.jpg",
   "d4c": "italy-itinerary-images/maio.jpg",
@@ -44,7 +43,6 @@
   "d7d": "italy-itinerary-images/d7d.jpg",
   "d10b": "italy-itinerary-images/vr06.jpg",
   "d11a": "italy-itinerary-images/vr02.jpg",
-  "d11c": "italy-itinerary-images/vr08.jpg",
   "d13a": "italy-itinerary-images/vr07.jpg",
   "d3d": "italy-itinerary-images/villa-monastero.jpg",
   "d5d": "italy-itinerary-images/pasta-class.jpg",
@@ -91,7 +89,7 @@
   "d9t": "italy-itinerary-images/frecciarossa.jpg",
   "d10d": "italy-itinerary-images/risotto-verona.jpg",
   "d10f": "italy-itinerary-images/al-pompiere.jpg",
-  "d11d": "italy-itinerary-images/tortellini-valeggio.jpg",
+  "d11d": "italy-itinerary-images/vr08.jpg",
   "d11f": "italy-itinerary-images/teatro-romano.jpg",
   "d11g": "italy-itinerary-images/ravioli-class.jpg",
   "d11t": "italy-itinerary-images/truffles.jpg",
@@ -120,5 +118,7 @@
   "d9k": "italy-itinerary-images/d5e.jpg",
   "d10q": "italy-itinerary-images/vr04.jpg",
   "d10t": "italy-itinerary-images/piazza-erbe.jpg",
-  "d13k": "italy-itinerary-images/d9u.jpg"
+  "d13k": "italy-itinerary-images/d9u.jpg",
+  "d13s": "italy-itinerary-images/vr08.jpg",
+  "d13t": "italy-itinerary-images/piazza-erbe.jpg"
 }
